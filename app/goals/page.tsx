@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Plus, Search, Target, Clock, Users } from "lucide-react"
 import Header from "@/components/header"
 import GoalsList from "@/components/goals-list"
+import AuthGuard from "@/components/auth/auth-guard"
 
 export default function GoalsPage() {
   return (
