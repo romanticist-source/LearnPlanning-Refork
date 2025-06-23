@@ -1,46 +1,70 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { formatDistanceToNow } from "date-fns"
+import { ja } from "date-fns/locale"
+
+interface Activity {
+  id: string
+  user: string
+  action: string
+  target: string
+  time: string
+  group: string
+  createdAt: string
+}
+
 export default function GroupActivity() {
-  const activities = [
-    {
-      id: "1",
-      user: "田中さん",
-      action: "新しい目標を追加しました",
-      target: "データベース設計の基礎を学ぶ",
-      time: "30分前",
-      group: "Web開発チーム",
-    },
-    {
-      id: "2",
-      user: "佐藤さん",
-      action: "目標を達成しました",
-      target: "JavaScriptの基本構文を理解する",
-      time: "2時間前",
-      group: "プログラミング勉強会",
-    },
-    {
-      id: "3",
-      user: "鈴木さん",
-      action: "質問に回答しました",
-      target: "再帰関数の最適化について",
-      time: "3時間前",
-      group: "アルゴリズム特訓",
-    },
-    {
-      id: "4",
-      user: "高橋さん",
-      action: "新しいリソースを共有しました",
-      target: "Webフロントエンド開発のチュートリアル",
-      time: "昨日",
-      group: "Web開発チーム",
-    },
-    {
-      id: "5",
-      user: "伊藤さん",
-      action: "グループに参加しました",
-      target: "プログラミング勉強会",
-      time: "昨日",
-      group: "プログラミング勉強会",
-    },
-  ]
+  const [activities, setActivities] = useState<Activity[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        // TODO: 実際のアクティビティAPIから取得
+        // const response = await fetch('/api/activities')
+        // const data = await response.json()
+        // setActivities(data)
+        
+        // 現在は空の配列を設定
+        setActivities([])
+      } catch (error) {
+        console.error('Failed to fetch activities:', error)
+        setActivities([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchActivities()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="animate-pulse border-b pb-3">
+            <div className="flex items-start gap-2">
+              <div className="bg-gray-200 rounded-full h-8 w-8"></div>
+              <div className="flex-1">
+                <div className="h-4 bg-gray-200 rounded w-3/4 mb-1"></div>
+                <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  if (activities.length === 0) {
+    return (
+      <div className="text-center py-8 text-gray-500">
+        <p>まだアクティビティがありません</p>
+        <p className="text-sm mt-2">グループの活動が始まるとここに表示されます</p>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-4">
@@ -57,7 +81,14 @@ export default function GroupActivity() {
                 <span className="font-medium">{activity.target}</span>
               </p>
               <div className="flex items-center gap-2 mt-1">
-                <span className="text-xs text-gray-500">{activity.time}</span>
+                <span className="text-xs text-gray-500">
+                  {activity.createdAt
+                    ? formatDistanceToNow(new Date(activity.createdAt), {
+                        addSuffix: true,
+                        locale: ja,
+                      })
+                    : activity.time}
+                </span>
                 <span className="text-xs bg-gray-100 px-2 py-0.5 rounded-full">{activity.group}</span>
               </div>
             </div>

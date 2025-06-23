@@ -26,33 +26,128 @@ import GroupChatMessages from "@/components/group-chat-messages"
 import CreateGoalModal from "@/components/create-goal-modal"
 import CreateEventModal from "@/components/create-event-modal"
 import InviteMemberForm from "@/components/invite-member-form"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+
+interface GroupMember {
+  id: string
+  name: string
+  role: string
+  avatar?: string
+}
+
+interface GroupData {
+  id: string
+  name: string
+  description: string
+  createdAt: string
+  ownerId: string
+  isPublic: boolean
+  memberCount: number
+  tags?: string[]
+}
+
+interface GroupMembership {
+  id: string
+  userId: string
+  role: string
+  joinedAt: string
+}
 
 export default function GroupPage({ params }: { params: { id: string } }) {
-  // この例では、グループIDに基づいてグループデータをフェッチする代わりに、
-  // ハードコードされたデータを使用します
-  const groupData = {
-    id: params.id,
-    name: "プログラミング勉強会",
-    description:
-      "プログラミングの基礎から応用までを学ぶグループです。初心者から上級者まで、一緒にスキルアップを目指しましょう。",
-    createdAt: "2025年1月15日",
-    members: [
-      { id: "1", name: "田中太郎", role: "管理者", avatar: "/diverse-user-avatars.png" },
-      { id: "2", name: "佐藤花子", role: "メンバー", avatar: "/diverse-user-avatars.png" },
-      { id: "3", name: "鈴木一郎", role: "メンバー", avatar: "/diverse-user-avatars.png" },
-      { id: "4", name: "高橋和子", role: "メンバー", avatar: "/diverse-user-avatars.png" },
-      { id: "5", name: "伊藤健太", role: "メンバー", avatar: "/diverse-user-avatars.png" },
-      { id: "6", name: "渡辺美咲", role: "メンバー", avatar: "/diverse-user-avatars.png" },
-    ],
-    goals: 12,
-    completedGoals: 5,
-    activity: "高",
-    meetingSchedule: "毎週水曜日 20:00-21:30",
-    tags: ["プログラミング", "JavaScript", "Python", "アルゴリズム", "Web開発"],
-  }
+  const [groupData, setGroupData] = useState<GroupData | null>(null)
+  const [members, setMembers] = useState<GroupMember[]>([])
+  const [goals, setGoals] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   const [showInviteForm, setShowInviteForm] = useState(false)
+
+  useEffect(() => {
+    const fetchGroupData = async () => {
+      try {
+        setLoading(true)
+        const [groupResponse, membersResponse, goalsResponse] = await Promise.all([
+          fetch(`/api/groups/${params.id}`),
+          fetch(`/api/groups/${params.id}/members`),
+          fetch(`/api/goals?groupId=${params.id}`)
+        ])
+
+        if (!groupResponse.ok) {
+          if (groupResponse.status === 404) {
+            setError('グループが見つかりません')
+          } else {
+            setError('グループ情報の取得に失敗しました')
+          }
+          return
+        }
+
+        const group = await groupResponse.json()
+        setGroupData(group)
+
+        if (membersResponse.ok) {
+          const membersData = await membersResponse.json()
+          setMembers(membersData)
+        }
+
+        if (goalsResponse.ok) {
+          const goalsData = await goalsResponse.json()
+          setGoals(goalsData)
+        }
+      } catch (error) {
+        console.error('Failed to fetch group data:', error)
+        setError('データの読み込みに失敗しました')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchGroupData()
+  }, [params.id])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 container mx-auto px-4 py-8">
+          <div className="animate-pulse">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="bg-gray-200 rounded-full h-16 w-16"></div>
+              <div>
+                <div className="h-8 bg-gray-200 rounded w-64 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-32"></div>
+              </div>
+            </div>
+            <div className="h-4 bg-gray-200 rounded w-full mb-4"></div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-24 bg-gray-200 rounded"></div>
+              ))}
+            </div>
+          </div>
+        </main>
+      </div>
+    )
+  }
+
+  if (error || !groupData) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 container mx-auto px-4 py-8">
+          <div className="text-center py-12">
+            <h1 className="text-2xl font-bold text-gray-800 mb-2">{error || 'グループが見つかりません'}</h1>
+            <p className="text-gray-600 mb-4">指定されたグループは存在しないか、アクセス権限がありません。</p>
+            <Button asChild>
+              <a href="/dashboard">ダッシュボードに戻る</a>
+            </Button>
+          </div>
+        </main>
+      </div>
+    )
+  }
+
+  const completedGoals = goals.filter(goal => goal.completed).length
+  const goalCompletionRate = goals.length > 0 ? Math.round((completedGoals / goals.length) * 100) : 0
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -67,18 +162,20 @@ export default function GroupPage({ params }: { params: { id: string } }) {
               </div>
               <div>
                 <h1 className="text-3xl font-bold">{groupData.name}</h1>
-                <p className="text-gray-500">作成日: {groupData.createdAt}</p>
+                <p className="text-gray-500">作成日: {new Date(groupData.createdAt).toLocaleDateString('ja-JP')}</p>
               </div>
             </div>
             <p className="text-gray-700 mb-4">{groupData.description}</p>
 
-            <div className="flex flex-wrap gap-2 mb-6">
-              {groupData.tags.map((tag, index) => (
-                <span key={index} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
-                  {tag}
-                </span>
-              ))}
-            </div>
+            {groupData.tags && groupData.tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-6">
+                {groupData.tags.map((tag, index) => (
+                  <span key={index} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <div className="bg-white p-4 rounded-lg border">
@@ -86,21 +183,21 @@ export default function GroupPage({ params }: { params: { id: string } }) {
                   <Users className="h-5 w-5 text-gray-500" />
                   <span className="font-medium">メンバー</span>
                 </div>
-                <p className="text-2xl font-bold">{groupData.members.length}人</p>
+                <p className="text-2xl font-bold">{members.length}人</p>
               </div>
               <div className="bg-white p-4 rounded-lg border">
                 <div className="flex items-center gap-2 mb-2">
                   <Target className="h-5 w-5 text-gray-500" />
                   <span className="font-medium">目標達成率</span>
                 </div>
-                <p className="text-2xl font-bold">{Math.round((groupData.completedGoals / groupData.goals) * 100)}%</p>
+                <p className="text-2xl font-bold">{goalCompletionRate}%</p>
               </div>
               <div className="bg-white p-4 rounded-lg border">
                 <div className="flex items-center gap-2 mb-2">
                   <Calendar className="h-5 w-5 text-gray-500" />
                   <span className="font-medium">ミーティング</span>
                 </div>
-                <p className="text-sm font-medium">{groupData.meetingSchedule}</p>
+                <p className="text-sm font-medium">設定されていません</p>
               </div>
             </div>
           </div>
@@ -122,23 +219,30 @@ export default function GroupPage({ params }: { params: { id: string } }) {
               </div>
             ) : (
               <div className="space-y-3 max-h-[300px] overflow-y-auto">
-                {groupData.members.map((member) => (
-                  <div key={member.id} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={member.avatar || "/placeholder.svg"} alt={member.name} />
-                        <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="font-medium text-sm">{member.name}</p>
-                        <p className="text-xs text-gray-500">{member.role}</p>
+                {members.length > 0 ? (
+                  members.map((member) => (
+                    <div key={member.id} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={member.avatar || "/placeholder.svg"} alt={member.name} />
+                          <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-medium text-sm">{member.name}</p>
+                          <p className="text-xs text-gray-500">{member.role}</p>
+                        </div>
                       </div>
+                      {member.role === "admin" && (
+                        <span className="bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded-full">管理者</span>
+                      )}
                     </div>
-                    {member.role === "管理者" && (
-                      <span className="bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded-full">管理者</span>
-                    )}
+                  ))
+                ) : (
+                  <div className="text-center py-4 text-gray-500">
+                    <Users className="h-8 w-8 mx-auto mb-2 text-gray-300" />
+                    <p className="text-sm">メンバー情報を読み込み中...</p>
                   </div>
-                ))}
+                )}
               </div>
             )}
           </div>
@@ -222,75 +326,9 @@ export default function GroupPage({ params }: { params: { id: string } }) {
                 <CreateEventModal />
               </CardHeader>
               <CardContent>
-                <div className="bg-gray-50 p-4 rounded-lg border mb-4">
-                  <h3 className="font-medium mb-2">次回のミーティング</h3>
-                  <div className="flex items-center gap-3 mb-2">
-                    <Calendar className="h-5 w-5 text-emerald-600" />
-                    <span>2025年5月15日（水）20:00-21:30</span>
-                  </div>
-                  <p className="text-gray-600 mb-3">テーマ: Reactフックの基本と応用</p>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm">
-                      詳細
-                    </Button>
-                    <Button size="sm">参加する</Button>
-                  </div>
-                </div>
-
-                <h3 className="font-medium mb-3">今後のスケジュール</h3>
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3 p-3 border rounded-lg">
-                    <div className="bg-emerald-100 p-2 rounded-full">
-                      <Calendar className="h-4 w-4 text-emerald-600" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex justify-between">
-                        <h4 className="font-medium">JavaScriptの非同期処理</h4>
-                        <span className="text-sm text-gray-500">5月22日（水）</span>
-                      </div>
-                      <p className="text-sm text-gray-600">Promise、async/await、コールバックについて学びます</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs bg-gray-100 px-2 py-0.5 rounded-full">20:00-21:30</span>
-                        <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
-                          ミーティング
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3 p-3 border rounded-lg">
-                    <div className="bg-amber-100 p-2 rounded-full">
-                      <Target className="h-4 w-4 text-amber-600" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex justify-between">
-                        <h4 className="font-medium">Todoアプリ制作締切</h4>
-                        <span className="text-sm text-gray-500">5月25日（土）</span>
-                      </div>
-                      <p className="text-sm text-gray-600">JavaScriptを使ったTodoアプリの提出期限です</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs bg-gray-100 px-2 py-0.5 rounded-full">終日</span>
-                        <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">締切</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3 p-3 border rounded-lg">
-                    <div className="bg-blue-100 p-2 rounded-full">
-                      <Users className="h-4 w-4 text-blue-600" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex justify-between">
-                        <h4 className="font-medium">コードレビュー会</h4>
-                        <span className="text-sm text-gray-500">5月29日（水）</span>
-                      </div>
-                      <p className="text-sm text-gray-600">作成したTodoアプリのコードレビューを行います</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs bg-gray-100 px-2 py-0.5 rounded-full">20:00-22:00</span>
-                        <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">イベント</span>
-                      </div>
-                    </div>
-                  </div>
+                <div className="text-center py-8 text-gray-500">
+                  <Calendar className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+                  <p>スケジュールはまだ設定されていません</p>
                 </div>
               </CardContent>
             </Card>
@@ -310,35 +348,42 @@ export default function GroupPage({ params }: { params: { id: string } }) {
 
                 <h3 className="font-medium mb-3">メンバー別の活動状況</h3>
                 <div className="space-y-4">
-                  {groupData.members.map((member) => (
-                    <div key={member.id} className="border rounded-lg p-3">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <Avatar className="h-8 w-8">
-                            <AvatarImage src={member.avatar || "/placeholder.svg"} alt={member.name} />
-                            <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
-                          </Avatar>
-                          <span className="font-medium">{member.name}</span>
+                  {members.length > 0 ? (
+                    members.map((member) => (
+                      <div key={member.id} className="border rounded-lg p-3">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <Avatar className="h-8 w-8">
+                              <AvatarImage src={member.avatar || "/placeholder.svg"} alt={member.name} />
+                              <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <span className="font-medium">{member.name}</span>
+                          </div>
+                          <span className="text-sm text-gray-500">今週の活動</span>
                         </div>
-                        <span className="text-sm text-gray-500">今週の活動</span>
+                        <div className="flex items-center gap-3 mb-1">
+                          <span className="text-sm font-medium w-24">学習時間:</span>
+                          <Progress value={0} className="h-2 flex-1" />
+                          <span className="text-sm">0時間</span>
+                        </div>
+                        <div className="flex items-center gap-3 mb-1">
+                          <span className="text-sm font-medium w-24">達成目標:</span>
+                          <Progress value={0} className="h-2 flex-1" />
+                          <span className="text-sm">0個</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm font-medium w-24">貢献度:</span>
+                          <Progress value={0} className="h-2 flex-1" />
+                          <span className="text-sm">0ポイント</span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-3 mb-1">
-                        <span className="text-sm font-medium w-24">学習時間:</span>
-                        <Progress value={Math.random() * 100} className="h-2 flex-1" />
-                        <span className="text-sm">{Math.floor(Math.random() * 20) + 5}時間</span>
-                      </div>
-                      <div className="flex items-center gap-3 mb-1">
-                        <span className="text-sm font-medium w-24">達成目標:</span>
-                        <Progress value={Math.random() * 100} className="h-2 flex-1" />
-                        <span className="text-sm">{Math.floor(Math.random() * 5) + 1}個</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <span className="text-sm font-medium w-24">貢献度:</span>
-                        <Progress value={Math.random() * 100} className="h-2 flex-1" />
-                        <span className="text-sm">{Math.floor(Math.random() * 100)}ポイント</span>
-                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      <BarChart3 className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+                      <p>活動データがありません</p>
                     </div>
-                  ))}
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -357,15 +402,15 @@ export default function GroupPage({ params }: { params: { id: string } }) {
                     <div className="space-y-3">
                       <div>
                         <label className="text-sm font-medium block mb-1">グループ名</label>
-                        <Input defaultValue={groupData.name} />
+                        <Input defaultValue={groupData.name} readOnly />
                       </div>
                       <div>
                         <label className="text-sm font-medium block mb-1">説明</label>
-                        <Input defaultValue={groupData.description} />
+                        <Input defaultValue={groupData.description} readOnly />
                       </div>
                       <div>
                         <label className="text-sm font-medium block mb-1">ミーティングスケジュール</label>
-                        <Input defaultValue={groupData.meetingSchedule} />
+                        <Input defaultValue="設定されていません" readOnly />
                       </div>
                     </div>
                   </div>

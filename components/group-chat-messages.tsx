@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { ThumbsUp, Reply, MoreHorizontal } from "lucide-react"
+import { ThumbsUp, Reply, MoreHorizontal, MessageSquare } from "lucide-react"
 
 type Message = {
   id: string
@@ -23,105 +23,68 @@ type Message = {
 
 export default function GroupChatMessages({ groupId }: { groupId: string }) {
   const [messages, setMessages] = useState<Message[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // 実際のアプリケーションでは、APIからメッセージを取得します
-    // ここではダミーデータを使用します
-    const dummyMessages: Message[] = [
-      {
-        id: "1",
-        userId: "1",
-        userName: "田中太郎",
-        userAvatar: "/diverse-user-avatars.png",
-        content: "みなさん、こんにちは！今週のミーティングでは、JavaScriptの非同期処理について話し合いましょう。",
-        timestamp: "2025/5/8 10:23",
-        likes: 3,
-        replies: [],
-      },
-      {
-        id: "2",
-        userId: "2",
-        userName: "佐藤花子",
-        userAvatar: "/diverse-user-avatars.png",
-        content: "いいですね！特にPromiseとasync/awaitの違いについて詳しく知りたいです。",
-        timestamp: "2025/5/8 10:45",
-        likes: 2,
-        replies: [],
-      },
-      {
-        id: "3",
-        userId: "3",
-        userName: "鈴木一郎",
-        userAvatar: "/diverse-user-avatars.png",
-        content: "私は先日、非同期処理に関する良い記事を見つけました。シェアします！",
-        timestamp: "2025/5/8 11:15",
-        likes: 5,
-        replies: [],
-        attachments: [
-          {
-            type: "file",
-            url: "#",
-            name: "javascript-async.pdf",
-          },
-        ],
-      },
-      {
-        id: "4",
-        userId: "4",
-        userName: "高橋和子",
-        userAvatar: "/diverse-user-avatars.png",
-        content:
-          "ありがとう！とても参考になりました。ところで、先週のTodoアプリの課題はどうですか？私はローカルストレージを使って実装してみました。",
-        timestamp: "2025/5/8 13:30",
-        likes: 1,
-        replies: [
-          {
-            id: "4-1",
-            userId: "5",
-            userName: "伊藤健太",
-            userAvatar: "/diverse-user-avatars.png",
-            content: "私もローカルストレージを使いました！でも、データの永続化に少し苦戦しています...",
-            timestamp: "2025/5/8 14:05",
-            likes: 0,
-            replies: [],
-          },
-          {
-            id: "4-2",
-            userId: "1",
-            userName: "田中太郎",
-            userAvatar: "/diverse-user-avatars.png",
-            content: "ローカルストレージのデータ永続化について、今度のミーティングで少し時間を取って話し合いましょう！",
-            timestamp: "2025/5/8 14:20",
-            likes: 3,
-            replies: [],
-          },
-        ],
-      },
-      {
-        id: "5",
-        userId: "6",
-        userName: "渡辺美咲",
-        userAvatar: "/diverse-user-avatars.png",
-        content: "みなさん、こちらが先週のミーティングの写真です！",
-        timestamp: "2025/5/8 15:10",
-        likes: 7,
-        replies: [],
-        attachments: [
-          {
-            type: "image",
-            url: "/modern-classroom-study.png",
-            name: "meeting-photo.jpg",
-          },
-        ],
-      },
-    ]
+    const fetchMessages = async () => {
+      try {
+        // TODO: 実際のチャットメッセージAPIから取得
+        // const response = await fetch(`/api/groups/${groupId}/messages`)
+        // const data = await response.json()
+        // setMessages(data)
+        
+        // 現在は空の配列を設定
+        setMessages([])
+      } catch (error) {
+        console.error('Failed to fetch messages:', error)
+        setMessages([])
+      } finally {
+        setLoading(false)
+      }
+    }
 
-    setMessages(dummyMessages)
+    fetchMessages()
   }, [groupId])
 
-  const handleLike = (messageId: string) => {
-    setMessages((prevMessages) =>
-      prevMessages.map((message) => (message.id === messageId ? { ...message, likes: message.likes + 1 } : message)),
+  const handleLike = async (messageId: string) => {
+    try {
+      // TODO: 実際のAPI呼び出し
+      // await fetch(`/api/messages/${messageId}/like`, { method: 'POST' })
+      
+      setMessages((prevMessages) =>
+        prevMessages.map((message) =>
+          message.id === messageId ? { ...message, likes: message.likes + 1 } : message
+        )
+      )
+    } catch (error) {
+      console.error('Failed to like message:', error)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="space-y-6 p-2">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="animate-pulse flex gap-3">
+            <div className="h-10 w-10 bg-gray-200 rounded-full"></div>
+            <div className="flex-1">
+              <div className="h-4 bg-gray-200 rounded w-24 mb-2"></div>
+              <div className="h-3 bg-gray-200 rounded w-full mb-1"></div>
+              <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  if (messages.length === 0) {
+    return (
+      <div className="text-center py-12 text-gray-500">
+        <MessageSquare className="h-16 w-16 mx-auto mb-4 text-gray-300" />
+        <p className="text-lg font-medium mb-2">まだメッセージがありません</p>
+        <p className="text-sm">最初のメッセージを送信してグループチャットを始めましょう</p>
+      </div>
     )
   }
 
@@ -186,59 +149,54 @@ export default function GroupChatMessages({ groupId }: { groupId: string }) {
                 </div>
               )}
 
-              <div className="flex gap-2 mt-2">
+              <div className="flex items-center gap-4 mt-3">
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-8 text-gray-500 hover:text-gray-700"
                   onClick={() => handleLike(message.id)}
+                  className="text-gray-500 hover:text-blue-600"
                 >
                   <ThumbsUp className="h-4 w-4 mr-1" />
                   {message.likes}
                 </Button>
-                <Button variant="ghost" size="sm" className="h-8 text-gray-500 hover:text-gray-700">
+                <Button variant="ghost" size="sm" className="text-gray-500 hover:text-blue-600">
                   <Reply className="h-4 w-4 mr-1" />
                   返信
                 </Button>
               </div>
+
+              {message.replies && message.replies.length > 0 && (
+                <div className="ml-4 mt-4 border-l-2 border-gray-100 pl-4 space-y-3">
+                  {message.replies.map((reply) => (
+                    <div key={reply.id} className="flex gap-2">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={reply.userAvatar || "/placeholder.svg"} alt={reply.userName} />
+                        <AvatarFallback>{reply.userName.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-medium">{reply.userName}</p>
+                          <p className="text-xs text-gray-500">{reply.timestamp}</p>
+                        </div>
+                        <p className="text-sm text-gray-700 mt-1">{reply.content}</p>
+                        <div className="flex items-center gap-4 mt-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleLike(reply.id)}
+                            className="text-gray-500 hover:text-blue-600 text-xs"
+                          >
+                            <ThumbsUp className="h-3 w-3 mr-1" />
+                            {reply.likes}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
-
-          {message.replies && message.replies.length > 0 && (
-            <div className="ml-12 space-y-3 mt-2 pl-4 border-l-2 border-gray-100">
-              {message.replies.map((reply) => (
-                <div key={reply.id} className="flex gap-3">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={reply.userAvatar || "/placeholder.svg"} alt={reply.userName} />
-                    <AvatarFallback>{reply.userName.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p className="font-medium text-sm">{reply.userName}</p>
-                        <p className="text-xs text-gray-500">{reply.timestamp}</p>
-                      </div>
-                      <Button variant="ghost" size="icon" className="h-6 w-6">
-                        <MoreHorizontal className="h-3 w-3" />
-                      </Button>
-                    </div>
-                    <p className="mt-1 text-sm text-gray-700">{reply.content}</p>
-                    <div className="flex gap-2 mt-1">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-6 text-xs text-gray-500 hover:text-gray-700"
-                        onClick={() => handleLike(reply.id)}
-                      >
-                        <ThumbsUp className="h-3 w-3 mr-1" />
-                        {reply.likes}
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
       ))}
     </div>

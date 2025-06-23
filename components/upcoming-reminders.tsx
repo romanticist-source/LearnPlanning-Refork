@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Calendar, Clock, Check } from "lucide-react"
 
@@ -13,49 +13,64 @@ type Reminder = {
   completed: boolean
 }
 
-const initialReminders: Reminder[] = [
-  {
-    id: "1",
-    title: "アルゴリズム学習",
-    description: "再帰関数の基本概念を学ぶ",
-    date: "2025/5/10",
-    time: "19:00",
-    completed: false,
-  },
-  {
-    id: "2",
-    title: "プログラミング演習",
-    description: "配列操作の練習問題を解く",
-    date: "2025/5/11",
-    time: "14:00",
-    completed: false,
-  },
-  {
-    id: "3",
-    title: "グループミーティング",
-    description: "週間進捗報告と質疑応答",
-    date: "2025/5/12",
-    time: "20:00",
-    completed: false,
-  },
-  {
-    id: "4",
-    title: "Webフロントエンド学習",
-    description: "CSSレイアウトの基本を学ぶ",
-    date: "2025/5/13",
-    time: "18:30",
-    completed: false,
-  },
-]
 
 export default function UpcomingReminders() {
-  const [reminders, setReminders] = useState<Reminder[]>(initialReminders)
+  const [reminders, setReminders] = useState<Reminder[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchReminders = async () => {
+      try {
+        // TODO: 実際のリマインダーAPIから取得
+        // const response = await fetch('/api/reminders')
+        // const data = await response.json()
+        // setReminders(data)
+        
+        // 現在は空の配列を設定
+        setReminders([])
+      } catch (error) {
+        console.error('Failed to fetch reminders:', error)
+        setReminders([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchReminders()
+  }, [])
 
   const toggleComplete = (id: string) => {
     setReminders((prevReminders) =>
       prevReminders.map((reminder) =>
         reminder.id === id ? { ...reminder, completed: !reminder.completed } : reminder,
       ),
+    )
+  }
+
+  if (loading) {
+    return (
+      <ul className="space-y-3">
+        {[1, 2, 3].map((i) => (
+          <li key={i} className="animate-pulse flex items-start gap-3 p-3 rounded-lg border">
+            <div className="h-8 w-8 bg-gray-200 rounded-full"></div>
+            <div className="flex-1">
+              <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+              <div className="h-3 bg-gray-200 rounded w-full mb-2"></div>
+              <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+            </div>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+  if (reminders.length === 0) {
+    return (
+      <div className="text-center py-8 text-gray-500">
+        <Calendar className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+        <p>リマインダーが設定されていません</p>
+        <p className="text-sm mt-2">学習スケジュールを設定してみましょう</p>
+      </div>
     )
   }
 

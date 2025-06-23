@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 日付順でソート（新しい順）
-    invitations.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    invitations.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
     return NextResponse.json(invitations)
   } catch (error) {

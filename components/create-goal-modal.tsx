@@ -74,7 +74,9 @@ export default function CreateGoalModal() {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to create goal')
+        const errorData = await response.json().catch(() => ({}))
+        const errorMessage = errorData.error || `目標の作成に失敗しました (${response.status})`
+        throw new Error(errorMessage)
       }
 
       const createdGoal = await response.json()
@@ -91,7 +93,8 @@ export default function CreateGoalModal() {
       window.location.reload()
     } catch (error) {
       console.error('Error creating goal:', error)
-      alert('目標の作成に失敗しました。もう一度お試しください。')
+      const errorMessage = error instanceof Error ? error.message : '目標の作成に失敗しました。'
+      alert(`エラー: ${errorMessage}`)
     }
   }
 
@@ -114,7 +117,7 @@ export default function CreateGoalModal() {
               <Label htmlFor="title" className="text-right">
                 タイトル
               </Label>
-              <Input id="title" placeholder="例: JavaScriptの基礎を学ぶ" className="col-span-3" required />
+              <Input id="title" name="title" placeholder="例: JavaScriptの基礎を学ぶ" className="col-span-3" required />
             </div>
             <div className="grid grid-cols-4 items-start gap-4">
               <Label htmlFor="description" className="text-right pt-2">
@@ -122,6 +125,7 @@ export default function CreateGoalModal() {
               </Label>
               <Textarea
                 id="description"
+                name="description"
                 placeholder="目標の詳細な説明を入力してください"
                 className="col-span-3"
                 rows={3}
@@ -162,6 +166,7 @@ export default function CreateGoalModal() {
                 </Label>
                 <select
                   id="group"
+                  name="group"
                   className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <option value="1">プログラミング勉強会</option>
@@ -268,12 +273,12 @@ export default function CreateGoalModal() {
               </Label>
               <select
                 id="priority"
+                name="priority"
+                defaultValue="medium"
                 className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <option value="high">高</option>
-                <option value="medium" selected>
-                  中
-                </option>
+                <option value="medium">中</option>
                 <option value="low">低</option>
               </select>
             </div>
@@ -282,11 +287,11 @@ export default function CreateGoalModal() {
               <Label className="text-right pt-2">オプション</Label>
               <div className="col-span-3 space-y-2">
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="reminder" />
+                  <Checkbox id="reminder" name="reminder" />
                   <Label htmlFor="reminder">リマインダーを設定する</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="public" />
+                  <Checkbox id="public" name="public" />
                   <Label htmlFor="public">公開目標として設定する</Label>
                 </div>
               </div>

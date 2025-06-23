@@ -255,7 +255,15 @@ export default function GroupsPage() {
   )
 }
 
-function GroupCard({ id, name, description, members, goals, activity, joined = true }) {
+function GroupCard({ id, name, description, members, goals, activity, joined = true }: {
+  id: string
+  name: string
+  description: string
+  members: number
+  goals: number
+  activity: string
+  joined?: boolean
+}) {
   const activityColor =
     activity === "高"
       ? "text-emerald-600 bg-emerald-50"

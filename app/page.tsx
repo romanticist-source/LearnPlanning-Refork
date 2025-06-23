@@ -210,7 +210,11 @@ export default function Home() {
   )
 }
 
-function FeatureCard({ icon, title, description }) {
+function FeatureCard({ icon, title, description }: {
+  icon: React.ReactNode
+  title: string
+  description: string
+}) {
   return (
     <div className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
       <div className="mb-4">{icon}</div>

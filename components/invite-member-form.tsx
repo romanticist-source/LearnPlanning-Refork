@@ -33,19 +33,22 @@ export default function InviteMemberForm() {
     setEmailList(emailList.filter((e) => e !== email))
   }
 
-  // ユーザー検索（ダミー実装）
-  const searchUsers = () => {
+  // ユーザー検索
+  const searchUsers = async () => {
     if (!searchQuery) return
 
-    // 実際のアプリケーションではAPIを呼び出してユーザーを検索します
-    // ここではダミーデータを使用します
-    const dummyResults = [
-      { id: "user1", name: "山田太郎", email: "yamada@example.com" },
-      { id: "user2", name: "佐藤花子", email: "sato@example.com" },
-      { id: "user3", name: "鈴木一郎", email: "suzuki@example.com" },
-    ].filter((user) => user.name.includes(searchQuery) || user.email.includes(searchQuery))
-
-    setSearchResults(dummyResults)
+    try {
+      const response = await fetch(`/api/users/search?q=${encodeURIComponent(searchQuery)}`)
+      if (response.ok) {
+        const results = await response.json()
+        setSearchResults(results)
+      } else {
+        setSearchResults([])
+      }
+    } catch (error) {
+      console.error('Failed to search users:', error)
+      setSearchResults([])
+    }
   }
 
   // ユーザーを選択
@@ -61,19 +64,51 @@ export default function InviteMemberForm() {
   }
 
   // 招待を送信
-  const sendInvitations = () => {
-    // 実際のアプリケーションでは招待処理を実行します
-    console.log("招待を送信しました")
-    console.log("メールアドレス:", emailList)
-    console.log("選択したユーザー:", selectedUsers)
-    console.log("メッセージ:", message)
-
-    // フォームをリセット
-    setEmailList([])
-    setSelectedUsers([])
-    setMessage("")
-    setSearchQuery("")
-    setEmailInput("")
+  const sendInvitations = async () => {
+    try {
+      const invitations = []
+      
+      // メールアドレスでの招待
+      if (inviteMethod === "email") {
+        for (const email of emailList) {
+          invitations.push({
+            inviteeEmail: email,
+            message: message || "グループに参加しませんか？"
+          })
+        }
+      }
+      
+      // ユーザー選択での招待
+      if (inviteMethod === "search") {
+        for (const user of selectedUsers) {
+          invitations.push({
+            inviteeEmail: user.email,
+            inviteeName: user.name,
+            message: message || "グループに参加しませんか？"
+          })
+        }
+      }
+      
+      // TODO: 実際のAPIエンドポイントに招待を送信
+      // const response = await fetch('/api/invitations', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ invitations })
+      // })
+      
+      console.log("招待を送信しました")
+      console.log("招待データ:", invitations)
+      
+      // フォームをリセット
+      setEmailList([])
+      setSelectedUsers([])
+      setMessage("")
+      setSearchQuery("")
+      setEmailInput("")
+      setSearchResults([])
+    } catch (error) {
+      console.error('Failed to send invitations:', error)
+    }
   }
 
   return (

@@ -1,3 +1,5 @@
+"use client"
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -10,9 +12,101 @@ import Header from "@/components/header"
 import CreateGoalModal from "@/components/create-goal-modal"
 import CreateQuestionModal from "@/components/create-question-modal"
 import ScheduleView from "@/components/schedule-view"
-import { Suspense } from "react"
+import { Suspense, useEffect, useState } from "react"
+import Link from "next/link"
+
+interface DashboardStats {
+  studyHours: number
+  studyHoursChange: number
+  completedGoals: number
+  goalProgress: number
+  activeGroups: number
+  totalMembers: number
+}
+
+interface Group {
+  id: string
+  name: string
+  memberCount: number
+}
+
+interface Discussion {
+  id: string
+  title: string
+  content: string
+  groupName: string
+  createdAt: string
+  answerCount: number
+}
 
 export default function DashboardPage() {
+  const [stats, setStats] = useState<DashboardStats | null>(null)
+  const [groups, setGroups] = useState<Group[]>([])
+  const [discussions, setDiscussions] = useState<Discussion[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        // 統計情報を取得（実際のAPIではこれらを個別に取得）
+        const [goalsResponse, groupsResponse] = await Promise.all([
+          fetch('/api/goals'),
+          fetch('/api/groups?type=my')
+        ])
+
+        if (goalsResponse.ok && groupsResponse.ok) {
+          const goals = await goalsResponse.json()
+          const userGroups = await groupsResponse.json()
+
+          // 統計を計算
+          const completedGoals = goals.filter((goal: any) => goal.completed).length
+          const totalGoals = goals.length
+          const goalProgress = totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0
+          const totalMembers = userGroups.reduce((sum: number, group: any) => sum + (group.memberCount || 0), 0)
+
+          setStats({
+            studyHours: 12.5, // TODO: 実際の学習時間APIから取得
+            studyHoursChange: 2.3, // TODO: 実際の変化量APIから取得
+            completedGoals,
+            goalProgress,
+            activeGroups: userGroups.length,
+            totalMembers
+          })
+
+          setGroups(userGroups)
+        }
+
+        // TODO: ディスカッションAPIから取得
+        setDiscussions([])
+      } catch (error) {
+        console.error('Failed to fetch dashboard data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchDashboardData()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <div className="container mx-auto px-4 py-8">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 rounded w-48 mb-2"></div>
+            <div className="h-4 bg-gray-200 rounded w-64 mb-8"></div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-32 bg-gray-200 rounded"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -39,8 +133,8 @@ export default function DashboardPage() {
               <CardDescription>今週の合計</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold">12.5時間</div>
-              <p className="text-sm text-emerald-600">先週より+2.3時間</p>
+              <div className="text-3xl font-bold">{stats?.studyHours || 0}時間</div>
+              <p className="text-sm text-emerald-600">先週より+{stats?.studyHoursChange || 0}時間</p>
             </CardContent>
           </Card>
           <Card>
@@ -49,8 +143,8 @@ export default function DashboardPage() {
               <CardDescription>今月</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold">8個</div>
-              <p className="text-sm text-emerald-600">目標の75%を達成</p>
+              <div className="text-3xl font-bold">{stats?.completedGoals || 0}個</div>
+              <p className="text-sm text-emerald-600">目標の{stats?.goalProgress || 0}%を達成</p>
             </CardContent>
           </Card>
           <Card>
@@ -59,8 +153,8 @@ export default function DashboardPage() {
               <CardDescription>アクティブなグループ</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold">3グループ</div>
-              <p className="text-sm text-gray-500">5人のメンバーと学習中</p>
+              <div className="text-3xl font-bold">{stats?.activeGroups || 0}グループ</div>
+              <p className="text-sm text-gray-500">{stats?.totalMembers || 0}人のメンバーと学習中</p>
             </CardContent>
           </Card>
         </div>
@@ -124,50 +218,31 @@ export default function DashboardPage() {
                   <CardDescription>参加中のグループ</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <ul className="space-y-4">
-                    <li className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="bg-emerald-100 p-2 rounded-full">
-                          <Users className="h-5 w-5 text-emerald-600" />
-                        </div>
-                        <div>
-                          <p className="font-medium">プログラミング勉強会</p>
-                          <p className="text-sm text-gray-500">メンバー: 6人</p>
-                        </div>
-                      </div>
-                      <Button variant="outline" size="sm" asChild>
-                        <a href="/groups/1">表示</a>
-                      </Button>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="bg-emerald-100 p-2 rounded-full">
-                          <Users className="h-5 w-5 text-emerald-600" />
-                        </div>
-                        <div>
-                          <p className="font-medium">アルゴリズム特訓</p>
-                          <p className="text-sm text-gray-500">メンバー: 4人</p>
-                        </div>
-                      </div>
-                      <Button variant="outline" size="sm" asChild>
-                        <a href="/groups/2">表示</a>
-                      </Button>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="bg-emerald-100 p-2 rounded-full">
-                          <Users className="h-5 w-5 text-emerald-600" />
-                        </div>
-                        <div>
-                          <p className="font-medium">Web開発チーム</p>
-                          <p className="text-sm text-gray-500">メンバー: 5人</p>
-                        </div>
-                      </div>
-                      <Button variant="outline" size="sm" asChild>
-                        <a href="/groups/3">表示</a>
-                      </Button>
-                    </li>
-                  </ul>
+                  {groups.length > 0 ? (
+                    <ul className="space-y-4">
+                      {groups.map((group) => (
+                        <li key={group.id} className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="bg-emerald-100 p-2 rounded-full">
+                              <Users className="h-5 w-5 text-emerald-600" />
+                            </div>
+                            <div>
+                              <p className="font-medium">{group.name}</p>
+                              <p className="text-sm text-gray-500">メンバー: {group.memberCount}人</p>
+                            </div>
+                          </div>
+                          <Button variant="outline" size="sm" asChild>
+                            <Link href={`/groups/${group.id}`}>表示</Link>
+                          </Button>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      <Users className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+                      <p>まだグループに参加していません</p>
+                    </div>
+                  )}
                   <Button variant="outline" className="w-full mt-4">
                     <Plus className="mr-2 h-4 w-4" />
                     新しいグループを作成
@@ -199,45 +274,28 @@ export default function DashboardPage() {
                 <CreateQuestionModal />
               </CardHeader>
               <CardContent>
-                <ul className="space-y-4">
-                  <li className="border-b pb-4">
-                    <div className="flex justify-between mb-2">
-                      <p className="font-medium">再帰関数の最適化について</p>
-                      <span className="text-sm text-gray-500">2時間前</span>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-2">
-                      再帰関数を使ったアルゴリズムの最適化方法について教えてください。
-                    </p>
-                    <div className="flex justify-between">
-                      <span className="text-sm text-gray-500">プログラミング勉強会</span>
-                      <span className="text-sm text-gray-500">回答: 3件</span>
-                    </div>
-                  </li>
-                  <li className="border-b pb-4">
-                    <div className="flex justify-between mb-2">
-                      <p className="font-medium">APIの認証方法について</p>
-                      <span className="text-sm text-gray-500">昨日</span>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-2">RESTful APIでのJWT認証の実装方法を教えてください。</p>
-                    <div className="flex justify-between">
-                      <span className="text-sm text-gray-500">Web開発チーム</span>
-                      <span className="text-sm text-gray-500">回答: 5件</span>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="flex justify-between mb-2">
-                      <p className="font-medium">ソートアルゴリズムの比較</p>
-                      <span className="text-sm text-gray-500">3日前</span>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-2">
-                      クイックソートとマージソートのパフォーマンス比較について議論しましょう。
-                    </p>
-                    <div className="flex justify-between">
-                      <span className="text-sm text-gray-500">アルゴリズム特訓</span>
-                      <span className="text-sm text-gray-500">回答: 8件</span>
-                    </div>
-                  </li>
-                </ul>
+                {discussions.length > 0 ? (
+                  <ul className="space-y-4">
+                    {discussions.map((discussion, index) => (
+                      <li key={discussion.id} className={index < discussions.length - 1 ? "border-b pb-4" : ""}>
+                        <div className="flex justify-between mb-2">
+                          <p className="font-medium">{discussion.title}</p>
+                          <span className="text-sm text-gray-500">{discussion.createdAt}</span>
+                        </div>
+                        <p className="text-sm text-gray-600 mb-2">{discussion.content}</p>
+                        <div className="flex justify-between">
+                          <span className="text-sm text-gray-500">{discussion.groupName}</span>
+                          <span className="text-sm text-gray-500">回答: {discussion.answerCount}件</span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <MessageSquare className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+                    <p>まだディスカッションがありません</p>
+                  </div>
+                )}
                 <Button variant="outline" className="w-full mt-4">
                   <Plus className="mr-2 h-4 w-4" />
                   すべての質問を表示
