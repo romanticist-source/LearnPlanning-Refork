@@ -1,10 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Progress } from "@/components/ui/progress"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { ChevronDown, ChevronUp, MoreHorizontal } from "lucide-react"
+import { format } from "date-fns"
+import { ja } from "date-fns/locale"
 
 type Goal = {
   id: string
@@ -16,90 +18,49 @@ type Goal = {
   completed?: boolean
 }
 
-const initialGoals: Goal[] = [
-  {
-    id: "1",
-    title: "プログラミング基礎の習得",
-    description: "プログラミングの基本概念と構文を理解する",
-    deadline: "2025/6/30",
-    progress: 75,
-    subgoals: [
-      {
-        id: "1-1",
-        title: "変数と型",
-        description: "変数の宣言と基本的なデータ型を理解する",
-        deadline: "2025/5/15",
-        progress: 100,
-        completed: true,
-      },
-      {
-        id: "1-2",
-        title: "制御構文",
-        description: "条件分岐とループ処理を理解する",
-        deadline: "2025/5/30",
-        progress: 80,
-        completed: false,
-      },
-      {
-        id: "1-3",
-        title: "関数とスコープ",
-        description: "関数の定義と呼び出し、変数のスコープを理解する",
-        deadline: "2025/6/15",
-        progress: 60,
-        completed: false,
-      },
-    ],
-  },
-  {
-    id: "2",
-    title: "Webフロントエンド開発",
-    description: "HTML, CSS, JavaScriptを使ったWebフロントエンド開発の基礎を学ぶ",
-    deadline: "2025/8/31",
-    progress: 40,
-    subgoals: [
-      {
-        id: "2-1",
-        title: "HTML/CSS基礎",
-        description: "HTMLの構造とCSSによるスタイリングを理解する",
-        deadline: "2025/7/15",
-        progress: 90,
-        completed: false,
-      },
-      {
-        id: "2-2",
-        title: "JavaScript基礎",
-        description: "JavaScriptの基本構文とDOM操作を理解する",
-        deadline: "2025/7/31",
-        progress: 50,
-        completed: false,
-      },
-      {
-        id: "2-3",
-        title: "フレームワーク入門",
-        description: "ReactやVueなどのフレームワークの基本を理解する",
-        deadline: "2025/8/31",
-        progress: 10,
-        completed: false,
-      },
-    ],
-  },
-  {
-    id: "3",
-    title: "アルゴリズムとデータ構造",
-    description: "基本的なアルゴリズムとデータ構造を理解し実装できるようになる",
-    deadline: "2025/9/30",
-    progress: 20,
-    subgoals: [],
-  },
-]
+export default function GoalsList({ status = 'all' }: { status?: 'all' | 'active' | 'completed' }) {
+  const [goals, setGoals] = useState<Goal[]>([])
+  const [loading, setLoading] = useState(true)
+  const [expandedGoals, setExpandedGoals] = useState<Record<string, boolean>>({})
 
-export default function GoalsList() {
-  const [goals, setGoals] = useState<Goal[]>(initialGoals)
-  const [expandedGoals, setExpandedGoals] = useState<Record<string, boolean>>({
-    "1": true,
-    "2": false,
-    "3": false,
-  })
+  // データを取得
+  useEffect(() => {
+    const fetchGoals = async () => {
+      try {
+        const statusParam = status !== 'all' ? `?status=${status}` : ''
+        const response = await fetch(`/api/goals${statusParam}`)
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch goals')
+        }
+        
+        const data = await response.json()
+        
+        // 日付フォーマットを調整
+        const formattedGoals = data.map((goal: any) => ({
+          ...goal,
+          deadline: goal.deadline ? format(new Date(goal.deadline), 'yyyy/MM/dd', { locale: ja }) : '',
+          subgoals: goal.subgoals?.map((subgoal: any) => ({
+            ...subgoal,
+            deadline: subgoal.deadline ? format(new Date(subgoal.deadline), 'yyyy/MM/dd', { locale: ja }) : ''
+          })) || []
+        }))
+        
+        setGoals(formattedGoals)
+        
+        // 最初の目標を展開状態にする
+        if (formattedGoals.length > 0) {
+          setExpandedGoals({ [formattedGoals[0].id]: true })
+        }
+      } catch (error) {
+        console.error('Error fetching goals:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchGoals()
+  }, [status])
 
   const toggleExpand = (goalId: string) => {
     setExpandedGoals((prev) => ({
@@ -143,6 +104,31 @@ export default function GoalsList() {
     if (!subgoals.length) return 0
     const totalProgress = subgoals.reduce((sum, subgoal) => sum + subgoal.progress, 0)
     return Math.round(totalProgress / subgoals.length)
+  }
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="border rounded-lg overflow-hidden animate-pulse">
+            <div className="p-4 bg-gray-50">
+              <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+              <div className="h-3 bg-gray-200 rounded w-full mb-2"></div>
+              <div className="h-2 bg-gray-200 rounded w-1/2"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  if (goals.length === 0) {
+    return (
+      <div className="text-center py-8 text-gray-500">
+        <p>目標がまだ設定されていません</p>
+        <p className="text-sm mt-2">新しい目標を作成して学習を始めましょう</p>
+      </div>
+    )
   }
 
   return (

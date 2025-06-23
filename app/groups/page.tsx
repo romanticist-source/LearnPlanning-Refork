@@ -8,11 +8,56 @@ import { Plus, Search, Users, Target, Calendar, MessageSquare } from "lucide-rea
 import Header from "@/components/header"
 import CreateGroupModal from "@/components/create-group-modal"
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { toast } from "@/components/ui/use-toast"
 import { ToastAction } from "@/components/ui/toast"
 
+type Group = {
+  id: string
+  name: string
+  description: string
+  memberCount: number
+  goals: number
+  activity: string
+  userRole?: string
+}
+
 export default function GroupsPage() {
+  const [myGroups, setMyGroups] = useState<Group[]>([])
+  const [discoverGroups, setDiscoverGroups] = useState<Group[]>([])
+  const [invitations, setInvitations] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // マイグループを取得
+        const myGroupsResponse = await fetch('/api/groups?type=my')
+        if (myGroupsResponse.ok) {
+          setMyGroups(await myGroupsResponse.json())
+        }
+
+        // 探索用グループを取得
+        const discoverResponse = await fetch('/api/groups?type=discover')
+        if (discoverResponse.ok) {
+          setDiscoverGroups(await discoverResponse.json())
+        }
+
+        // 招待を取得
+        const invitationsResponse = await fetch('/api/invitations?type=received')
+        if (invitationsResponse.ok) {
+          setInvitations(await invitationsResponse.json())
+        }
+      } catch (error) {
+        console.error('Error fetching groups data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -44,70 +89,72 @@ export default function GroupsPage() {
             </TabsTrigger>
             <TabsTrigger value="invitations">
               <MessageSquare className="mr-2 h-4 w-4" />
-              招待
+              招待 {invitations.length > 0 && `(${invitations.length})`}
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="my-groups">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <GroupCard
-                id="1"
-                name="プログラミング勉強会"
-                description="プログラミングの基礎から応用までを学ぶグループ"
-                members={6}
-                goals={12}
-                activity="高"
-              />
-              <GroupCard
-                id="2"
-                name="アルゴリズム特訓"
-                description="アルゴリズムとデータ構造を集中的に学ぶグループ"
-                members={4}
-                goals={8}
-                activity="中"
-              />
-              <GroupCard
-                id="3"
-                name="Web開発チーム"
-                description="Webアプリケーション開発を実践的に学ぶグループ"
-                members={5}
-                goals={10}
-                activity="高"
-              />
-              <CreateGroupCard />
-            </div>
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="border rounded-lg p-6 animate-pulse">
+                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                    <div className="h-3 bg-gray-200 rounded w-full mb-4"></div>
+                    <div className="h-2 bg-gray-200 rounded w-1/2"></div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {myGroups.map((group) => (
+                  <GroupCard
+                    key={group.id}
+                    id={group.id}
+                    name={group.name}
+                    description={group.description}
+                    members={group.memberCount}
+                    goals={group.goals || 0}
+                    activity={group.activity || "中"}
+                    joined={true}
+                  />
+                ))}
+                <CreateGroupCard />
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="discover">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <GroupCard
-                id="4"
-                name="データベース勉強会"
-                description="SQLとデータベース設計を学ぶグループ"
-                members={8}
-                goals={15}
-                activity="中"
-                joined={false}
-              />
-              <GroupCard
-                id="5"
-                name="機械学習入門"
-                description="機械学習の基礎から実践までを学ぶグループ"
-                members={12}
-                goals={20}
-                activity="高"
-                joined={false}
-              />
-              <GroupCard
-                id="6"
-                name="モバイルアプリ開発"
-                description="iOSとAndroidアプリ開発を学ぶグループ"
-                members={7}
-                goals={14}
-                activity="中"
-                joined={false}
-              />
-            </div>
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="border rounded-lg p-6 animate-pulse">
+                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                    <div className="h-3 bg-gray-200 rounded w-full mb-4"></div>
+                    <div className="h-2 bg-gray-200 rounded w-1/2"></div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {discoverGroups.map((group) => (
+                  <GroupCard
+                    key={group.id}
+                    id={group.id}
+                    name={group.name}
+                    description={group.description}
+                    members={group.memberCount}
+                    goals={group.goals || 0}
+                    activity={group.activity || "中"}
+                    joined={false}
+                  />
+                ))}
+                {discoverGroups.length === 0 && !loading && (
+                  <div className="col-span-3 text-center py-8 text-gray-500">
+                    <p>参加可能なグループがありません</p>
+                  </div>
+                )}
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="invitations">
@@ -218,17 +265,42 @@ function GroupCard({ id, name, description, members, goals, activity, joined = t
 
   const [isJoining, setIsJoining] = useState(false)
 
-  const handleJoinRequest = () => {
+  const handleJoinRequest = async () => {
     setIsJoining(true)
 
-    // 実際のアプリケーションではAPIリクエストを送信します
-    setTimeout(() => {
-      setIsJoining(false)
+    try {
+      const response = await fetch(`/api/groups/${id}/join`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to join group')
+      }
+
+      const result = await response.json()
       toast({
         title: "参加リクエストを送信しました",
-        description: `${name}への参加リクエストを送信しました。承認されるまでお待ちください。`,
+        description: result.message,
       })
-    }, 1000)
+
+      // ページをリロードして状態を更新
+      setTimeout(() => {
+        window.location.reload()
+      }, 2000)
+    } catch (error) {
+      console.error('Error joining group:', error)
+      toast({
+        title: "エラー",
+        description: "参加リクエストの送信に失敗しました。",
+        variant: "destructive"
+      })
+    } finally {
+      setIsJoining(false)
+    }
   }
 
   return (

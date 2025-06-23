@@ -48,16 +48,51 @@ export default function CreateGoalModal() {
     setSubgoals(newSubgoals)
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // ここで目標データを処理します
-    console.log("目標を作成しました")
-    setOpen(false)
-    // フォームをリセット
-    setDate(undefined)
-    setIsGroupGoal(false)
-    setHasSubgoals(false)
-    setSubgoals([{ title: "", description: "", deadline: null }])
+    
+    const formData = new FormData(e.target as HTMLFormElement)
+    const goalData = {
+      title: formData.get('title') as string,
+      description: formData.get('description') as string,
+      deadline: date?.toISOString() || null,
+      priority: formData.get('priority') as string,
+      isGroupGoal,
+      groupId: isGroupGoal ? formData.get('group') as string : null,
+      isPublic: formData.get('public') === 'on',
+      hasReminder: formData.get('reminder') === 'on',
+      subgoals: hasSubgoals ? subgoals.filter(sg => sg.title.trim() !== '') : []
+    }
+
+    try {
+      const response = await fetch('/api/goals', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(goalData),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to create goal')
+      }
+
+      const createdGoal = await response.json()
+      console.log('目標を作成しました:', createdGoal)
+      
+      setOpen(false)
+      // フォームをリセット
+      setDate(undefined)
+      setIsGroupGoal(false)
+      setHasSubgoals(false)
+      setSubgoals([{ title: "", description: "", deadline: null }])
+      
+      // ページをリロードして新しい目標を表示
+      window.location.reload()
+    } catch (error) {
+      console.error('Error creating goal:', error)
+      alert('目標の作成に失敗しました。もう一度お試しください。')
+    }
   }
 
   return (

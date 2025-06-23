@@ -1,0 +1,152 @@
+{
+  "users": [
+    {
+      "id": "user-1",
+      "name": "田中太郎",
+      "email": "tanaka@example.com",
+      "githubId": "tanaka-github",
+      "avatar": "/diverse-user-avatars.png",
+      "bio": "プログラミング初心者です。よろしくお願いします。",
+      "joinedAt": "2025-01-15T00:00:00Z",
+      "lastLoginAt": "2025-06-23T12:00:00Z"
+    },
+    {
+      "id": "user-2", 
+      "name": "佐藤花子",
+      "email": "sato@example.com",
+      "githubId": "sato-github",
+      "avatar": "/diverse-user-avatars.png",
+      "bio": "Web開発を学んでいます。",
+      "joinedAt": "2025-01-20T00:00:00Z",
+      "lastLoginAt": "2025-06-23T11:30:00Z"
+    }
+  ],
+  "goals": [
+    {
+      "id": "goal-1",
+      "title": "プログラミング基礎の習得",
+      "description": "プログラミングの基本概念と構文を理解する",
+      "deadline": "2025-06-30T23:59:59Z",
+      "priority": "high",
+      "progress": 75,
+      "completed": false,
+      "userId": "user-1",
+      "groupId": "group-1",
+      "isGroupGoal": true,
+      "isPublic": true,
+      "hasReminder": true,
+      "createdAt": "2025-05-01T00:00:00Z",
+      "updatedAt": "2025-06-23T12:00:00Z"
+    },
+    {
+      "id": "goal-2",
+      "title": "Webフロントエンド開発",
+      "description": "HTML, CSS, JavaScriptを使ったWebフロントエンド開発の基礎を学ぶ",
+      "deadline": "2025-08-31T23:59:59Z",
+      "priority": "medium",
+      "progress": 40,
+      "completed": false,
+      "userId": "user-1",
+      "groupId": null,
+      "isGroupGoal": false,
+      "isPublic": false,
+      "hasReminder": true,
+      "createdAt": "2025-05-15T00:00:00Z",
+      "updatedAt": "2025-06-20T10:00:00Z"
+    }
+  ],
+  "subgoals": [
+    {
+      "id": "subgoal-1",
+      "title": "変数と型",
+      "description": "変数の宣言と基本的なデータ型を理解する",
+      "deadline": "2025-05-15T23:59:59Z",
+      "progress": 100,
+      "completed": true,
+      "goalId": "goal-1",
+      "order": 1,
+      "createdAt": "2025-05-01T00:00:00Z",
+      "updatedAt": "2025-05-15T12:00:00Z"
+    },
+    {
+      "id": "subgoal-2",
+      "title": "制御構文",
+      "description": "条件分岐とループ処理を理解する",
+      "deadline": "2025-05-30T23:59:59Z",
+      "progress": 80,
+      "completed": false,
+      "goalId": "goal-1",
+      "order": 2,
+      "createdAt": "2025-05-01T00:00:00Z",
+      "updatedAt": "2025-06-20T15:00:00Z"
+    }
+  ],
+  "groups": [
+    {
+      "id": "group-1",
+      "name": "プログラミング勉強会",
+      "description": "プログラミングの基礎から応用までを学ぶグループです。初心者から上級者まで、一緒にスキルアップを目指しましょう。",
+      "meetingSchedule": "毎週水曜日 20:00-21:30",
+      "tags": ["プログラミング", "JavaScript", "Python", "アルゴリズム", "Web開発"],
+      "isPublic": false,
+      "isInviteOnly": true,
+      "allowMemberInvite": false,
+      "autoApprove": false,
+      "enableNotifications": true,
+      "ownerId": "user-1",
+      "createdAt": "2025-01-15T00:00:00Z",
+      "updatedAt": "2025-06-23T10:00:00Z"
+    },
+    {
+      "id": "group-2",
+      "name": "アルゴリズム特訓",
+      "description": "アルゴリズムとデータ構造を集中的に学ぶグループ",
+      "meetingSchedule": "毎週土曜日 14:00-16:00",
+      "tags": ["アルゴリズム", "データ構造", "競技プログラミング"],
+      "isPublic": true,
+      "isInviteOnly": false,
+      "allowMemberInvite": true,
+      "autoApprove": true,
+      "enableNotifications": true,
+      "ownerId": "user-2",
+      "createdAt": "2025-02-01T00:00:00Z",
+      "updatedAt": "2025-06-22T16:00:00Z"
+    }
+  ],
+  "group_members": [
+    {
+      "id": "member-1",
+      "groupId": "group-1",
+      "userId": "user-1",
+      "role": "admin",
+      "joinedAt": "2025-01-15T00:00:00Z"
+    },
+    {
+      "id": "member-2",
+      "groupId": "group-1",
+      "userId": "user-2", 
+      "role": "member",
+      "joinedAt": "2025-01-20T00:00:00Z"
+    },
+    {
+      "id": "member-3",
+      "groupId": "group-2",
+      "userId": "user-2",
+      "role": "admin",
+      "joinedAt": "2025-02-01T00:00:00Z"
+    }
+  ],
+  "invitations": [
+    {
+      "id": "invite-1",
+      "groupId": "group-1",
+      "inviterId": "user-1",
+      "inviteeEmail": "newuser@example.com",
+      "inviteeName": "新規ユーザー",
+      "status": "pending",
+      "message": "プログラミング勉強会に参加しませんか？",
+      "createdAt": "2025-06-20T10:00:00Z",
+      "expiresAt": "2025-07-20T10:00:00Z"
+    }
+  ]
+}

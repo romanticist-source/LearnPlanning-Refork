@@ -28,16 +28,53 @@ export default function CreateGroupModal() {
   const [invitedMembers, setInvitedMembers] = useState<{ id: string; name: string; email: string }[]>([])
   const [memberEmail, setMemberEmail] = useState("")
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // ここでグループデータを処理します
-    console.log("グループを作成しました")
-    setOpen(false)
-    // フォームをリセット
-    setTags([])
-    setTagInput("")
-    setInvitedMembers([])
-    setMemberEmail("")
+    
+    const formData = new FormData(e.target as HTMLFormElement)
+    const groupData = {
+      name: formData.get('name') as string,
+      description: formData.get('description') as string,
+      meetingSchedule: formData.get('meeting-schedule') as string,
+      tags,
+      isPublic: formData.get('public') === 'on',
+      isInviteOnly: formData.get('invite-only') === 'on',
+      allowMemberInvite: formData.get('member-invite') === 'on',
+      autoApprove: formData.get('auto-approve') === 'on',
+      enableNotifications: formData.get('notifications') === 'on',
+      invitedMembers
+    }
+
+    try {
+      const response = await fetch('/api/groups', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(groupData),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to create group')
+      }
+
+      const createdGroup = await response.json()
+      console.log('グループを作成しました:', createdGroup)
+      
+      setOpen(false)
+      // フォームをリセット
+      setTags([])
+      setTagInput("")
+      setInvitedMembers([])
+      setMemberEmail("")
+      
+      // ページをリロードして新しいグループを表示
+      window.location.reload()
+    } catch (error) {
+      console.error('Error creating group:', error)
+      alert('グループの作成に失敗しました。もう一度お試しください。')
+    }
   }
 
   const addTag = (e: React.KeyboardEvent) => {
