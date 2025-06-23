@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Calendar, Target, Users, BarChart3, MessageSquare, Plus } from "lucide-react"
 import ContributionGraph from "@/components/contribution-graph"
+import PaizaContributionGraph from "@/components/paiza-contribution-graph"
+import PaizaActivityForm from "@/components/paiza-activity-form"
 import GoalsList from "@/components/goals-list"
 import UpcomingReminders from "@/components/upcoming-reminders"
 import GroupActivity from "@/components/group-activity"
@@ -44,19 +46,28 @@ export default function DashboardPage() {
   const [groups, setGroups] = useState<Group[]>([])
   const [discussions, setDiscussions] = useState<Discussion[]>([])
   const [loading, setLoading] = useState(true)
+  const [currentUser, setCurrentUser] = useState<any>(null)
+  const [paizaGraphKey, setPaizaGraphKey] = useState(0)
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         // 統計情報を取得（実際のAPIではこれらを個別に取得）
-        const [goalsResponse, groupsResponse] = await Promise.all([
+        const [goalsResponse, groupsResponse, userResponse] = await Promise.all([
           fetch('/api/goals'),
-          fetch('/api/groups?type=my')
+          fetch('/api/groups?type=my'),
+          fetch('/api/users/me')
         ])
 
         if (goalsResponse.ok && groupsResponse.ok) {
           const goals = await goalsResponse.json()
           const userGroups = await groupsResponse.json()
+          
+          // ユーザー情報を設定
+          if (userResponse.ok) {
+            const user = await userResponse.json()
+            setCurrentUser(user)
+          }
 
           // 統計を計算
           const completedGoals = goals.filter((goal: any) => goal.completed).length
@@ -180,17 +191,47 @@ export default function DashboardPage() {
           </TabsList>
 
           <TabsContent value="progress">
-            <Card>
-              <CardHeader>
-                <CardTitle>学習活動の記録</CardTitle>
-                <CardDescription>paizaの利用状況に基づいたコントリビューショングラフ</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Suspense fallback={<div className="h-[150px] w-full bg-gray-100 animate-pulse rounded-md"></div>}>
-                  <ContributionGraph />
-                </Suspense>
-              </CardContent>
-            </Card>
+            <div className="space-y-6">
+              {/* Paizaコントリビューショングラフ */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Paiza学習活動</CardTitle>
+                  <CardDescription>Paizaでの学習活動を記録・可視化</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {currentUser && (
+                    <Suspense fallback={<div className="h-[300px] w-full bg-gray-100 animate-pulse rounded-md"></div>}>
+                      <PaizaContributionGraph 
+                        userId={currentUser.id} 
+                        key={paizaGraphKey}
+                      />
+                    </Suspense>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Paizaアクティビティ記録フォーム */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>全体の学習活動記録</CardTitle>
+                    <CardDescription>全体的な学習状況のコントリビューショングラフ</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Suspense fallback={<div className="h-[150px] w-full bg-gray-100 animate-pulse rounded-md"></div>}>
+                      <ContributionGraph />
+                    </Suspense>
+                  </CardContent>
+                </Card>
+
+                {currentUser && (
+                  <PaizaActivityForm 
+                    userId={currentUser.id}
+                    onActivityAdded={() => setPaizaGraphKey(prev => prev + 1)}
+                  />
+                )}
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="goals">

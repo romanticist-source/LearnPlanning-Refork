@@ -148,5 +148,68 @@
       "createdAt": "2025-06-20T10:00:00Z",
       "expiresAt": "2025-07-20T10:00:00Z"
     }
+  ],
+  "paiza_activities": [
+    {
+      "id": "activity-1",
+      "userId": "user-1",
+      "date": "2025-06-23",
+      "codeExecutions": 15,
+      "studyMinutes": 120,
+      "problemsSolved": 3,
+      "language": "Python",
+      "difficulty": "beginner",
+      "createdAt": "2025-06-23T12:00:00Z"
+    },
+    {
+      "id": "activity-2",
+      "userId": "user-1",
+      "date": "2025-06-22",
+      "codeExecutions": 8,
+      "studyMinutes": 45,
+      "problemsSolved": 1,
+      "language": "JavaScript",
+      "difficulty": "intermediate",
+      "createdAt": "2025-06-22T15:30:00Z"
+    },
+    {
+      "id": "activity-3",
+      "userId": "user-2",
+      "date": "2025-06-23",
+      "codeExecutions": 22,
+      "studyMinutes": 180,
+      "problemsSolved": 5,
+      "language": "Java",
+      "difficulty": "advanced",
+      "createdAt": "2025-06-23T14:00:00Z"
+    }
+  ],
+  "paiza_user_stats": [
+    {
+      "id": "stats-1",
+      "userId": "user-1",
+      "totalCodeExecutions": 150,
+      "totalStudyMinutes": 2400,
+      "totalProblemsSolved": 42,
+      "currentStreak": 7,
+      "longestStreak": 15,
+      "lastActivityDate": "2025-06-23",
+      "favoriteLanguage": "Python",
+      "averageDailyExecutions": 8.5,
+      "updatedAt": "2025-06-23T12:00:00Z"
+    },
+    {
+      "id": "stats-2",
+      "userId": "user-2",
+      "totalCodeExecutions": 300,
+      "totalStudyMinutes": 4800,
+      "totalProblemsSolved": 89,
+      "currentStreak": 12,
+      "longestStreak": 25,
+      "lastActivityDate": "2025-06-23",
+      "favoriteLanguage": "Java",
+      "averageDailyExecutions": 12.3,
+      "updatedAt": "2025-06-23T14:00:00Z"
+    }
   ]
 }
