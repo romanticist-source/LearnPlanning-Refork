@@ -2,6 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Users, Target, Calendar, BarChart3, MessageSquare } from "lucide-react"
+import { SignInButton, SignOutButton } from "@/components/auth/auth-button"
 
 export default function Home() {
   return (
@@ -14,6 +15,8 @@ export default function Home() {
             <h1 className="text-xl font-bold">Learn Planning</h1>
           </div>
           <div>
+            <SignInButton></SignInButton>
+            <SignOutButton></SignOutButton>
             <Link href="/dashboard">
               <Button>
                 ダッシュボードへ
