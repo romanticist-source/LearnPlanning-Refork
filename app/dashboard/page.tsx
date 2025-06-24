@@ -14,7 +14,6 @@ import Header from "@/components/header"
 import CreateGoalModal from "@/components/create-goal-modal"
 import CreateQuestionModal from "@/components/create-question-modal"
 import ScheduleView from "@/components/schedule-view"
-import AuthGuard from "@/components/auth/auth-guard"
 import { Suspense, useEffect, useState } from "react"
 import Link from "next/link"
 
@@ -120,7 +119,6 @@ export default function DashboardPage() {
   }
 
   return (
-    <AuthGuard>
       <div className="min-h-screen flex flex-col">
         <Header />
 
@@ -366,6 +364,6 @@ export default function DashboardPage() {
           </Suspense>
         </div>
       </div>
-    </AuthGuard>
+    </div>
   )
 }
