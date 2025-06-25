@@ -926,6 +926,24 @@
       "meetingUrl": null,
       "createdAt": "2025-06-25T14:17:32.631Z",
       "updatedAt": "2025-06-25T14:17:32.631Z"
+    },
+    {
+      "id": "event-1750861167214-6ikho5rk3",
+      "title": ":::",
+      "description": ":::",
+      "date": "2025-06-25",
+      "startTime": "",
+      "endTime": "",
+      "eventType": "meeting",
+      "isGroupEvent": true,
+      "groupId": "1",
+      "userId": "user-1750850798419",
+      "hasReminder": true,
+      "isRecurring": false,
+      "isOnline": false,
+      "meetingUrl": null,
+      "createdAt": "2025-06-25T14:19:27.705Z",
+      "updatedAt": "2025-06-25T14:19:27.705Z"
     }
   ],
   "questions": [

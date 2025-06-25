@@ -52,11 +52,19 @@ export default function CreateEventModal() {
       // 現在のユーザー情報を取得
       const currentUser = await getCurrentUser()
       
+      // ローカルタイムゾーンでの日付文字列を生成
+      const formatLocalDate = (date: Date): string => {
+        const year = date.getFullYear()
+        const month = String(date.getMonth() + 1).padStart(2, '0')
+        const day = String(date.getDate()).padStart(2, '0')
+        return `${year}-${month}-${day}`
+      }
+
       const eventData = {
         id: generateId('event'),
         title: formData.get('title') as string,
         description: formData.get('description') as string,
-        date: date ? date.toISOString().split('T')[0] : null,
+        date: date ? formatLocalDate(date) : null,
         startTime: formData.get('time-start') as string,
         endTime: formData.get('time-end') as string,
         eventType,
