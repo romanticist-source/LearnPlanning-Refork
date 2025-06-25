@@ -32,9 +32,12 @@ export default function PaizaContributionGraph({ userId, activities = [] }: Paiz
     y: number
   } | null>(null)
   const [paizaActivities, setPaizaActivities] = useState<PaizaActivity[]>(activities)
+  const fetchedRef = useRef(false)
 
   // APIからPaizaアクティビティデータを取得
   useEffect(() => {
+    if (fetchedRef.current) return
+
     const fetchPaizaActivities = async () => {
       try {
         const response = await fetch(`/api/paiza-activities?userId=${userId}`)
@@ -49,8 +52,9 @@ export default function PaizaContributionGraph({ userId, activities = [] }: Paiz
 
     if (userId && !activities.length) {
       fetchPaizaActivities()
+      fetchedRef.current = true
     }
-  }, [userId, activities])
+  }, [userId])
 
   useEffect(() => {
     if (!canvasRef.current || !canvasContainerRef.current) return

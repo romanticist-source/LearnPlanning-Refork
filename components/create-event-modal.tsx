@@ -33,13 +33,14 @@ interface Group {
   description: string
 }
 
-export default function CreateEventModal() {
+export default function CreateEventModal({ defaultGroupId }: { defaultGroupId?: string } = {}) {
   const [open, setOpen] = useState(false)
   const [date, setDate] = useState<Date>()
   const [eventType, setEventType] = useState<"meeting" | "deadline" | "event">("meeting")
-  const [isGroupEvent, setIsGroupEvent] = useState(true)
+  const [isGroupEvent, setIsGroupEvent] = useState(!!defaultGroupId)
   const [groups, setGroups] = useState<Group[]>([])
   const [loadingGroups, setLoadingGroups] = useState(false)
+  const [selectedGroupId, setSelectedGroupId] = useState<string | "">(defaultGroupId || "")
 
   // ID生成用のヘルパー関数
   const generateId = (prefix: string): string => {
@@ -99,7 +100,7 @@ export default function CreateEventModal() {
         endTime: formData.get('time-end') as string,
         eventType,
         isGroupEvent,
-        groupId: isGroupEvent ? formData.get('group') as string : null,
+        groupId: isGroupEvent ? (defaultGroupId || (formData.get('group') as string)) : null,
         userId: currentUser.id,
         hasReminder: formData.get('reminder') === 'on',
         isRecurring: formData.get('recurring') === 'on',
@@ -224,7 +225,7 @@ export default function CreateEventModal() {
             <div className="grid grid-cols-4 items-center gap-4">
               <Label className="text-right">グループ予定</Label>
               <div className="flex items-center space-x-2 col-span-3">
-                <Switch id="group-event" checked={isGroupEvent} onCheckedChange={setIsGroupEvent} />
+                <Switch id="group-event" checked={isGroupEvent} onCheckedChange={setIsGroupEvent} disabled={!!defaultGroupId} />
                 <Label htmlFor="group-event">グループ予定として設定</Label>
               </div>
             </div>
@@ -238,6 +239,9 @@ export default function CreateEventModal() {
                   name="group"
                   className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   required
+                  value={selectedGroupId}
+                  onChange={(e) => setSelectedGroupId(e.target.value)}
+                  disabled={!!defaultGroupId}
                 >
                   <option value="">グループを選択してください</option>
                   {loadingGroups ? (

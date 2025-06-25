@@ -100,7 +100,7 @@ export default function Home() {
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-3">
             <div className="bg-emerald-100 p-2 rounded-lg">
-              <Target className="h-6 w-6 text-emerald-600" />
+            <Target className="h-6 w-6 text-emerald-600" />
             </div>
             <div>
               <h1 className="text-xl font-bold text-gray-900">Learn Planning</h1>

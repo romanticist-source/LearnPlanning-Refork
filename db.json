@@ -762,8 +762,13 @@
       "isRecurring": false,
       "isOnline": false,
       "meetingUrl": null,
+<<<<<<< HEAD
       "createdAt": "2025-06-26T00:00:00Z",
       "updatedAt": "2025-06-26T00:00:00Z"
+=======
+      "createdAt": "2025-06-25T15:41:45.093Z",
+      "updatedAt": "2025-06-25T15:41:45.093Z"
+>>>>>>> 50ee421033dcb36b82391084e6de76a74657e1bd
     }
   ],
   "questions": [

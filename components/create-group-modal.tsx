@@ -50,19 +50,19 @@ export default function CreateGroupModal() {
       // 現在のユーザー情報を取得
       const currentUser = await getCurrentUser()
       
-      const groupData = {
+    const groupData = {
         id: generateId('group'),
-        name: formData.get('name') as string,
-        description: formData.get('description') as string,
+      name: formData.get('name') as string,
+      description: formData.get('description') as string,
         category: 'general',
         maxMembers: 10,
-        tags,
-        isPublic: formData.get('public') === 'on',
+      tags,
+      isPublic: formData.get('public') === 'on',
         requireApproval: formData.get('invite-only') === 'on',
         allowMemberInvites: formData.get('member-invite') === 'on',
         ownerId: currentUser.id,
-        invitedMembers
-      }
+      invitedMembers
+    }
       const response = await fetch('/api/groups', {
         method: 'POST',
         headers: {

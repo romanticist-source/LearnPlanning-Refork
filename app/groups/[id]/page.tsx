@@ -24,6 +24,7 @@ import CreateEventModal from "@/components/create-event-modal"
 import InviteMemberForm from "@/components/invite-member-form"
 import GroupSchedule from "@/components/group-schedule"
 import { useState, useEffect, use } from "react"
+import { usePersistentState } from "@/hooks/use-persistent-state"
 
 interface GroupMember {
   id: string
@@ -63,6 +64,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
   const [error, setError] = useState<string | null>(null)
 
   const [showInviteForm, setShowInviteForm] = useState(false)
+  const [activeTab, setActiveTab] = usePersistentState<string>(`group-tabs-${resolvedParams.id}`, "chat")
 
   useEffect(() => {
     const fetchGroupData = async () => {
@@ -71,7 +73,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
         
         // グループ詳細情報を取得（メンバー情報も含まれる）
         const groupResponse = await fetch(`/api/groups/${resolvedParams.id}`)
-        
+
         if (!groupResponse.ok) {
           if (groupResponse.status === 404) {
             setError('グループが見つかりません')
@@ -85,7 +87,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
 
         const group = await groupResponse.json()
         setGroupData(group)
-        
+
         // メンバー情報がレスポンスに含まれている場合は使用
         if (group.members) {
           setMembers(group.members)
@@ -93,9 +95,9 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
                      // フォールバック: 個別にメンバー情報を取得
            try {
              const membersResponse = await fetch(`/api/groups/${resolvedParams.id}/members`)
-             if (membersResponse.ok) {
-               const membersData = await membersResponse.json()
-               setMembers(membersData)
+        if (membersResponse.ok) {
+          const membersData = await membersResponse.json()
+          setMembers(membersData)
              }
            } catch (error) {
              console.error('メンバー情報の取得に失敗:', error)
@@ -105,10 +107,10 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
                  // 目標情報を取得
          try {
            const goalsResponse = await fetch(`/api/goals?groupId=${resolvedParams.id}`)
-           if (goalsResponse.ok) {
-             const goalsData = await goalsResponse.json()
-             setGoals(goalsData)
-           }
+        if (goalsResponse.ok) {
+          const goalsData = await goalsResponse.json()
+          setGoals(goalsData)
+        }
          } catch (error) {
            console.error('目標情報の取得に失敗:', error)
          }
@@ -270,7 +272,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
           </div>
         </div>
 
-        <Tabs defaultValue="chat">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="mb-6">
             <TabsTrigger value="chat">
               <MessageSquare className="h-4 w-4 mr-2" />
@@ -311,7 +313,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
                   <CardTitle>グループ目標</CardTitle>
                   <CardDescription>グループで設定した学習目標</CardDescription>
                 </div>
-                <CreateGoalModal />
+                <CreateGoalModal defaultGroupId={resolvedParams.id} />
               </CardHeader>
               <CardContent>
                 <GoalsList groupId={resolvedParams.id} />
@@ -326,15 +328,13 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
                   <CardTitle>グループスケジュール</CardTitle>
                   <CardDescription>学習ミーティングやイベントのスケジュール</CardDescription>
                 </div>
-                <CreateEventModal />
+                <CreateEventModal defaultGroupId={resolvedParams.id} />
               </CardHeader>
               <CardContent>
                 <GroupSchedule groupId={resolvedParams.id} />
               </CardContent>
             </Card>
           </TabsContent>
-
-
 
           <TabsContent value="settings">
             <Card>
