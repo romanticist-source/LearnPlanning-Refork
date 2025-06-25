@@ -236,7 +236,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
             </div>
             {showInviteForm ? (
               <div className="mb-4">
-                <InviteMemberForm />
+                <InviteMemberForm groupId={resolvedParams.id} />
                 <Button variant="outline" size="sm" className="mt-4 w-full" onClick={() => setShowInviteForm(false)}>
                   キャンセル
                 </Button>

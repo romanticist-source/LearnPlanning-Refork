@@ -442,6 +442,13 @@
       "userId": "user-1750850798419",
       "role": "member",
       "joinedAt": "2025-06-25T15:36:14.017Z"
+    },
+    {
+      "id": "member-1750869778832",
+      "groupId": "group-1",
+      "userId": "user-1750850798419",
+      "role": "member",
+      "joinedAt": "2025-06-25T16:42:58.832Z"
     }
   ],
   "invitations": [
@@ -455,6 +462,18 @@
       "message": "プログラミング勉強会に参加しませんか？",
       "createdAt": "2025-06-20T10:00:00Z",
       "expiresAt": "2025-07-20T10:00:00Z"
+    },
+    {
+      "id": "invite-1750870000000",
+      "groupId": "group-1",
+      "inviterId": "user-1",
+      "inviteeEmail": "taku1011ht@gmail.com",
+      "inviteeName": "takubou",
+      "status": "accepted",
+      "message": "グループに参加しませんか？",
+      "createdAt": "2025-06-25T16:00:00Z",
+      "expiresAt": "2025-07-25T16:00:00Z",
+      "respondedAt": "2025-06-25T16:42:58.837Z"
     }
   ],
   "paiza_activities": [
@@ -966,11 +985,11 @@
       "groupId": "group-2",
       "userId": "user-2",
       "content": "アルゴリズム特訓グループのチャットです。\n今日は何のアルゴリズムに挑戦しましょうか？",
-      "likes": 1,
+      "likes": 2,
       "replies": [],
       "attachments": [],
       "createdAt": "2025-06-24T14:00:00Z",
-      "updatedAt": "2025-06-24T14:00:00Z"
+      "updatedAt": "2025-06-25T16:38:04.542Z"
     },
     {
       "id": "message-1750864269434-uelblbht4",
