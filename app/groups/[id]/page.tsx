@@ -46,6 +46,7 @@ interface GroupData {
   meetingInfo?: string
   activity?: string
   members?: GroupMember[]
+  userMembership?: any
 }
 
 interface GroupMembership {
@@ -226,6 +227,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
             </div>
           </div>
 
+          {groupData.userMembership && (
           <div className="w-full md:w-1/3 bg-white p-4 rounded-lg border">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold">メンバー</h2>
@@ -270,6 +272,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
               </div>
             )}
           </div>
+          )}
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
