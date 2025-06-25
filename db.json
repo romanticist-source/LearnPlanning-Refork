@@ -140,6 +140,38 @@
       "hasReminder": true,
       "createdAt": "2025-06-25T13:17:27.881Z",
       "updatedAt": "2025-06-25T13:17:27.881Z"
+    },
+    {
+      "id": "goal-1750858914195-vz2n02m3a",
+      "title": "sd",
+      "description": "sds",
+      "deadline": "2025-06-02T15:00:00.000Z",
+      "priority": "medium",
+      "progress": 0,
+      "completed": false,
+      "userId": "user-1750850798419",
+      "groupId": null,
+      "isGroupGoal": false,
+      "isPublic": false,
+      "hasReminder": false,
+      "createdAt": "2025-06-25T13:41:54.205Z",
+      "updatedAt": "2025-06-25T13:41:54.205Z"
+    },
+    {
+      "id": "goal-1750858923460-sbt16k3jz",
+      "title": "ss",
+      "description": "s",
+      "deadline": "2025-06-01T15:00:00.000Z",
+      "priority": "medium",
+      "progress": 0,
+      "completed": false,
+      "userId": "user-1750850798419",
+      "groupId": null,
+      "isGroupGoal": false,
+      "isPublic": false,
+      "hasReminder": true,
+      "createdAt": "2025-06-25T13:42:03.468Z",
+      "updatedAt": "2025-06-25T13:42:03.468Z"
     }
   ],
   "subgoals": [
@@ -387,6 +419,17 @@
       "userId": "user-1750850798419",
       "id": "activity-1750852415912",
       "createdAt": "2025-06-25T11:53:35.912Z"
+    },
+    {
+      "date": "2025-06-25",
+      "codeExecutions": 2,
+      "studyMinutes": 2,
+      "problemsSolved": 2,
+      "language": "JavaScript",
+      "difficulty": "beginner",
+      "userId": "user-1750850798419",
+      "id": "activity-1750859491080",
+      "createdAt": "2025-06-25T13:51:31.080Z"
     }
   ],
   "paiza_user_stats": [
@@ -419,15 +462,15 @@
     {
       "id": "stats-user-1750850798419",
       "userId": "user-1750850798419",
-      "totalCodeExecutions": 42,
-      "totalStudyMinutes": 42,
-      "totalProblemsSolved": 8,
+      "totalCodeExecutions": 44,
+      "totalStudyMinutes": 44,
+      "totalProblemsSolved": 10,
       "currentStreak": 1,
       "longestStreak": 1,
       "lastActivityDate": "2025-06-25",
       "favoriteLanguage": "JavaScript",
-      "averageDailyExecutions": 42,
-      "updatedAt": "2025-06-25T11:53:35.935Z"
+      "averageDailyExecutions": 44,
+      "updatedAt": "2025-06-25T13:51:31.122Z"
     }
   ],
   "events": [
@@ -533,6 +576,51 @@
       "meetingUrl": null,
       "createdAt": "2025-06-25T11:54:07.283Z",
       "updatedAt": "2025-06-25T11:54:07.283Z"
+    },
+    {
+      "id": "test-reminder-event-1",
+      "title": "JavaScript学習セッション",
+      "description": "async/awaitについて学習します",
+      "date": "2025-07-15T19:00:00Z",
+      "endDate": "2025-07-15T21:00:00Z",
+      "location": "オンライン",
+      "isOnline": true,
+      "reminders": [
+        {
+          "type": "notification",
+          "minutesBefore": 30
+        }
+      ],
+      "tags": [
+        "JavaScript",
+        "学習"
+      ],
+      "isRecurring": false,
+      "createdAt": "2025-06-25T10:00:00Z"
+    },
+    {
+      "id": "test-reminder-event-2",
+      "title": "課題提",
+      "description": "Todoアプリの最終提出期限です",
+      "date": "2025-07-20T23:59:00Z",
+      "location": "オンライン提出",
+      "isOnline": false,
+      "reminders": [
+        {
+          "type": "email",
+          "minutesBefore": 1440
+        },
+        {
+          "type": "notification",
+          "minutesBefore": 60
+        }
+      ],
+      "tags": [
+        "課題",
+        "締切"
+      ],
+      "isRecurring": false,
+      "createdAt": "2025-06-25T10:00:00Z"
     }
   ],
   "questions": [

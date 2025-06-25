@@ -30,7 +30,9 @@ export default function UpcomingReminders() {
           const now = new Date()
           const upcomingEvents = events.filter((event: any) => {
             const eventDate = new Date(event.date)
-            return event.hasReminder && eventDate >= now
+            // reminders配列があるか、hasReminderがtrueのイベントのみ
+            const hasReminders = event.reminders?.length > 0 || event.hasReminder
+            return hasReminders && eventDate >= now
           })
           
           // 日付順でソート
@@ -41,18 +43,25 @@ export default function UpcomingReminders() {
           })
           
           // リマインダー形式に変換
-          const reminderData: Reminder[] = upcomingEvents.map((event: any) => ({
-            id: event.id,
-            title: event.title,
-            description: event.description || '予定の詳細はありません',
-            date: new Date(event.date).toLocaleDateString('ja-JP', {
-              month: 'long',
-              day: 'numeric',
-              weekday: 'short'
-            }),
-            time: event.startTime ? `${event.startTime}${event.endTime ? ` - ${event.endTime}` : ''}` : '時間未設定',
-            completed: false
-          }))
+          const reminderData: Reminder[] = upcomingEvents.map((event: any) => {
+            const startDate = new Date(event.date)
+            const endDate = event.endDate ? new Date(event.endDate) : null
+            
+            return {
+              id: event.id,
+              title: event.title,
+              description: event.description || '予定の詳細はありません',
+              date: startDate.toLocaleDateString('ja-JP', {
+                month: 'long',
+                day: 'numeric',
+                weekday: 'short'
+              }),
+              time: endDate 
+                ? `${startDate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })} - ${endDate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}`
+                : startDate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }),
+              completed: false
+            }
+          })
           
           setReminders(reminderData)
         } else {
