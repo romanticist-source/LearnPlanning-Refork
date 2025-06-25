@@ -226,6 +226,7 @@ export default function DashboardPage() {
                   )}
                 </CardContent>
               </Card>
+              <PaizaActivityForm userId={currentUser.id} />
             </div>
           </TabsContent>
 
