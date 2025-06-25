@@ -50,8 +50,8 @@ export async function POST(
     const userMembership = memberships[0]
 
     // 管理者または招待が許可されているメンバーのみ招待可能
-    if (!userMembership || 
-        (userMembership.role !== 'admin' && !group.allowMemberInvite)) {
+    if (!userMembership ||
+        (userMembership.role !== 'admin' && userMembership.role !== 'owner' && !group.allowMemberInvite)) {
       return NextResponse.json(
         { error: 'Forbidden: No permission to invite members' },
         { status: 403 }
