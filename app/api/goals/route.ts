@@ -1,72 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/app/api/auth/auth'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'
+const JSON_SERVER_URL = 'http://localhost:3005'
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const session = await auth()
-    
-    if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
-
-    const { searchParams } = new URL(request.url)
-    const groupId = searchParams.get('groupId')
-    const userId = searchParams.get('userId')
-    const status = searchParams.get('status') // 'active', 'completed', 'all'
-
-    // ユーザー情報を取得
-    const userResponse = await fetch(`${API_BASE_URL}/users?email=${session.user.email}`)
-    const users = await userResponse.json()
-    const currentUser = users[0]
-
-    if (!currentUser) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      )
-    }
-
-    // 目標を取得
-    let goalsUrl = `${API_BASE_URL}/goals?userId=${currentUser.id}`
-    
-    if (groupId) {
-      goalsUrl += `&groupId=${groupId}`
-    }
-
-    const goalsResponse = await fetch(goalsUrl)
-    if (!goalsResponse.ok) {
-      throw new Error('Failed to fetch goals')
-    }
-
-    let goals = await goalsResponse.json()
-
-    // ステータスでフィルター
-    if (status === 'active') {
-      goals = goals.filter((goal: any) => !goal.completed)
-    } else if (status === 'completed') {
-      goals = goals.filter((goal: any) => goal.completed)
-    }
-
-    // サブ目標を取得して結合
-    for (const goal of goals) {
-      const subgoalsResponse = await fetch(`${API_BASE_URL}/subgoals?goalId=${goal.id}`)
-      if (subgoalsResponse.ok) {
-        goal.subgoals = await subgoalsResponse.json()
-      } else {
-        goal.subgoals = []
-      }
-    }
-
-    return NextResponse.json(goals)
+    const response = await fetch(`${JSON_SERVER_URL}/goals`)
+    const data = await response.json()
+    return NextResponse.json(data)
   } catch (error) {
-    console.error('Error fetching goals:', error)
+    console.error('目標取得エラー:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: '目標の取得に失敗しました' },
       { status: 500 }
     )
   }
@@ -74,96 +19,81 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth()
+    const body = await request.json()
     
-    if (!session?.user?.email) {
+    // 必要なフィールドの検証
+    if (!body.title || !body.description) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
+        { error: 'タイトルと説明は必須です' },
+        { status: 400 }
       )
     }
 
-    const goalData = await request.json()
-
-    // ユーザー情報を取得
-    const userResponse = await fetch(`${API_BASE_URL}/users?email=${session.user.email}`)
-    const users = await userResponse.json()
-    const currentUser = users[0]
-
-    if (!currentUser) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      )
-    }
-
-    // 目標データを準備
-    const newGoal = {
-      ...goalData,
-      id: `goal-${Date.now()}`,
-      userId: currentUser.id,
+    // JSON Serverに送信するデータを整形
+    const goalData = {
+      id: body.id,
+      title: body.title,
+      description: body.description,
+      deadline: body.deadline,
+      priority: body.priority || 'medium',
       progress: 0,
       completed: false,
+      userId: body.userId,
+      groupId: body.groupId || null,
+      isGroupGoal: body.isGroupGoal || false,
+      isPublic: body.isPublic || false,
+      hasReminder: body.hasReminder || false,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }
 
-    // サブ目標を分離
-    const { subgoals, ...goalWithoutSubgoals } = newGoal
-
-    // 目標を作成
-    const goalResponse = await fetch(`${API_BASE_URL}/goals`, {
+    const response = await fetch(`${JSON_SERVER_URL}/goals`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(goalWithoutSubgoals),
+      body: JSON.stringify(goalData),
     })
 
-    if (!goalResponse.ok) {
-      throw new Error('Failed to create goal')
+    if (!response.ok) {
+      throw new Error(`JSON Server error: ${response.status}`)
     }
 
-    const createdGoal = await goalResponse.json()
-
-    // サブ目標を作成
-    const createdSubgoals = []
-    if (subgoals && Array.isArray(subgoals)) {
-      for (let i = 0; i < subgoals.length; i++) {
-        const subgoal = subgoals[i]
-        const newSubgoal = {
-          ...subgoal,
-          id: `subgoal-${Date.now()}-${i}`,
-          goalId: createdGoal.id,
-          progress: 0,
-          completed: false,
-          order: i + 1,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        }
-
-        const subgoalResponse = await fetch(`${API_BASE_URL}/subgoals`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(newSubgoal),
-        })
-
-        if (subgoalResponse.ok) {
-          createdSubgoals.push(await subgoalResponse.json())
+    const createdGoal = await response.json()
+    
+    // サブ目標がある場合は作成
+    if (body.subgoals && Array.isArray(body.subgoals)) {
+      for (const [index, subgoal] of body.subgoals.entries()) {
+        if (subgoal.title) {
+          const subgoalData = {
+            id: `subgoal-${Date.now()}-${index}`,
+            title: subgoal.title,
+            description: subgoal.description || '',
+            deadline: subgoal.deadline || null,
+            progress: 0,
+            completed: false,
+            goalId: createdGoal.id,
+            order: index + 1,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          }
+          
+          await fetch(`${JSON_SERVER_URL}/subgoals`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(subgoalData),
+          })
         }
       }
     }
 
-    // サブ目標を含めた結果を返す
-    createdGoal.subgoals = createdSubgoals
-
     return NextResponse.json(createdGoal, { status: 201 })
   } catch (error) {
-    console.error('Error creating goal:', error)
+    console.error('目標作成エラー:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: '目標の作成に失敗しました' },
       { status: 500 }
     )
   }

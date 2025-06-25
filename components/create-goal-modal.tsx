@@ -24,6 +24,7 @@ import { format } from "date-fns"
 import { ja } from "date-fns/locale"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Switch } from "@/components/ui/switch"
+import { getCurrentUser } from "@/lib/auth-utils"
 
 export default function CreateGoalModal() {
   const [open, setOpen] = useState(false)
@@ -31,6 +32,17 @@ export default function CreateGoalModal() {
   const [isGroupGoal, setIsGroupGoal] = useState(false)
   const [hasSubgoals, setHasSubgoals] = useState(false)
   const [subgoals, setSubgoals] = useState([{ title: "", description: "", deadline: null as Date | null }])
+
+  // ID生成用のヘルパー関数
+  const generateId = (prefix: string): string => {
+    return `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+  }
+
+  // 現在のユーザーIDを取得（仮の実装）
+  const getCurrentUserId = (): string => {
+    return "user-1"
+  }
+
 
   const addSubgoal = () => {
     setSubgoals([...subgoals, { title: "", description: "", deadline: null }])
@@ -52,19 +64,28 @@ export default function CreateGoalModal() {
     e.preventDefault()
     
     const formData = new FormData(e.target as HTMLFormElement)
-    const goalData = {
-      title: formData.get('title') as string,
-      description: formData.get('description') as string,
-      deadline: date?.toISOString() || null,
-      priority: formData.get('priority') as string,
-      isGroupGoal,
-      groupId: isGroupGoal ? formData.get('group') as string : null,
-      isPublic: formData.get('public') === 'on',
-      hasReminder: formData.get('reminder') === 'on',
-      subgoals: hasSubgoals ? subgoals.filter(sg => sg.title.trim() !== '') : []
-    }
-
+    
     try {
+      // 現在のユーザー情報を取得
+      console.log('ユーザー情報を取得中...')
+      const currentUser = await getCurrentUser()
+      console.log('取得したユーザー:', currentUser)
+      
+      const goalData = {
+        id: generateId('goal'),
+        title: formData.get('title') as string,
+        description: formData.get('description') as string,
+        deadline: date?.toISOString() || null,
+        priority: formData.get('priority') as string,
+        userId: currentUser.id,
+        isGroupGoal,
+        groupId: isGroupGoal ? formData.get('group') as string : null,
+        isPublic: formData.get('public') === 'on',
+        hasReminder: formData.get('reminder') === 'on',
+        subgoals: hasSubgoals ? subgoals.filter(sg => sg.title.trim() !== '') : []
+      }
+      
+      console.log('送信する目標データ:', goalData)
       const response = await fetch('/api/goals', {
         method: 'POST',
         headers: {
@@ -73,9 +94,19 @@ export default function CreateGoalModal() {
         body: JSON.stringify(goalData),
       })
 
+      console.log('APIレスポンス:', response.status, response.statusText)
+
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        const errorMessage = errorData.error || `目標の作成に失敗しました (${response.status})`
+        const errorText = await response.text()
+        console.error('APIエラーレスポンス:', errorText)
+        
+        let errorMessage
+        try {
+          const errorData = JSON.parse(errorText)
+          errorMessage = errorData.error || `目標の作成に失敗しました (${response.status})`
+        } catch {
+          errorMessage = `目標の作成に失敗しました (${response.status}): ${errorText}`
+        }
         throw new Error(errorMessage)
       }
 

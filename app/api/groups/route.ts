@@ -1,114 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/app/api/auth/auth'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'
+const JSON_SERVER_URL = 'http://localhost:3005'
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const session = await auth()
-    
-    if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
-
-    const { searchParams } = new URL(request.url)
-    const type = searchParams.get('type') // 'my', 'discover', 'all'
-
-    // ユーザー情報を取得
-    const userResponse = await fetch(`${API_BASE_URL}/users?email=${session.user.email}`)
-    const users = await userResponse.json()
-    const currentUser = users[0]
-
-    if (!currentUser) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      )
-    }
-
-    if (type === 'my') {
-      // ユーザーが参加しているグループを取得
-      const membershipsResponse = await fetch(`${API_BASE_URL}/group_members?userId=${currentUser.id}`)
-      if (!membershipsResponse.ok) {
-        return NextResponse.json([])
-      }
-
-      const memberships = await membershipsResponse.json()
-      const groupIds = memberships.map((m: any) => m.groupId)
-
-      if (groupIds.length === 0) {
-        return NextResponse.json([])
-      }
-
-      // 各グループの詳細を取得
-      const groups = []
-      for (const groupId of groupIds) {
-        const groupResponse = await fetch(`${API_BASE_URL}/groups/${groupId}`)
-        if (groupResponse.ok) {
-          const group = await groupResponse.json()
-          
-          // メンバー数を取得
-          const memberCountResponse = await fetch(`${API_BASE_URL}/group_members?groupId=${groupId}`)
-          const members = memberCountResponse.ok ? await memberCountResponse.json() : []
-          
-          groups.push({
-            ...group,
-            memberCount: members.length,
-            userRole: memberships.find((m: any) => m.groupId === groupId)?.role
-          })
-        }
-      }
-
-      return NextResponse.json(groups)
-    } else if (type === 'discover') {
-      // 公開グループまたは参加していないグループを取得
-      const allGroupsResponse = await fetch(`${API_BASE_URL}/groups?isPublic=true`)
-      if (!allGroupsResponse.ok) {
-        return NextResponse.json([])
-      }
-
-      const allGroups = await allGroupsResponse.json()
-      
-      // ユーザーが参加していないグループのみフィルター
-      const membershipsResponse = await fetch(`${API_BASE_URL}/group_members?userId=${currentUser.id}`)
-      const userMemberships = membershipsResponse.ok ? await membershipsResponse.json() : []
-      const userGroupIds = userMemberships.map((m: any) => m.groupId)
-
-      const discoverGroups = allGroups.filter((group: any) => !userGroupIds.includes(group.id))
-
-      // メンバー数を追加
-      for (const group of discoverGroups) {
-        const memberCountResponse = await fetch(`${API_BASE_URL}/group_members?groupId=${group.id}`)
-        const members = memberCountResponse.ok ? await memberCountResponse.json() : []
-        group.memberCount = members.length
-      }
-
-      return NextResponse.json(discoverGroups)
-    } else {
-      // 全グループを取得
-      const allGroupsResponse = await fetch(`${API_BASE_URL}/groups`)
-      if (!allGroupsResponse.ok) {
-        throw new Error('Failed to fetch groups')
-      }
-
-      const groups = await allGroupsResponse.json()
-      
-      // メンバー数を追加
-      for (const group of groups) {
-        const memberCountResponse = await fetch(`${API_BASE_URL}/group_members?groupId=${group.id}`)
-        const members = memberCountResponse.ok ? await memberCountResponse.json() : []
-        group.memberCount = members.length
-      }
-
-      return NextResponse.json(groups)
-    }
+    const response = await fetch(`${JSON_SERVER_URL}/groups`)
+    const data = await response.json()
+    return NextResponse.json(data)
   } catch (error) {
-    console.error('Error fetching groups:', error)
+    console.error('グループ取得エラー:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'グループの取得に失敗しました' },
       { status: 500 }
     )
   }
@@ -116,114 +18,95 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth()
+    const body = await request.json()
     
-    if (!session?.user?.email) {
+    // 必要なフィールドの検証
+    if (!body.name || !body.description) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
+        { error: 'グループ名と説明は必須です' },
+        { status: 400 }
       )
     }
 
-    const groupData = await request.json()
-
-    // ユーザー情報を取得
-    const userResponse = await fetch(`${API_BASE_URL}/users?email=${session.user.email}`)
-    const users = await userResponse.json()
-    const currentUser = users[0]
-
-    if (!currentUser) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      )
-    }
-
-    // グループデータを準備
-    const newGroup = {
-      ...groupData,
-      id: `group-${Date.now()}`,
-      ownerId: currentUser.id,
+    // JSON Serverに送信するデータを整形
+    const groupData = {
+      id: body.id,
+      name: body.name,
+      description: body.description,
+      category: body.category || 'general',
+      maxMembers: body.maxMembers || 10,
+      tags: body.tags || [],
+      isPublic: body.isPublic || true,
+      requireApproval: body.requireApproval || false,
+      allowMemberInvites: body.allowMemberInvites || true,
+      ownerId: body.ownerId,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }
 
-    // 招待メンバーを分離
-    const { invitedMembers, ...groupWithoutMembers } = newGroup
-
-    // グループを作成
-    const groupResponse = await fetch(`${API_BASE_URL}/groups`, {
+    const response = await fetch(`${JSON_SERVER_URL}/groups`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(groupWithoutMembers),
+      body: JSON.stringify(groupData),
     })
 
-    if (!groupResponse.ok) {
-      throw new Error('Failed to create group')
+    if (!response.ok) {
+      throw new Error(`JSON Server error: ${response.status}`)
     }
 
-    const createdGroup = await groupResponse.json()
-
-    // 作成者をグループ管理者として追加
-    const adminMembership = {
+    const createdGroup = await response.json()
+    
+    // グループ作成者をadminメンバーとして追加
+    const memberData = {
       id: `member-${Date.now()}`,
       groupId: createdGroup.id,
-      userId: currentUser.id,
+      userId: body.ownerId,
       role: 'admin',
       joinedAt: new Date().toISOString()
     }
-
-    await fetch(`${API_BASE_URL}/group_members`, {
+    
+    await fetch(`${JSON_SERVER_URL}/group_members`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(adminMembership),
+      body: JSON.stringify(memberData),
     })
 
-    // 招待メンバーを処理
-    const createdInvitations = []
-    if (invitedMembers && Array.isArray(invitedMembers)) {
-      for (let i = 0; i < invitedMembers.length; i++) {
-        const member = invitedMembers[i]
-        const invitation = {
-          id: `invite-${Date.now()}-${i}`,
-          groupId: createdGroup.id,
-          inviterId: currentUser.id,
-          inviteeEmail: member.email,
-          inviteeName: member.name,
-          status: 'pending',
-          message: `${createdGroup.name}に参加しませんか？`,
-          createdAt: new Date().toISOString(),
-          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30日後
-        }
-
-        const inviteResponse = await fetch(`${API_BASE_URL}/invitations`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(invitation),
-        })
-
-        if (inviteResponse.ok) {
-          createdInvitations.push(await inviteResponse.json())
+    // 招待されたメンバーがいる場合は招待を作成
+    if (body.invitedMembers && Array.isArray(body.invitedMembers)) {
+      for (const member of body.invitedMembers) {
+        if (member.email && member.name) {
+          const invitationData = {
+            id: `invite-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            groupId: createdGroup.id,
+            inviterId: body.ownerId,
+            inviteeEmail: member.email,
+            inviteeName: member.name,
+            status: 'pending',
+            message: `「${body.name}」グループへの招待`,
+            createdAt: new Date().toISOString(),
+            expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30日後
+          }
+          
+          await fetch(`${JSON_SERVER_URL}/invitations`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(invitationData),
+          })
         }
       }
     }
 
-    // 結果を返す
-    return NextResponse.json({
-      ...createdGroup,
-      memberCount: 1,
-      invitations: createdInvitations
-    }, { status: 201 })
+    return NextResponse.json(createdGroup, { status: 201 })
   } catch (error) {
-    console.error('Error creating group:', error)
+    console.error('グループ作成エラー:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'グループの作成に失敗しました' },
       { status: 500 }
     )
   }

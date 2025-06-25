@@ -25,6 +25,7 @@ import { ja } from "date-fns/locale"
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Switch } from "@/components/ui/switch"
+import { getCurrentUser } from "@/lib/auth-utils"
 
 export default function CreateEventModal() {
   const [open, setOpen] = useState(false)
@@ -32,15 +33,70 @@ export default function CreateEventModal() {
   const [eventType, setEventType] = useState<"meeting" | "deadline" | "event">("meeting")
   const [isGroupEvent, setIsGroupEvent] = useState(true)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // ID生成用のヘルパー関数
+  const generateId = (prefix: string): string => {
+    return `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+  }
+
+  // 現在のユーザーIDを取得（仮の実装）
+  const getCurrentUserId = (): string => {
+    return "user-1"
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // ここでイベントデータを処理します
-    console.log("予定を追加しました")
-    setOpen(false)
-    // フォームをリセット
-    setDate(undefined)
-    setEventType("meeting")
-    setIsGroupEvent(true)
+    
+    const formData = new FormData(e.target as HTMLFormElement)
+    
+    try {
+      // 現在のユーザー情報を取得
+      const currentUser = await getCurrentUser()
+      
+      const eventData = {
+        id: generateId('event'),
+        title: formData.get('title') as string,
+        description: formData.get('description') as string,
+        date: date ? date.toISOString().split('T')[0] : null,
+        startTime: formData.get('time-start') as string,
+        endTime: formData.get('time-end') as string,
+        eventType,
+        isGroupEvent,
+        groupId: isGroupEvent ? formData.get('group') as string : null,
+        userId: currentUser.id,
+        hasReminder: formData.get('reminder') === 'on',
+        isRecurring: formData.get('recurring') === 'on',
+        isOnline: formData.get('online') === 'on',
+        meetingUrl: formData.get('meeting-url') as string
+      }
+      const response = await fetch('/api/events', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(eventData),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'イベントの作成に失敗しました')
+      }
+
+      const createdEvent = await response.json()
+      console.log('イベントを作成しました:', createdEvent)
+      
+      setOpen(false)
+      // フォームをリセット
+      setDate(undefined)
+      setEventType("meeting")
+      setIsGroupEvent(true)
+      
+      // ページをリロードして新しいイベントを表示
+      window.location.reload()
+    } catch (error) {
+      console.error('Error creating event:', error)
+      const errorMessage = error instanceof Error ? error.message : 'イベントの作成に失敗しました'
+      alert(`エラー: ${errorMessage}`)
+    }
   }
 
   return (

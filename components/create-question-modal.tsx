@@ -18,18 +18,74 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { MessageSquare, FileText, ImageIcon, X } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
+import { getCurrentUser } from "@/lib/auth-utils"
 
 export default function CreateQuestionModal() {
   const [open, setOpen] = useState(false)
   const [files, setFiles] = useState<{ name: string; type: string; size: string }[]>([])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // ID生成用のヘルパー関数
+  const generateId = (prefix: string): string => {
+    return `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+  }
+
+  // 現在のユーザーIDを取得（仮の実装）
+  const getCurrentUserId = (): string => {
+    return "user-1"
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // ここで質問データを処理します
-    console.log("質問を投稿しました")
-    setOpen(false)
-    // フォームをリセット
-    setFiles([])
+    
+    const formData = new FormData(e.target as HTMLFormElement)
+    
+    try {
+      // 現在のユーザー情報を取得
+      const currentUser = await getCurrentUser()
+      
+      const tagsString = formData.get('tags') as string
+      const questionData = {
+        id: generateId('question'),
+        title: formData.get('title') as string,
+        content: formData.get('question') as string,
+        tags: tagsString ? tagsString.split(',').map(tag => tag.trim()).filter(tag => tag !== '') : [],
+        groupId: formData.get('group') === 'all' ? null : formData.get('group') as string,
+        userId: currentUser.id,
+        isAnonymous: formData.get('anonymous') === 'on',
+        hasNotification: formData.get('notify') === 'on',
+        attachments: files.map(file => ({
+          name: file.name,
+          size: file.size,
+          type: file.type
+        }))
+      }
+      const response = await fetch('/api/questions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(questionData),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || '質問の投稿に失敗しました')
+      }
+
+      const createdQuestion = await response.json()
+      console.log('質問を投稿しました:', createdQuestion)
+      
+      setOpen(false)
+      // フォームをリセット
+      setFiles([])
+      
+      // ページをリロードして新しい質問を表示
+      window.location.reload()
+    } catch (error) {
+      console.error('Error creating question:', error)
+      const errorMessage = error instanceof Error ? error.message : '質問の投稿に失敗しました'
+      alert(`エラー: ${errorMessage}`)
+    }
   }
 
   const addFile = () => {

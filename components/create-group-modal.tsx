@@ -20,7 +20,7 @@ import { Users, X } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-
+import { getCurrentUser } from "@/lib/auth-utils"
 export default function CreateGroupModal() {
   const [open, setOpen] = useState(false)
   const [tags, setTags] = useState<string[]>([])
@@ -28,24 +28,38 @@ export default function CreateGroupModal() {
   const [invitedMembers, setInvitedMembers] = useState<{ id: string; name: string; email: string }[]>([])
   const [memberEmail, setMemberEmail] = useState("")
 
+  // ID生成用のヘルパー関数
+  const generateId = (prefix: string): string => {
+    return `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+  }
+
+  // 現在のユーザーIDを取得（仮の実装）
+  const getCurrentUserId = (): string => {
+    return "user-1"
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     const formData = new FormData(e.target as HTMLFormElement)
-    const groupData = {
-      name: formData.get('name') as string,
-      description: formData.get('description') as string,
-      meetingSchedule: formData.get('meeting-schedule') as string,
-      tags,
-      isPublic: formData.get('public') === 'on',
-      isInviteOnly: formData.get('invite-only') === 'on',
-      allowMemberInvite: formData.get('member-invite') === 'on',
-      autoApprove: formData.get('auto-approve') === 'on',
-      enableNotifications: formData.get('notifications') === 'on',
-      invitedMembers
-    }
-
+    
     try {
+      // 現在のユーザー情報を取得
+      const currentUser = await getCurrentUser()
+      
+      const groupData = {
+        id: generateId('group'),
+        name: formData.get('name') as string,
+        description: formData.get('description') as string,
+        category: 'general',
+        maxMembers: 10,
+        tags,
+        isPublic: formData.get('public') === 'on',
+        requireApproval: formData.get('invite-only') === 'on',
+        allowMemberInvites: formData.get('member-invite') === 'on',
+        ownerId: currentUser.id,
+        invitedMembers
+      }
       const response = await fetch('/api/groups', {
         method: 'POST',
         headers: {
@@ -56,7 +70,7 @@ export default function CreateGroupModal() {
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to create group')
+        throw new Error(errorData.error || 'グループの作成に失敗しました')
       }
 
       const createdGroup = await response.json()
@@ -73,7 +87,8 @@ export default function CreateGroupModal() {
       window.location.reload()
     } catch (error) {
       console.error('Error creating group:', error)
-      alert('グループの作成に失敗しました。もう一度お試しください。')
+      const errorMessage = error instanceof Error ? error.message : 'グループの作成に失敗しました'
+      alert(`エラー: ${errorMessage}`)
     }
   }
 
@@ -135,7 +150,7 @@ export default function CreateGroupModal() {
               <Label htmlFor="name" className="text-right">
                 グループ名
               </Label>
-              <Input id="name" placeholder="例: プログラミング勉強会" className="col-span-3" required />
+              <Input id="name" name="name" placeholder="例: プログラミング勉強会" className="col-span-3" required />
             </div>
             <div className="grid grid-cols-4 items-start gap-4">
               <Label htmlFor="description" className="text-right pt-2">
@@ -143,16 +158,11 @@ export default function CreateGroupModal() {
               </Label>
               <Textarea
                 id="description"
+                name="description"
                 placeholder="グループの目的や活動内容を入力してください"
                 className="col-span-3"
                 rows={3}
               />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="meeting-schedule" className="text-right">
-                ミーティング
-              </Label>
-              <Input id="meeting-schedule" placeholder="例: 毎週水曜日 20:00-21:30" className="col-span-3" />
             </div>
             <div className="grid grid-cols-4 items-start gap-4">
               <Label htmlFor="tags" className="text-right pt-2">
@@ -236,30 +246,16 @@ export default function CreateGroupModal() {
               <Label className="text-right pt-2">プライバシー設定</Label>
               <div className="col-span-3 space-y-2">
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="public" />
+                  <Checkbox id="public" name="public" />
                   <Label htmlFor="public">公開グループ（誰でも検索・参加可能）</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="invite-only" defaultChecked />
+                  <Checkbox id="invite-only" name="invite-only" defaultChecked />
                   <Label htmlFor="invite-only">招待制（管理者の招待が必要）</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="member-invite" />
+                  <Checkbox id="member-invite" name="member-invite" />
                   <Label htmlFor="member-invite">メンバーによる招待を許可</Label>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-4 items-start gap-4">
-              <Label className="text-right pt-2">その他の設定</Label>
-              <div className="col-span-3 space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="auto-approve" />
-                  <Label htmlFor="auto-approve">参加リクエストを自動承認する</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="notifications" defaultChecked />
-                  <Label htmlFor="notifications">グループ活動の通知を受け取る</Label>
                 </div>
               </div>
             </div>

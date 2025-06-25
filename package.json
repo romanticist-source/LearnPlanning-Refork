@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:start": "json-server --watch db.json --port 3001 --host 0.0.0.0",
+    "db:start": "json-server --watch db.json --port 3005 --host 0.0.0.0",
     "db:reset": "cp db.backup.json db.json && echo 'Database reset to initial state'",
     "dev:full": "concurrently \"pnpm dev\" \"pnpm db:start\"",
     "setup": "pnpm install && node scripts/setup-database.js",

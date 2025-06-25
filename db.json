@@ -11,7 +11,7 @@
       "lastLoginAt": "2025-06-23T12:00:00Z"
     },
     {
-      "id": "user-2", 
+      "id": "user-2",
       "name": "佐藤花子",
       "email": "sato@example.com",
       "githubId": "sato-github",
@@ -19,6 +19,14 @@
       "bio": "Web開発を学んでいます。",
       "joinedAt": "2025-01-20T00:00:00Z",
       "lastLoginAt": "2025-06-23T11:30:00Z"
+    },
+    {
+      "id": "user-1750850798419",
+      "name": "takubou",
+      "email": "taku1011ht@gmail.com",
+      "avatar": "https://avatars.githubusercontent.com/u/109452865?v=4",
+      "createdAt": "2025-06-25T11:26:38.419Z",
+      "updatedAt": "2025-06-25T11:26:38.419Z"
     }
   ],
   "goals": [
@@ -53,6 +61,52 @@
       "hasReminder": true,
       "createdAt": "2025-05-15T00:00:00Z",
       "updatedAt": "2025-06-20T10:00:00Z"
+    },
+    {
+      "title": ";",
+      "description": ";",
+      "deadline": "2025-06-03T15:00:00.000Z",
+      "priority": "medium",
+      "progress": 0,
+      "completed": false,
+      "groupId": null,
+      "isGroupGoal": false,
+      "isPublic": false,
+      "hasReminder": false,
+      "createdAt": "2025-06-25T11:17:27.621Z",
+      "updatedAt": "2025-06-25T11:17:27.621Z",
+      "id": "8KYxM1q"
+    },
+    {
+      "title": ":::",
+      "description": "::::",
+      "deadline": null,
+      "priority": "medium",
+      "progress": 0,
+      "completed": false,
+      "groupId": null,
+      "isGroupGoal": false,
+      "isPublic": false,
+      "hasReminder": false,
+      "createdAt": "2025-06-25T11:21:45.494Z",
+      "updatedAt": "2025-06-25T11:21:45.494Z",
+      "id": "V3Eu7uN"
+    },
+    {
+      "id": "goal-1750850852270-uen4fbq34",
+      "title": "＠＠＠＠＠",
+      "description": "＠＠",
+      "deadline": "2025-06-10T15:00:00.000Z",
+      "priority": "medium",
+      "progress": 0,
+      "completed": false,
+      "userId": "user-1750850798419",
+      "groupId": null,
+      "isGroupGoal": false,
+      "isPublic": false,
+      "hasReminder": false,
+      "createdAt": "2025-06-25T11:27:32.288Z",
+      "updatedAt": "2025-06-25T11:27:32.288Z"
     }
   ],
   "subgoals": [
@@ -87,7 +141,13 @@
       "name": "プログラミング勉強会",
       "description": "プログラミングの基礎から応用までを学ぶグループです。初心者から上級者まで、一緒にスキルアップを目指しましょう。",
       "meetingSchedule": "毎週水曜日 20:00-21:30",
-      "tags": ["プログラミング", "JavaScript", "Python", "アルゴリズム", "Web開発"],
+      "tags": [
+        "プログラミング",
+        "JavaScript",
+        "Python",
+        "アルゴリズム",
+        "Web開発"
+      ],
       "isPublic": false,
       "isInviteOnly": true,
       "allowMemberInvite": false,
@@ -102,7 +162,11 @@
       "name": "アルゴリズム特訓",
       "description": "アルゴリズムとデータ構造を集中的に学ぶグループ",
       "meetingSchedule": "毎週土曜日 14:00-16:00",
-      "tags": ["アルゴリズム", "データ構造", "競技プログラミング"],
+      "tags": [
+        "アルゴリズム",
+        "データ構造",
+        "競技プログラミング"
+      ],
       "isPublic": true,
       "isInviteOnly": false,
       "allowMemberInvite": true,
@@ -111,6 +175,20 @@
       "ownerId": "user-2",
       "createdAt": "2025-02-01T00:00:00Z",
       "updatedAt": "2025-06-22T16:00:00Z"
+    },
+    {
+      "id": "group-1750850431636-chvxqkwk0",
+      "name": ";;;",
+      "description": ";;;",
+      "category": "general",
+      "maxMembers": 10,
+      "tags": [],
+      "isPublic": true,
+      "requireApproval": true,
+      "allowMemberInvites": true,
+      "ownerId": "user-1",
+      "createdAt": "2025-06-25T11:20:31.646Z",
+      "updatedAt": "2025-06-25T11:20:31.646Z"
     }
   ],
   "group_members": [
@@ -124,7 +202,7 @@
     {
       "id": "member-2",
       "groupId": "group-1",
-      "userId": "user-2", 
+      "userId": "user-2",
       "role": "member",
       "joinedAt": "2025-01-20T00:00:00Z"
     },
@@ -134,6 +212,13 @@
       "userId": "user-2",
       "role": "admin",
       "joinedAt": "2025-02-01T00:00:00Z"
+    },
+    {
+      "id": "member-1750850431653",
+      "groupId": "group-1750850431636-chvxqkwk0",
+      "userId": "user-1",
+      "role": "admin",
+      "joinedAt": "2025-06-25T11:20:31.653Z"
     }
   ],
   "invitations": [
