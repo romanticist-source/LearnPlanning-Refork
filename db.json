@@ -748,6 +748,74 @@
       "updatedAt": "2025-06-25T14:58:33.979Z"
     }
   ],
+  "chat_messages": [
+    {
+      "id": "message-1",
+      "groupId": "group-1",
+      "userId": "user-1",
+      "content": "こんにちは！プログラミング勉強会のチャットへようこそ。\n今日はJavaScriptの基礎について話しましょう。",
+      "likes": 3,
+      "replies": [],
+      "attachments": [],
+      "createdAt": "2025-06-24T10:00:00Z",
+      "updatedAt": "2025-06-24T10:00:00Z"
+    },
+    {
+      "id": "message-2",
+      "groupId": "group-1",
+      "userId": "user-2",
+      "content": "よろしくお願いします！\n質問があるのですが、非同期処理について詳しく知りたいです。",
+      "likes": 2,
+      "replies": [],
+      "attachments": [],
+      "createdAt": "2025-06-24T10:15:00Z",
+      "updatedAt": "2025-06-24T10:15:00Z"
+    },
+    {
+      "id": "message-3",
+      "groupId": "group-1",
+      "userId": "user-1",
+      "content": "良い質問ですね！\nPromiseとasync/awaitについて説明しますね。\n\nまず、Promiseは非同期処理を扱うためのオブジェクトです。",
+      "likes": 5,
+      "replies": [],
+      "attachments": [],
+      "createdAt": "2025-06-24T10:30:00Z",
+      "updatedAt": "2025-06-24T10:30:00Z"
+    },
+    {
+      "id": "message-4",
+      "groupId": "group-2",
+      "userId": "user-2",
+      "content": "アルゴリズム特訓グループのチャットです。\n今日は何のアルゴリズムに挑戦しましょうか？",
+      "likes": 1,
+      "replies": [],
+      "attachments": [],
+      "createdAt": "2025-06-24T14:00:00Z",
+      "updatedAt": "2025-06-24T14:00:00Z"
+    },
+    {
+      "id": "message-1750864269434-uelblbht4",
+      "groupId": "LCZ41aH",
+      "userId": "user-1750850798419",
+      "content": "；；；；",
+      "likes": 0,
+      "replies": [],
+      "attachments": [],
+      "createdAt": "2025-06-25T15:11:09.434Z",
+      "updatedAt": "2025-06-25T15:11:09.434Z"
+    },
+    {
+      "id": "message-1750864295095-llv91gfka",
+      "groupId": "LCZ41aH",
+      "userId": "user-1750850798419",
+      "content": "；；；；",
+      "likes": 0,
+      "replies": [],
+      "attachments": [],
+      "createdAt": "2025-06-25T15:11:35.095Z",
+      "updatedAt": "2025-06-25T15:11:35.095Z"
+    }
+  ],
   "user_achievements": [
     {
       "id": "achievement-1",
