@@ -21,7 +21,7 @@ export async function GET() {
     if (users.length === 0) {
       // ユーザーが存在しない場合は新規作成
       const newUser = {
-        id: `user-${Date.now()}`,
+        
         name: session.user.name || 'Unknown User',
         email: session.user.email,
         avatar: session.user.image || null,

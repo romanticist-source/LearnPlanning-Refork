@@ -58,12 +58,12 @@ export async function POST(request: NextRequest) {
 
     const createdGroup = await response.json()
     
-    // グループ作成者をadminメンバーとして追加
+    // グループ作成者をownerメンバーとして追加
     const memberData = {
-      id: `member-${Date.now()}`,
+      id: `member-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       groupId: createdGroup.id,
       userId: body.ownerId,
-      role: 'admin',
+      role: 'owner',
       joinedAt: new Date().toISOString()
     }
     
