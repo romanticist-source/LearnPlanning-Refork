@@ -304,10 +304,7 @@ export default function DashboardPage() {
                       <p>まだグループに参加していません</p>
                     </div>
                   )}
-                  <Button variant="outline" className="w-full mt-4">
-                    <Plus className="mr-2 h-4 w-4" />
-                    新しいグループを作成
-                  </Button>
+                
                 </CardContent>
               </Card>
 
