@@ -202,6 +202,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
               </div>
             )}
 
+            {groupData.userMembership && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <div className="bg-white p-4 rounded-lg border">
                 <div className="flex items-center gap-2 mb-2">
@@ -225,6 +226,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
                 <p className="text-sm font-medium">{groupData.meetingInfo || '設定されていません'}</p>
               </div>
             </div>
+            )}
           </div>
 
           {groupData.userMembership && (
