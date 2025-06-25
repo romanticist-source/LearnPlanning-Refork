@@ -814,6 +814,26 @@
       "likes": 0,
       "createdAt": "2025-06-25T14:58:33.979Z",
       "updatedAt": "2025-06-25T14:58:33.979Z"
+    },
+    {
+      "id": "reply-1750865191907-q9bm0ohbp",
+      "questionId": "question-2",
+      "content": "lll",
+      "userId": "user-1750850798419",
+      "isAccepted": false,
+      "likes": 5,
+      "createdAt": "2025-06-25T15:26:31.907Z",
+      "updatedAt": "2025-06-25T15:31:47.435Z"
+    },
+    {
+      "id": "reply-1750865510971-yuj9crmzs",
+      "questionId": "question-2",
+      "content": "sdfdvcdsvc",
+      "userId": "user-1750850798419",
+      "isAccepted": false,
+      "likes": 3,
+      "createdAt": "2025-06-25T15:31:50.971Z",
+      "updatedAt": "2025-06-25T15:31:54.066Z"
     }
   ],
   "chat_messages": [
