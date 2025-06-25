@@ -27,7 +27,7 @@
       "avatar": "https://avatars.githubusercontent.com/u/109452865?v=4",
       "createdAt": "2025-06-25T11:26:38.419Z",
       "updatedAt": "2025-06-25T11:26:38.419Z",
-      "lastLoginAt": "2025-06-25T14:37:41.535Z"
+      "lastLoginAt": "2025-06-25T14:55:26.714Z"
     }
   ],
   "goals": [
@@ -128,23 +128,6 @@
       "hasReminder": true,
       "createdAt": "2025-06-23T11:00:00Z",
       "updatedAt": "2025-06-23T11:00:00Z"
-    },
-    {
-      "id": "goal-1750862407520-cxu7zghn0",
-      "title": "s",
-      "description": "s",
-      "deadline": "2025-06-26",
-      "priority": "medium",
-      "progress": 100,
-      "completed": true,
-      "userId": "user-1750850798419",
-      "groupId": "group-1750851392867-0uxt77v3y",
-      "isGroupGoal": true,
-      "isPublic": false,
-      "hasReminder": false,
-      "createdAt": "2025-06-25T14:40:07.531Z",
-      "updatedAt": "2025-06-25T14:40:14.774Z",
-      "completedAt": "2025-06-25T14:40:13.374Z"
     }
   ],
   "subgoals": [
@@ -688,56 +671,81 @@
   ],
   "questions": [
     {
-      "id": "activity-4",
+      "id": "question-1",
+      "title": "JavaScriptの非同期処理について",
+      "content": "非同期処理でPromiseとasync/awaitの違いがよく分からないので、教えてください。どちらを使うべきでしょうか？",
+      "tags": [
+        "JavaScript",
+        "非同期処理",
+        "Promise",
+        "async/await"
+      ],
       "groupId": "group-1",
+      "userId": "user-2",
+      "isAnonymous": false,
+      "hasNotification": true,
+      "attachments": [],
+      "createdAt": "2025-06-20T10:00:00Z",
+      "updatedAt": "2025-06-20T10:00:00Z"
+    },
+    {
+      "id": "question-2",
+      "title": "ReactのuseStateフックの使い方",
+      "content": "Reactでコンポーネントの状態を管理する際に、useStateの基本的な使い方を教えてください。特に、配列やオブジェクトの状態を更新する際の注意点があれば知りたいです。",
+      "tags": [
+        "React",
+        "useState",
+        "Hooks"
+      ],
+      "groupId": null,
       "userId": "user-1",
-      "type": "event_created",
-      "description": "イベント「プログラミング勉強会 第10回」を作成しました",
-      "relatedId": "event-1",
-      "createdAt": "2025-06-20T10:00:00Z"
-    },
-    {
-      "id": "question-1750862468182-ehvwmwgnd",
-      "title": "s",
-      "content": "っs",
-      "tags": [],
-      "groupId": null,
-      "userId": "user-1750850798419",
       "isAnonymous": false,
       "hasNotification": true,
       "attachments": [],
-      "createdAt": "2025-06-25T14:41:08.193Z",
-      "updatedAt": "2025-06-25T14:41:08.193Z"
+      "createdAt": "2025-06-21T14:30:00Z",
+      "updatedAt": "2025-06-21T14:30:00Z"
+    }
+  ],
+  "replies": [
+    {
+      "id": "reply-1",
+      "questionId": "question-1",
+      "content": "Promiseとasync/awaitは本質的には同じものです。async/awaitはPromiseの糖衣構文（シンタックスシュガー）として導入されました。\n\n**Promise:**\n```javascript\nfetch('/api/data')\n  .then(response => response.json())\n  .then(data => console.log(data))\n  .catch(error => console.error(error));\n```\n\n**async/await:**\n```javascript\ntry {\n  const response = await fetch('/api/data');\n  const data = await response.json();\n  console.log(data);\n} catch (error) {\n  console.error(error);\n}\n```\n\nasync/awaitの方が同期的なコードのように見えるので、可読性が向上します。",
+      "userId": "user-1",
+      "isAccepted": true,
+      "likes": 6,
+      "createdAt": "2025-06-20T11:15:00Z",
+      "updatedAt": "2025-06-25T14:58:10.649Z"
     },
     {
-      "id": "question-1750862570740-mx6bxxuly",
-      "title": "クァああああ",
-      "content": "ああ",
-      "tags": [
-        "ああああ"
-      ],
-      "groupId": null,
+      "id": "reply-2",
+      "questionId": "question-1",
+      "content": "私も最初は混乱しました！簡単に言うと、async/awaitを使う方が現代的で読みやすいコードになります。エラーハンドリングもtry/catchで統一できるのでおすすめです。",
       "userId": "user-1750850798419",
-      "isAnonymous": false,
-      "hasNotification": true,
-      "attachments": [],
-      "createdAt": "2025-06-25T14:42:50.749Z",
-      "updatedAt": "2025-06-25T14:42:50.749Z"
+      "isAccepted": false,
+      "likes": 2,
+      "createdAt": "2025-06-20T15:30:00Z",
+      "updatedAt": "2025-06-20T15:30:00Z"
     },
     {
-      "id": "question-1750862780960-zjk8o4spv",
-      "title": "：",
-      "content": "：",
-      "tags": [
-        "@ll.@"
-      ],
-      "groupId": null,
+      "id": "reply-1750863484407-06kyxijva",
+      "questionId": "question-1",
+      "content": "：：：：：：",
       "userId": "user-1750850798419",
-      "isAnonymous": false,
-      "hasNotification": true,
-      "attachments": [],
-      "createdAt": "2025-06-25T14:46:21.333Z",
-      "updatedAt": "2025-06-25T14:46:21.333Z"
+      "isAccepted": false,
+      "likes": 0,
+      "createdAt": "2025-06-25T14:58:04.407Z",
+      "updatedAt": "2025-06-25T14:58:04.407Z"
+    },
+    {
+      "id": "reply-1750863513979-hl5ld1d45",
+      "questionId": "question-1",
+      "content": "；；；；；；；＠。sp、DVBp：いDSO",
+      "userId": "user-1750850798419",
+      "isAccepted": false,
+      "likes": 0,
+      "createdAt": "2025-06-25T14:58:33.979Z",
+      "updatedAt": "2025-06-25T14:58:33.979Z"
     }
   ],
   "user_achievements": [
