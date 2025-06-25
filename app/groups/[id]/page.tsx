@@ -135,8 +135,8 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
             <div className="flex items-center gap-4 mb-4">
               <div className="bg-gray-200 rounded-full h-16 w-16"></div>
               <div>
-                <div className="h-8 bg-gray-200 rounded w-64 mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-32"></div>
+                <div className="h-8 bg-gray-200  w-64 mb-2"></div>
+                <div className="h-4 bg-gray-200  w-32"></div>
               </div>
             </div>
             <div className="h-4 bg-gray-200 rounded w-full mb-4"></div>
