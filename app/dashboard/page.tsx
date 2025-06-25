@@ -24,6 +24,7 @@ interface DashboardStats {
   goalProgress: number
   activeGroups: number
   totalMembers: number
+  groups: Group[]
 }
 
 interface Group {
@@ -43,7 +44,6 @@ interface Discussion {
 
 export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null)
-  const [groups, setGroups] = useState<Group[]>([])
   const [discussions, setDiscussions] = useState<Discussion[]>([])
   const [loading, setLoading] = useState(true)
   const [currentUser, setCurrentUser] = useState<any>(null)
@@ -52,39 +52,20 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        // 統計情報を取得（実際のAPIではこれらを個別に取得）
-        const [goalsResponse, groupsResponse, userResponse] = await Promise.all([
-          fetch('/api/goals'),
-          fetch('/api/groups?type=my'),
+        // 統計情報とユーザー情報を並行取得
+        const [statsResponse, userResponse] = await Promise.all([
+          fetch('/api/stats?type=dashboard'),
           fetch('/api/users/me')
         ])
 
-        if (goalsResponse.ok && groupsResponse.ok) {
-          const goals = await goalsResponse.json()
-          const userGroups = await groupsResponse.json()
-          
-          // ユーザー情報を設定
-          if (userResponse.ok) {
-            const user = await userResponse.json()
-            setCurrentUser(user)
-          }
+        if (statsResponse.ok) {
+          const dashboardStats = await statsResponse.json()
+          setStats(dashboardStats)
+        }
 
-          // 統計を計算
-          const completedGoals = goals.filter((goal: any) => goal.completed).length
-          const totalGoals = goals.length
-          const goalProgress = totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0
-          const totalMembers = userGroups.reduce((sum: number, group: any) => sum + (group.memberCount || 0), 0)
-
-          setStats({
-            studyHours: 12.5, // TODO: 実際の学習時間APIから取得
-            studyHoursChange: 2.3, // TODO: 実際の変化量APIから取得
-            completedGoals,
-            goalProgress,
-            activeGroups: userGroups.length,
-            totalMembers
-          })
-
-          setGroups(userGroups)
+        if (userResponse.ok) {
+          const user = await userResponse.json()
+          setCurrentUser(user)
         }
 
         // TODO: ディスカッションAPIから取得
@@ -98,6 +79,17 @@ export default function DashboardPage() {
 
     fetchDashboardData()
   }, [])
+
+  const handlePaizaActivityAdded = () => {
+    // Paizaグラフを更新するためにkeyを変更
+    setPaizaGraphKey(prev => prev + 1)
+    
+    // 統計も再取得
+    fetch('/api/stats?type=dashboard')
+      .then(res => res.json())
+      .then(data => setStats(data))
+      .catch(err => console.error('Failed to refresh stats:', err))
+  }
 
   if (loading) {
     return (
@@ -199,170 +191,168 @@ export default function DashboardPage() {
                   <CardDescription>Paizaでの学習活動を記録・可視化</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {currentUser && (
-                    <Suspense fallback={<div className="h-[300px] w-full bg-gray-100 animate-pulse rounded-md"></div>}>
-                      <PaizaContributionGraph 
-                        userId={currentUser.id} 
-                        key={paizaGraphKey}
+                  <div className="space-y-4">
+                    {currentUser && (
+                      <PaizaActivityForm 
+                        userId={currentUser.id}
+                        onActivityAdded={handlePaizaActivityAdded} 
                       />
-                    </Suspense>
-                  )}
+                    )}
+                    {currentUser && (
+                      <PaizaContributionGraph 
+                        key={paizaGraphKey}
+                        userId={currentUser.id} 
+                      />
+                    )}
+                  </div>
                 </CardContent>
               </Card>
 
-              {/* Paizaアクティビティ記録フォーム */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>全体の学習活動記録</CardTitle>
-                    <CardDescription>全体的な学習状況のコントリビューショングラフ</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Suspense fallback={<div className="h-[150px] w-full bg-gray-100 animate-pulse rounded-md"></div>}>
-                      <ContributionGraph />
-                    </Suspense>
-                  </CardContent>
-                </Card>
-
-                {currentUser && (
-                  <PaizaActivityForm 
-                    userId={currentUser.id}
-                    onActivityAdded={() => setPaizaGraphKey(prev => prev + 1)}
-                  />
-                )}
-              </div>
+              {/* 全般的なコントリビューショングラフ */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>学習活動履歴</CardTitle>
+                  <CardDescription>全体的な学習活動の可視化</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ContributionGraph />
+                </CardContent>
+              </Card>
             </div>
           </TabsContent>
 
           <TabsContent value="goals">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <div>
-                  <CardTitle>学習目標</CardTitle>
-                  <CardDescription>設定した目標と進捗状況</CardDescription>
-                </div>
-                <CreateGoalModal />
-              </CardHeader>
-              <CardContent>
-                <Suspense fallback={<div className="h-[300px] w-full bg-gray-100 animate-pulse rounded-md"></div>}>
-                  <GoalsList />
-                </Suspense>
-              </CardContent>
-            </Card>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>最近の目標</CardTitle>
+                    <CardDescription>進行中の学習目標</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <GoalsList status="active" />
+                  </CardContent>
+                </Card>
+              </div>
+              <div>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>今後の予定</CardTitle>
+                    <CardDescription>締切が近づいている目標</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <UpcomingReminders />
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="groups">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>マイグループ</CardTitle>
-                  <CardDescription>参加中のグループ</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {groups.length > 0 ? (
-                    <ul className="space-y-4">
-                      {groups.map((group) => (
-                        <li key={group.id} className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className="bg-emerald-100 p-2 rounded-full">
-                              <Users className="h-5 w-5 text-emerald-600" />
-                            </div>
-                            <div>
-                              <p className="font-medium">{group.name}</p>
-                              <p className="text-sm text-gray-500">メンバー: {group.memberCount}人</p>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>参加中のグループ</CardTitle>
+                    <CardDescription>あなたが参加しているグループの一覧</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {stats?.groups?.map((group) => (
+                        <Link key={group.id} href={`/groups/${group.id}`}>
+                          <div className="p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                            <div className="flex justify-between items-center">
+                              <div>
+                                <h3 className="font-medium">{group.name}</h3>
+                                <p className="text-sm text-gray-500">{group.memberCount}人のメンバー</p>
+                              </div>
+                              <Users className="h-5 w-5 text-gray-400" />
                             </div>
                           </div>
-                          <Button variant="outline" size="sm" asChild>
-                            <Link href={`/groups/${group.id}`}>表示</Link>
-                          </Button>
-                        </li>
+                        </Link>
                       ))}
-                    </ul>
-                  ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      <Users className="h-12 w-12 mx-auto mb-2 text-gray-300" />
-                      <p>まだグループに参加していません</p>
+                      {(!stats?.groups || stats.groups.length === 0) && (
+                        <div className="text-center py-8 text-gray-500">
+                          <p>参加しているグループがありません</p>
+                          <p className="text-sm mt-2">
+                            <Link href="/groups" className="text-blue-600 hover:underline">
+                              グループページ
+                            </Link>
+                            でグループを探してみましょう
+                          </p>
+                        </div>
+                      )}
                     </div>
-                  )}
-                  <Button variant="outline" className="w-full mt-4">
-                    <Plus className="mr-2 h-4 w-4" />
-                    新しいグループを作成
-                  </Button>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>グループ活動</CardTitle>
-                  <CardDescription>最近のアクティビティ</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Suspense fallback={<div className="h-[300px] w-full bg-gray-100 animate-pulse rounded-md"></div>}>
-                    <GroupActivity />
-                  </Suspense>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </div>
+              <div>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>最近の活動</CardTitle>
+                    <CardDescription>グループでの最新の活動</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <GroupActivity limit={5} />
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </TabsContent>
 
           <TabsContent value="discussions">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <div>
-                  <CardTitle>ディスカッション</CardTitle>
-                  <CardDescription>グループ内の質問と回答</CardDescription>
-                </div>
-                <CreateQuestionModal />
-              </CardHeader>
-              <CardContent>
-                {discussions.length > 0 ? (
-                  <ul className="space-y-4">
-                    {discussions.map((discussion, index) => (
-                      <li key={discussion.id} className={index < discussions.length - 1 ? "border-b pb-4" : ""}>
-                        <div className="flex justify-between mb-2">
-                          <p className="font-medium">{discussion.title}</p>
-                          <span className="text-sm text-gray-500">{discussion.createdAt}</span>
-                        </div>
-                        <p className="text-sm text-gray-600 mb-2">{discussion.content}</p>
-                        <div className="flex justify-between">
-                          <span className="text-sm text-gray-500">{discussion.groupName}</span>
-                          <span className="text-sm text-gray-500">回答: {discussion.answerCount}件</span>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    <MessageSquare className="h-12 w-12 mx-auto mb-2 text-gray-300" />
-                    <p>まだディスカッションがありません</p>
-                  </div>
-                )}
-                <Button variant="outline" className="w-full mt-4">
-                  <Plus className="mr-2 h-4 w-4" />
-                  すべての質問を表示
-                </Button>
-              </CardContent>
-            </Card>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between">
+                    <div>
+                      <CardTitle>最新のディスカッション</CardTitle>
+                      <CardDescription>グループで活発に議論されているトピック</CardDescription>
+                    </div>
+                    <CreateQuestionModal />
+                  </CardHeader>
+                  <CardContent>
+                    {discussions.length === 0 ? (
+                      <div className="text-center py-8 text-gray-500">
+                        <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                        <p>ディスカッションがまだありません</p>
+                        <p className="text-sm mt-2">質問を投稿して議論を始めましょう</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {discussions.map((discussion) => (
+                          <div key={discussion.id} className="border-b pb-4 last:border-b-0">
+                            <h3 className="font-medium mb-2">{discussion.title}</h3>
+                            <p className="text-sm text-gray-600 mb-2">
+                              {discussion.content.substring(0, 100)}...
+                            </p>
+                            <div className="flex justify-between items-center text-xs text-gray-500">
+                              <span>{discussion.groupName}</span>
+                              <span>{discussion.answerCount}件の回答</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+              <div>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>スケジュール</CardTitle>
+                    <CardDescription>今日の予定</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Suspense fallback={<div className="animate-pulse h-32 bg-gray-200 rounded"></div>}>
+                      <ScheduleView />
+                    </Suspense>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
           </TabsContent>
         </Tabs>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>今後のリマインダー</CardTitle>
-              <CardDescription>スケジュールされた学習タスク</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Suspense fallback={<div className="h-[300px] w-full bg-gray-100 animate-pulse rounded-md"></div>}>
-                <UpcomingReminders />
-              </Suspense>
-            </CardContent>
-          </Card>
-
-          <Suspense fallback={<div className="h-[400px] w-full bg-gray-100 animate-pulse rounded-md"></div>}>
-            <ScheduleView />
-          </Suspense>
-        </div>
       </div>
     </div>
   )
