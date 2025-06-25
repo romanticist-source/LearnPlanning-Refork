@@ -30,43 +30,110 @@ export default function UpcomingReminders() {
           
           // リマインダー設定されているイベントのみフィルタリングし、今後の日付のみ表示
           const now = new Date()
+          const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()) // 今日の00:00:00
+          
           const upcomingEvents = events.filter((event: any) => {
-            const eventDate = new Date(event.date)
             // reminders配列があるか、hasReminderがtrueのイベントのみ
             const hasReminders = event.reminders?.length > 0 || event.hasReminder
-            return hasReminders && eventDate >= now
+            if (!hasReminders) return false
+            
+            // イベント日付を作成（時間も考慮）
+            const eventDate = new Date(event.date)
+            if (event.startTime) {
+              const [hours, minutes] = event.startTime.split(':')
+              eventDate.setHours(Number.parseInt(hours), Number.parseInt(minutes), 0, 0)
+            }
+            
+            // 今日以降のイベントのみ
+            return eventDate >= today
           })
           
-          // 日付順でソート
+          // 日付・時刻順でソート（近い順）
           upcomingEvents.sort((a: any, b: any) => {
             const dateA = new Date(a.date)
             const dateB = new Date(b.date)
+            
+            // 時刻があれば追加
+            if (a.startTime) {
+              const [hoursA, minutesA] = a.startTime.split(':')
+              dateA.setHours(Number.parseInt(hoursA), Number.parseInt(minutesA), 0, 0)
+            }
+            if (b.startTime) {
+              const [hoursB, minutesB] = b.startTime.split(':')
+              dateB.setHours(Number.parseInt(hoursB), Number.parseInt(minutesB), 0, 0)
+            }
+            
             return dateA.getTime() - dateB.getTime()
           })
           
+          // 最大5件に制限（最も近い予定に焦点を当てる）
+          const limitedEvents = upcomingEvents.slice(0, 20)
+          
           // リマインダー形式に変換
-          const reminderData: Reminder[] = upcomingEvents.map((event: any) => {
-            const startDate = new Date(event.date)
+          const reminderData: Reminder[] = limitedEvents.map((event: any) => {
+            const eventDate = new Date(event.date)
             const endDate = event.endDate ? new Date(event.endDate) : null
+            
+            // 時間があれば設定
+            if (event.startTime) {
+              const [hours, minutes] = event.startTime.split(':')
+              eventDate.setHours(Number.parseInt(hours), Number.parseInt(minutes), 0, 0)
+            }
+            
+            // 相対的な日付表示を生成
+            const getRelativeDate = (date: Date): string => {
+              const today = new Date()
+              const tomorrow = new Date(today)
+              tomorrow.setDate(tomorrow.getDate() + 1)
+              const dayAfterTomorrow = new Date(today)
+              dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2)
+              
+              const isSameDay = (date1: Date, date2: Date) => {
+                return date1.getFullYear() === date2.getFullYear() &&
+                       date1.getMonth() === date2.getMonth() &&
+                       date1.getDate() === date2.getDate()
+              }
+              
+              if (isSameDay(date, today)) {
+                return '今日'
+              } else if (isSameDay(date, tomorrow)) {
+                return '明日'
+              } else if (isSameDay(date, dayAfterTomorrow)) {
+                return '明後日'
+              } else {
+                return date.toLocaleDateString('ja-JP', {
+                  month: 'long',
+                  day: 'numeric',
+                  weekday: 'short'
+                })
+              }
+            }
+            
+            // 時間表示を生成
+            const getTimeDisplay = (): string => {
+              if (event.startTime && event.endTime) {
+                return `${event.startTime} - ${event.endTime}`
+              } else if (event.startTime) {
+                return event.startTime
+              } else if (endDate) {
+                return `${eventDate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })} - ${endDate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}`
+              } else {
+                return '時間未設定'
+              }
+            }
             
             return {
               id: event.id,
               title: event.title,
               description: event.description || '予定の詳細はありません',
-              date: startDate.toLocaleDateString('ja-JP', {
-                month: 'long',
-                day: 'numeric',
-                weekday: 'short'
-              }),
-              time: endDate 
-                ? `${startDate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })} - ${endDate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}`
-                : startDate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }),
+              date: getRelativeDate(eventDate),
+              time: getTimeDisplay(),
               completed: false
             }
           })
           
           setReminders(reminderData)
-          setEventData(upcomingEvents)
+          setEventData(limitedEvents)
         } else {
           setReminders([])
           setEventData([])
