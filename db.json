@@ -128,6 +128,38 @@
       "hasReminder": true,
       "createdAt": "2025-06-23T11:00:00Z",
       "updatedAt": "2025-06-23T11:00:00Z"
+    },
+    {
+      "id": "goal-1750864904082-3ta8p6j8p",
+      "title": "sdb",
+      "description": "d",
+      "deadline": "2025-06-27",
+      "priority": "medium",
+      "progress": 0,
+      "completed": false,
+      "userId": "user-1750850798419",
+      "groupId": null,
+      "isGroupGoal": false,
+      "isPublic": false,
+      "hasReminder": false,
+      "createdAt": "2025-06-25T15:21:44.089Z",
+      "updatedAt": "2025-06-25T15:21:44.089Z"
+    },
+    {
+      "id": "goal-1750865155485-0rvy6pvb0",
+      "title": ";;",
+      "description": ";",
+      "deadline": "2025-06-27",
+      "priority": "medium",
+      "progress": 0,
+      "completed": false,
+      "userId": "user-1750850798419",
+      "groupId": "LCZ41aH",
+      "isGroupGoal": true,
+      "isPublic": false,
+      "hasReminder": false,
+      "createdAt": "2025-06-25T15:25:55.492Z",
+      "updatedAt": "2025-06-25T15:25:55.492Z"
     }
   ],
   "subgoals": [
@@ -667,6 +699,42 @@
       "meetingUrl": null,
       "createdAt": "2025-06-25T14:32:39.816Z",
       "updatedAt": "2025-06-25T14:32:39.816Z"
+    },
+    {
+      "id": "event-1750864859568-rp0qdvh6c",
+      "title": "sd",
+      "description": "d",
+      "date": "2025-06-10",
+      "startTime": "00:20",
+      "endTime": "00:20",
+      "eventType": "event",
+      "isGroupEvent": true,
+      "groupId": "LCZ41aH",
+      "userId": "user-1750850798419",
+      "hasReminder": true,
+      "isRecurring": false,
+      "isOnline": false,
+      "meetingUrl": null,
+      "createdAt": "2025-06-25T15:20:59.579Z",
+      "updatedAt": "2025-06-25T15:20:59.579Z"
+    },
+    {
+      "id": "event-1750864886195-gohrxc7p5",
+      "title": "sd",
+      "description": "えs",
+      "date": "2025-06-27",
+      "startTime": "",
+      "endTime": "",
+      "eventType": "meeting",
+      "isGroupEvent": true,
+      "groupId": "LCZ41aH",
+      "userId": "user-1750850798419",
+      "hasReminder": true,
+      "isRecurring": false,
+      "isOnline": false,
+      "meetingUrl": null,
+      "createdAt": "2025-06-25T15:21:26.207Z",
+      "updatedAt": "2025-06-25T15:21:26.207Z"
     }
   ],
   "questions": [
@@ -746,6 +814,94 @@
       "likes": 0,
       "createdAt": "2025-06-25T14:58:33.979Z",
       "updatedAt": "2025-06-25T14:58:33.979Z"
+    },
+    {
+      "id": "reply-1750865191907-q9bm0ohbp",
+      "questionId": "question-2",
+      "content": "lll",
+      "userId": "user-1750850798419",
+      "isAccepted": false,
+      "likes": 5,
+      "createdAt": "2025-06-25T15:26:31.907Z",
+      "updatedAt": "2025-06-25T15:31:47.435Z"
+    },
+    {
+      "id": "reply-1750865510971-yuj9crmzs",
+      "questionId": "question-2",
+      "content": "sdfdvcdsvc",
+      "userId": "user-1750850798419",
+      "isAccepted": false,
+      "likes": 3,
+      "createdAt": "2025-06-25T15:31:50.971Z",
+      "updatedAt": "2025-06-25T15:31:54.066Z"
+    }
+  ],
+  "chat_messages": [
+    {
+      "id": "message-1",
+      "groupId": "group-1",
+      "userId": "user-1",
+      "content": "こんにちは！プログラミング勉強会のチャットへようこそ。\n今日はJavaScriptの基礎について話しましょう。",
+      "likes": 3,
+      "replies": [],
+      "attachments": [],
+      "createdAt": "2025-06-24T10:00:00Z",
+      "updatedAt": "2025-06-24T10:00:00Z"
+    },
+    {
+      "id": "message-2",
+      "groupId": "group-1",
+      "userId": "user-2",
+      "content": "よろしくお願いします！\n質問があるのですが、非同期処理について詳しく知りたいです。",
+      "likes": 2,
+      "replies": [],
+      "attachments": [],
+      "createdAt": "2025-06-24T10:15:00Z",
+      "updatedAt": "2025-06-24T10:15:00Z"
+    },
+    {
+      "id": "message-3",
+      "groupId": "group-1",
+      "userId": "user-1",
+      "content": "良い質問ですね！\nPromiseとasync/awaitについて説明しますね。\n\nまず、Promiseは非同期処理を扱うためのオブジェクトです。",
+      "likes": 5,
+      "replies": [],
+      "attachments": [],
+      "createdAt": "2025-06-24T10:30:00Z",
+      "updatedAt": "2025-06-24T10:30:00Z"
+    },
+    {
+      "id": "message-4",
+      "groupId": "group-2",
+      "userId": "user-2",
+      "content": "アルゴリズム特訓グループのチャットです。\n今日は何のアルゴリズムに挑戦しましょうか？",
+      "likes": 1,
+      "replies": [],
+      "attachments": [],
+      "createdAt": "2025-06-24T14:00:00Z",
+      "updatedAt": "2025-06-24T14:00:00Z"
+    },
+    {
+      "id": "message-1750864269434-uelblbht4",
+      "groupId": "LCZ41aH",
+      "userId": "user-1750850798419",
+      "content": "；；；；",
+      "likes": 0,
+      "replies": [],
+      "attachments": [],
+      "createdAt": "2025-06-25T15:11:09.434Z",
+      "updatedAt": "2025-06-25T15:11:09.434Z"
+    },
+    {
+      "id": "message-1750864295095-llv91gfka",
+      "groupId": "LCZ41aH",
+      "userId": "user-1750850798419",
+      "content": "；；；；",
+      "likes": 1,
+      "replies": [],
+      "attachments": [],
+      "createdAt": "2025-06-25T15:11:35.095Z",
+      "updatedAt": "2025-06-25T15:13:02.462Z"
     }
   ],
   "user_achievements": [

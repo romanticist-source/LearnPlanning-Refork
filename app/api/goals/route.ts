@@ -9,27 +9,25 @@ export async function GET(request: NextRequest) {
     const groupId = searchParams.get('groupId')
     const status = searchParams.get('status')
     
-    let url = `${JSON_SERVER_URL}/goals`
-    const params = new URLSearchParams()
+    // すべての目標を取得
+    const response = await fetch(`${JSON_SERVER_URL}/goals`)
+    let data = await response.json()
     
+    // フィルタリング処理
     if (groupId) {
-      params.append('groupId', groupId)
+      // グループ目標をフィルタリング
+      data = data.filter((goal: any) => 
+        goal.isGroupGoal === true && goal.groupId === groupId
+      )
     }
     
     if (status) {
       if (status === 'completed') {
-        params.append('completed', 'true')
+        data = data.filter((goal: any) => goal.completed === true)
       } else if (status === 'active') {
-        params.append('completed', 'false')
+        data = data.filter((goal: any) => goal.completed === false)
       }
     }
-    
-    if (params.toString()) {
-      url += `?${params.toString()}`
-    }
-    
-    const response = await fetch(url)
-    let data = await response.json()
     
     // サブ目標データも取得
     const goalsWithSubgoals = await Promise.all(

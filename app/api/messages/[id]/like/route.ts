@@ -7,7 +7,7 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const replyId = params.id
+    const messageId = params.id
     const body = await request.json()
     const { userId } = body
 
@@ -18,45 +18,41 @@ export async function POST(
       )
     }
 
-    // 返信を取得
-    const replyResponse = await fetch(`${JSON_SERVER_URL}/replies/${replyId}`)
-    if (!replyResponse.ok) {
+    // メッセージを取得
+    const messageResponse = await fetch(`${JSON_SERVER_URL}/chat_messages/${messageId}`)
+    if (!messageResponse.ok) {
       return NextResponse.json(
-        { error: '返信が見つかりません' },
+        { error: 'メッセージが見つかりません' },
         { status: 404 }
       )
     }
 
-    const reply = await replyResponse.json()
+    const message = await messageResponse.json()
 
     // いいね数を増加
-    const updatedReply = {
-      ...reply,
-      likes: (reply.likes || 0) + 1,
+    const updatedMessage = {
+      ...message,
+      likes: (message.likes || 0) + 1,
       updatedAt: new Date().toISOString()
     }
 
-    const updateResponse = await fetch(`${JSON_SERVER_URL}/replies/${replyId}`, {
+    const updateResponse = await fetch(`${JSON_SERVER_URL}/chat_messages/${messageId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(updatedReply),
+      body: JSON.stringify(updatedMessage),
     })
 
     if (!updateResponse.ok) {
       throw new Error('いいねの更新に失敗しました')
     }
 
-    const updatedReplyData = await updateResponse.json()
+    const updatedMessageData = await updateResponse.json()
 
-    return NextResponse.json({
-      id: updatedReplyData.id,
-      likes: updatedReplyData.likes,
-      questionId: updatedReplyData.questionId
-    })
+    return NextResponse.json(updatedMessageData)
   } catch (error) {
-    console.error('返信いいねエラー:', error)
+    console.error('いいねエラー:', error)
     return NextResponse.json(
       { error: 'いいねの送信に失敗しました' },
       { status: 500 }

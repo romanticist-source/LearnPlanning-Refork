@@ -13,9 +13,6 @@ import {
   MessageSquare,
   Settings,
   Plus,
-  Send,
-  FileText,
-  ImageIcon,
 } from "lucide-react"
 import Header from "@/components/header"
 import { Input } from "@/components/ui/input"
@@ -299,24 +296,9 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
                 <CardTitle>グループチャット</CardTitle>
                 <CardDescription>メンバーとコミュニケーションを取りましょう</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="flex flex-col h-[500px]">
-                  <div className="flex-1 overflow-y-auto mb-4">
-                    <GroupChatMessages groupId={resolvedParams.id} />
-                  </div>
-                  <Separator className="my-2" />
-                  <div className="flex items-center gap-2">
-                    <Button variant="outline" size="icon" className="shrink-0">
-                      <ImageIcon className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="icon" className="shrink-0">
-                      <FileText className="h-4 w-4" />
-                    </Button>
-                    <Input placeholder="メッセージを入力..." className="flex-1" />
-                    <Button size="icon" className="shrink-0">
-                      <Send className="h-4 w-4" />
-                    </Button>
-                  </div>
+              <CardContent className="p-0">
+                <div className="h-[600px]">
+                  <GroupChatMessages groupId={resolvedParams.id} />
                 </div>
               </CardContent>
             </Card>
