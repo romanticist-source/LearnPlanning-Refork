@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Calendar, Target, Users, BarChart3, MessageSquare, Plus } from "lucide-react"
 import ContributionGraph from "@/components/contribution-graph"
 import PaizaContributionGraph from "@/components/paiza-contribution-graph"
-import PaizaActivityForm from "@/components/paiza-activity-form"
+import PaizaActivityModal from "@/components/paiza-activity-modal"
 import GoalsList from "@/components/goals-list"
 import UpcomingReminders from "@/components/upcoming-reminders"
 import GroupActivity from "@/components/group-activity"
@@ -211,9 +211,17 @@ export default function DashboardPage() {
             <div className="space-y-6">
               {/* Paizaコントリビューショングラフ */}
               <Card>
-                <CardHeader>
-                  <CardTitle>Paiza学習活動</CardTitle>
-                  <CardDescription>Paizaでの学習活動を記録・可視化</CardDescription>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <div>
+                    <CardTitle>Paiza学習活動</CardTitle>
+                    <CardDescription>Paizaでの学習活動を記録・可視化</CardDescription>
+                  </div>
+                  {currentUser && (
+                    <PaizaActivityModal 
+                      userId={currentUser.id} 
+                      onActivityAdded={() => setPaizaGraphKey(prev => prev + 1)}
+                    />
+                  )}
                 </CardHeader>
                 <CardContent>
                   {currentUser && (
@@ -226,6 +234,7 @@ export default function DashboardPage() {
                   )}
                 </CardContent>
               </Card>
+
             </div>
           </TabsContent>
 
