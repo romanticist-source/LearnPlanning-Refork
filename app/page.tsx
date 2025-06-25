@@ -5,10 +5,12 @@ import { Button } from "@/components/ui/button"
 import { ArrowRight, Users, Target, Calendar, BarChart3, MessageSquare, Bell } from "lucide-react"
 import { SignInButton, SignOutButton } from "@/components/auth/auth-button"
 import { useState, useEffect } from "react"
+import { subscribeUser } from "@/app/action"
 
 // Notification Permission Component
 function NotificationPermission() {
   const [permission, setPermission] = useState<NotificationPermission | "default">("default");
+  const [isSubscribing, setIsSubscribing] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined" && "Notification" in window) {
@@ -18,28 +20,36 @@ function NotificationPermission() {
 
   const requestPermission = async () => {
     if (typeof window !== "undefined" && "Notification" in window) {
-      const result = await Notification.requestPermission();
-      setPermission(result);
+      setIsSubscribing(true);
       
-      if (result === "granted") {
-        // Register with your service worker
-        try {
+      try {
+        const result = await Notification.requestPermission();
+        setPermission(result);
+        
+        if (result === "granted") {
+          // Register with your service worker
           const registration = await navigator.serviceWorker.ready;
           const subscription = await registration.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || '')
+            applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? '')
           });
           
           // Send subscription to your server
-          // await fetch('/api/notifications/subscribe', {...})
+          const subscriptionResult = await subscribeUser(subscription.toJSON());
           
-          new Notification("通知が有効になりました", {
-            body: "学習の進捗やリマインダーをお届けします",
-            icon: "/icon-192x192.png"
-          });
-        } catch (error) {
-          console.error("Failed to subscribe to push notifications:", error);
+          if (subscriptionResult.success) {
+            new Notification("通知が有効になりました", {
+              body: "学習の進捗やリマインダーをお届けします",
+              icon: "/icon-192x192.png"
+            });
+          } else {
+            console.error("Failed to register subscription:", subscriptionResult.error);
+          }
         }
+      } catch (error) {
+        console.error("Failed to subscribe to push notifications:", error);
+      } finally {
+        setIsSubscribing(false);
       }
     }
   };
@@ -52,10 +62,14 @@ function NotificationPermission() {
       </p>
       <Button 
         onClick={requestPermission} 
-        disabled={!("Notification" in window) || permission === "granted"}
+        disabled={!("Notification" in window) || permission === "granted" || isSubscribing}
         className="bg-emerald-600 hover:bg-emerald-700"
       >
-        {permission === "granted" ? "通知は有効です" : "通知を有効にする"}
+        {(() => {
+          if (isSubscribing) return "設定中...";
+          if (permission === "granted") return "通知は有効です";
+          return "通知を有効にする";
+        })()}
         <Bell className="ml-2 h-4 w-4" />
       </Button>
     </div>
@@ -193,9 +207,9 @@ export default function Home() {
 }
 
 function FeatureCard({ icon, title, description }: {
-  icon: React.ReactNode
-  title: string
-  description: string
+  readonly icon: React.ReactNode
+  readonly title: string
+  readonly description: string
 }) {
   return (
     <div className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-shadow">

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/app/api/auth/auth'
+import { sendNotificationToUser } from '@/app/action'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3005'
 
 export async function PUT(
   request: NextRequest,
@@ -124,6 +125,29 @@ export async function PUT(
 
       if (!updateResponse.ok) {
         throw new Error('Failed to update invitation')
+      }
+
+      // グループ情報を取得
+      const groupResponse = await fetch(`${API_BASE_URL}/groups/${invitation.groupId}`)
+      const group = groupResponse.ok ? await groupResponse.json() : null
+
+      // 招待者に通知を送信
+      try {
+        if (group) {
+          await sendNotificationToUser(
+            invitation.inviterId,
+            'グループ招待が承認されました',
+            `${currentUser.name}さんが「${group.name}」グループへの招待を承認しました`,
+            {
+              type: 'invitation_accepted',
+              groupId: invitation.groupId,
+              invitationId: invitationId,
+              url: `/groups/${invitation.groupId}`
+            }
+          )
+        }
+      } catch (notificationError) {
+        console.error('Failed to send acceptance notification:', notificationError)
       }
 
       return NextResponse.json({

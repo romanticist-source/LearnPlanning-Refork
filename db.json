@@ -28,6 +28,17 @@
       "createdAt": "2025-06-25T11:26:38.419Z",
       "updatedAt": "2025-06-25T11:26:38.419Z",
       "lastLoginAt": "2025-06-25T14:55:26.714Z"
+    },
+    {
+      "id": "user-1750866406049",
+      "name": "sikigasa",
+      "email": "km3t1114@yahoo.co.jp",
+      "avatar": "https://avatars.githubusercontent.com/u/98858196?v=4",
+      "githubId": "sikigasa",
+      "bio": "",
+      "createdAt": "2025-06-25T15:46:46.049Z",
+      "updatedAt": "2025-06-25T15:46:46.049Z",
+      "lastLoginAt": "2025-06-25T15:47:03.799Z"
     }
   ],
   "goals": [
@@ -735,6 +746,24 @@
       "meetingUrl": null,
       "createdAt": "2025-06-25T15:21:26.207Z",
       "updatedAt": "2025-06-25T15:21:26.207Z"
+    },
+    {
+      "id": "event-test-today-1",
+      "title": "今日のテストイベント",
+      "description": "リマインダー通知のテスト用イベントです",
+      "date": "2025-06-26",
+      "startTime": "15:00",
+      "endTime": "16:00",
+      "eventType": "meeting",
+      "isGroupEvent": false,
+      "groupId": null,
+      "userId": "user-1750850798419",
+      "hasReminder": true,
+      "isRecurring": false,
+      "isOnline": false,
+      "meetingUrl": null,
+      "createdAt": "2025-06-26T00:00:00Z",
+      "updatedAt": "2025-06-26T00:00:00Z"
     }
   ],
   "questions": [
@@ -969,6 +998,53 @@
       "isRead": true,
       "relatedId": "member-2",
       "createdAt": "2025-01-20T00:00:00Z"
+    }
+  ],
+  "push_subscriptions": [
+    {
+      "id": "sub-example-1",
+      "userId": "user-1",
+      "subscription": {
+        "endpoint": "https://fcm.googleapis.com/fcm/send/example-endpoint",
+        "keys": {
+          "p256dh": "example-p256dh-key",
+          "auth": "example-auth-key"
+        }
+      },
+      "createdAt": "2025-06-26T00:00:00Z",
+      "updatedAt": "2025-06-26T00:00:00Z"
+    }
+  ],
+  "event_reminders": [
+    {
+      "id": "reminder-example-1",
+      "eventId": "event-1750860911632-1ses8w868",
+      "userId": "user-1750850798419",
+      "reminderType": "day_of",
+      "sentAt": null,
+      "isSent": false,
+      "scheduledFor": "2025-06-01T09:00:00Z",
+      "createdAt": "2025-06-26T00:00:00Z"
+    },
+    {
+      "id": "reminder-1750867273681-nedoj7pj4",
+      "eventId": "event-1750861167214-6ikho5rk3",
+      "userId": "user-1750850798419",
+      "reminderType": "day_of",
+      "sentAt": "2025-06-25T16:01:13.681Z",
+      "isSent": true,
+      "scheduledFor": "2025-06-25T16:01:13.681Z",
+      "createdAt": "2025-06-25T16:01:13.681Z"
+    },
+    {
+      "id": "reminder-1750867273683-nzeffbval",
+      "eventId": "event-1750861167214-6ikho5rk3",
+      "userId": "user-1750850798419",
+      "reminderType": "day_of",
+      "sentAt": "2025-06-25T16:01:13.683Z",
+      "isSent": true,
+      "scheduledFor": "2025-06-25T16:01:13.683Z",
+      "createdAt": "2025-06-25T16:01:13.683Z"
     }
   ]
 }

@@ -71,6 +71,40 @@ export async function POST(request: NextRequest) {
     }
 
     const createdEvent = await response.json()
+    
+    // hasReminderがtrueの場合、リマインダー設定を作成
+    if (createdEvent.hasReminder) {
+      try {
+        // イベント当日のmorning時刻を計算（例：9:00 AM）
+        const eventDate = new Date(createdEvent.date)
+        eventDate.setHours(9, 0, 0, 0) // 9:00 AMに設定
+        
+        const reminderRecord = {
+          id: `reminder-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
+          eventId: createdEvent.id,
+          userId: createdEvent.userId,
+          reminderType: 'day_of',
+          sentAt: null,
+          isSent: false,
+          scheduledFor: eventDate.toISOString(),
+          createdAt: new Date().toISOString()
+        }
+        
+        await fetch(`${JSON_SERVER_URL}/event_reminders`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(reminderRecord),
+        })
+        
+        console.log(`Reminder scheduled for event: ${createdEvent.title}`)
+      } catch (reminderError) {
+        console.error('Failed to create reminder record:', reminderError)
+        // リマインダー作成エラーはイベント作成の成功を妨げない
+      }
+    }
+    
     return NextResponse.json(createdEvent, { status: 201 })
   } catch (error) {
     console.error('イベント作成エラー:', error)

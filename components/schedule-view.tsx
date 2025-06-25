@@ -4,7 +4,7 @@ import { useState, useCallback, useMemo, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CalendarIcon, List, ChevronLeft, ChevronRight, Download } from "lucide-react"
+import { CalendarIcon, List, ChevronLeft, ChevronRight, Download, Bell } from "lucide-react"
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay } from "date-fns"
 import { ja } from "date-fns/locale"
 import { cn } from "@/lib/utils"
@@ -60,6 +60,31 @@ export default function ScheduleView() {
     fetchEvents()
   }, [])
 
+  // リマインダーチェック機能（1時間ごとに実行）
+  useEffect(() => {
+    const checkReminders = async () => {
+      try {
+        const response = await fetch('/api/reminders/check', {
+          method: 'POST',
+        })
+        if (response.ok) {
+          const result = await response.json()
+          console.log('Reminder check completed:', result)
+        }
+      } catch (error) {
+        console.error('Failed to check reminders:', error)
+      }
+    }
+
+    // 初回実行（コンポーネントマウント時）
+    checkReminders()
+
+    // 1時間ごとにリマインダーチェックを実行
+    const interval = setInterval(checkReminders, 60 * 60 * 1000) // 1時間 = 3600000ms
+
+    return () => clearInterval(interval)
+  }, [])
+
   const nextMonth = () => {
     setCurrentMonth(addMonths(currentMonth, 1))
   }
@@ -113,6 +138,32 @@ export default function ScheduleView() {
     }
   }
 
+  // 手動リマインダーチェック機能
+  const [checkingReminders, setCheckingReminders] = useState(false)
+  
+  const handleManualReminderCheck = async () => {
+    setCheckingReminders(true)
+    try {
+      const response = await fetch('/api/reminders/trigger', {
+        method: 'POST',
+      })
+      if (response.ok) {
+        const result = await response.json()
+        console.log('Manual reminder check completed:', result)
+        // 成功メッセージを表示（オプション）
+        alert('リマインダーチェックが完了しました')
+      } else {
+        console.error('Manual reminder check failed')
+        alert('リマインダーチェックに失敗しました')
+      }
+    } catch (error) {
+      console.error('Failed to trigger manual reminder check:', error)
+      alert('リマインダーチェックでエラーが発生しました')
+    } finally {
+      setCheckingReminders(false)
+    }
+  }
+
   // iCalファイルを生成して出力する関数
   const exportToICalendar = () => {
     // イベントデータをCalendarEvent形式に変換
@@ -163,6 +214,23 @@ export default function ScheduleView() {
                 </TabsTrigger>
               </TabsList>
             </Tabs>
+            {/* <Button
+              variant="outline"
+              size="sm"
+              onClick={handleManualReminderCheck}
+              disabled={checkingReminders}
+            >
+              <Bell className="h-4 w-4 mr-2" />
+              {checkingReminders ? 'チェック中...' : 'リマインダー確認'}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={exportToICalendar}
+            >
+              <Download className="h-4 w-4 mr-2" />
+              iCal出力
+            </Button> */}
             <CreateEventModal />
           </div>
         </div>

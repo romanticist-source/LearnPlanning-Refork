@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/app/api/auth/auth'
+import { sendNotificationToUser } from '@/app/action'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3005'
 
 export async function POST(
   request: NextRequest,
@@ -92,9 +93,9 @@ export async function POST(
       groupId: groupId,
       inviterId: currentUser.id,
       inviteeEmail: email,
-      inviteeName: name || 'ユーザー',
+      inviteeName: name ?? 'ユーザー',
       status: 'pending',
-      message: message || `${group.name}に参加しませんか？`,
+      message: message ?? `${group.name}に参加しませんか？`,
       createdAt: new Date().toISOString(),
       expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30日後
     }
@@ -112,6 +113,34 @@ export async function POST(
     }
 
     const createdInvitation = await inviteResponse.json()
+    
+    // 招待された可能性のあるユーザーに通知を送信
+    try {
+      // 招待されたユーザーが既にシステムに登録されているかチェック
+      const invitedUserResponse = await fetch(`${API_BASE_URL}/users?email=${email}`)
+      if (invitedUserResponse.ok) {
+        const invitedUsers = await invitedUserResponse.json()
+        if (invitedUsers.length > 0) {
+          const invitedUser = invitedUsers[0]
+          
+          // プッシュ通知を送信
+          await sendNotificationToUser(
+            invitedUser.id,
+            'グループ招待が届きました',
+            `${currentUser.name}さんから「${group.name}」グループへの招待が届きました`,
+            {
+              type: 'group_invitation',
+              groupId: groupId,
+              invitationId: createdInvitation.id,
+              url: '/dashboard' // 招待を確認できるページへのURL
+            }
+          )
+        }
+      }
+    } catch (notificationError) {
+      // 通知送信エラーは招待作成の成功を妨げない
+      console.error('Failed to send invitation notification:', notificationError)
+    }
     
     return NextResponse.json({
       message: 'Invitation sent successfully',
