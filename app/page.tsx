@@ -8,17 +8,22 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* ヘッダー */}
-      <header className="border-b">
+      <header className="border-b bg-white shadow-sm">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Target className="h-6 w-6 text-emerald-600" />
-            <h1 className="text-xl font-bold">Learn Planning</h1>
+          <div className="flex items-center gap-3">
+            <div className="bg-emerald-100 p-2 rounded-lg">
+              <Target className="h-6 w-6 text-emerald-600" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">Learn Planning</h1>
+              <p className="text-sm text-gray-500">グループ学習管理プラットフォーム</p>
+            </div>
           </div>
-          <div>
-            <SignInButton></SignInButton>
-            <SignOutButton></SignOutButton>
+          <div className="flex items-center gap-3">
+            <SignInButton />
+            <SignOutButton />
             <Link href="/dashboard">
-              <Button>
+              <Button className="bg-emerald-600 hover:bg-emerald-700">
                 ダッシュボードへ
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>

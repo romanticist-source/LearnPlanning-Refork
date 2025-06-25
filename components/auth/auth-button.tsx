@@ -1,4 +1,6 @@
-import { auth, signIn, signOut } from "@/app/api/auth/auth";
+import { auth, signIn, signOut } from "@/app/api/auth/auth"
+import { Button } from "@/components/ui/button"
+import { Github, LogOut } from "lucide-react"
 
 export async function SignInButton() {
   const session = await auth();
@@ -46,7 +48,10 @@ export async function SignInButton() {
           }
         }}
       >
-        <button type='submit'>Sign in</button>
+        <Button type="submit" variant="outline" className="flex items-center gap-2">
+          <Github className="h-4 w-4" />
+          GitHubでサインイン
+        </Button>
       </form>
     </>
   );
@@ -63,7 +68,10 @@ export async function SignOutButton() {
           await signOut();
         }}
       >
-        <button type='submit'>Sign out</button>
+        <Button type="submit" variant="ghost" className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
+          <LogOut className="h-4 w-4" />
+          サインアウト
+        </Button>
       </form>
     </>
   );
