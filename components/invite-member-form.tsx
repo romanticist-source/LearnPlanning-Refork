@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
-export default function InviteMemberForm() {
+export default function InviteMemberForm({ groupId }: { groupId: string }) {
   const [inviteMethod, setInviteMethod] = useState<"email" | "search">("email")
   const [searchQuery, setSearchQuery] = useState("")
   const [emailInput, setEmailInput] = useState("")
@@ -66,38 +66,32 @@ export default function InviteMemberForm() {
   // 招待を送信
   const sendInvitations = async () => {
     try {
-      const invitations = []
-      
+      const invitations: { email: string; name?: string }[] = []
+
       // メールアドレスでの招待
       if (inviteMethod === "email") {
         for (const email of emailList) {
-          invitations.push({
-            inviteeEmail: email,
-            message: message || "グループに参加しませんか？"
-          })
+          invitations.push({ email })
         }
       }
-      
+
       // ユーザー選択での招待
       if (inviteMethod === "search") {
         for (const user of selectedUsers) {
-          invitations.push({
-            inviteeEmail: user.email,
-            inviteeName: user.name,
-            message: message || "グループに参加しませんか？"
-          })
+          invitations.push({ email: user.email, name: user.name })
         }
       }
-      
-      // TODO: 実際のAPIエンドポイントに招待を送信
-      // const response = await fetch('/api/invitations', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ invitations })
-      // })
-      
+
+      // API へ招待を送信
+      for (const inv of invitations) {
+        await fetch(`/api/groups/${groupId}/invite`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: inv.email, name: inv.name, message }),
+        })
+      }
+
       console.log("招待を送信しました")
-      console.log("招待データ:", invitations)
       
       // フォームをリセット
       setEmailList([])

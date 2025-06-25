@@ -165,86 +165,71 @@ export default function GroupsPage() {
                   <CardDescription>参加招待されているグループ</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    <div className="border rounded-lg p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-medium">クラウドインフラ勉強会</h3>
-                          <p className="text-sm text-gray-600">AWSやGCPなどのクラウドインフラを学ぶグループ</p>
-                          <p className="text-xs text-gray-500 mt-1">招待者: 山田さん</p>
+                  {invitations.length === 0 ? (
+                    <p className="text-gray-500">招待はありません。</p>
+                  ) : (
+                    <div className="space-y-4">
+                      {invitations.map((inv) => (
+                        <div key={inv.id} className="border rounded-lg p-4">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <h3 className="font-medium">{inv.group?.name ?? 'グループ'}</h3>
+                              {inv.message && (
+                                <p className="text-sm text-gray-600">{inv.message}</p>
+                              )}
+                              {inv.inviter && (
+                                <p className="text-xs text-gray-500 mt-1">招待者: {inv.inviter.name}</p>
+                              )}
+                            </div>
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={async () => {
+                                  try {
+                                    const res = await fetch(`/api/invitations/${inv.id}`, {
+                                      method: 'PUT',
+                                      headers: { 'Content-Type': 'application/json' },
+                                      body: JSON.stringify({ action: 'reject' }),
+                                    })
+                                    if (res.ok) {
+                                      setInvitations((prev) => prev.filter((i) => i.id !== inv.id))
+                                      toast({ title: '招待を拒否しました' })
+                                    }
+                                  } catch (e) {
+                                    console.error(e)
+                                  }
+                                }}
+                              >
+                                拒否
+                              </Button>
+                              <Button
+                                size="sm"
+                                onClick={async () => {
+                                  try {
+                                    const res = await fetch(`/api/invitations/${inv.id}`, {
+                                      method: 'PUT',
+                                      headers: { 'Content-Type': 'application/json' },
+                                      body: JSON.stringify({ action: 'accept' }),
+                                    })
+                                    if (res.ok) {
+                                      const data = await res.json()
+                                      toast({ title: 'グループに参加しました' })
+                                      window.location.href = `/groups/${data.invitation.groupId}`
+                                    }
+                                  } catch (e) {
+                                    console.error(e)
+                                  }
+                                }}
+                              >
+                                参加
+                              </Button>
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => {
-                              toast({
-                                title: "招待を拒否しました",
-                                description: "クラウドインフラ勉強会への招待を拒否しました。",
-                              })
-                            }}
-                          >
-                            拒否
-                          </Button>
-                          <Button
-                            size="sm"
-                            onClick={() => {
-                              toast({
-                                title: "グループに参加しました",
-                                description: "クラウドインフラ勉強会に参加しました。",
-                                action: (
-                                  <ToastAction altText="グループページへ">
-                                    <Link href="/groups/7">グループページへ</Link>
-                                  </ToastAction>
-                                ),
-                              })
-                            }}
-                          >
-                            参加
-                          </Button>
-                        </div>
-                      </div>
+                      ))}
                     </div>
-                    <div className="border rounded-lg p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-medium">セキュリティ勉強会</h3>
-                          <p className="text-sm text-gray-600">Webアプリケーションのセキュリティを学ぶグループ</p>
-                          <p className="text-xs text-gray-500 mt-1">招待者: 佐藤さん</p>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => {
-                              toast({
-                                title: "招待を拒否しました",
-                                description: "セキュリティ勉強会への招待を拒否しました。",
-                              })
-                            }}
-                          >
-                            拒否
-                          </Button>
-                          <Button
-                            size="sm"
-                            onClick={() => {
-                              toast({
-                                title: "グループに参加しました",
-                                description: "セキュリティ勉強会に参加しました。",
-                                action: (
-                                  <ToastAction altText="グループページへ">
-                                    <Link href="/groups/8">グループページへ</Link>
-                                  </ToastAction>
-                                ),
-                              })
-                            }}
-                          >
-                            参加
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  )}
                 </CardContent>
               </Card>
             </div>

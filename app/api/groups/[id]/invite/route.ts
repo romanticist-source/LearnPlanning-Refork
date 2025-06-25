@@ -142,9 +142,13 @@ export async function POST(
       console.error('Failed to send invitation notification:', notificationError)
     }
     
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || request.headers.get('origin') || ''
+    const inviteUrl = `${appUrl}/invite/${createdInvitation.id}`
+
     return NextResponse.json({
       message: 'Invitation sent successfully',
-      invitation: createdInvitation
+      invitation: createdInvitation,
+      inviteUrl
     }, { status: 201 })
   } catch (error) {
     console.error('Error sending invitation:', error)
