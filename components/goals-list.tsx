@@ -4,7 +4,25 @@ import { useState, useEffect } from "react"
 import { Progress } from "@/components/ui/progress"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
-import { ChevronDown, ChevronUp, MoreHorizontal } from "lucide-react"
+import { ChevronDown, ChevronUp, MoreHorizontal, Check, Trash2 } from "lucide-react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { format } from "date-fns"
 import { ja } from "date-fns/locale"
 
@@ -22,6 +40,7 @@ export default function GoalsList({ status = 'all' }: { status?: 'all' | 'active
   const [goals, setGoals] = useState<Goal[]>([])
   const [loading, setLoading] = useState(true)
   const [expandedGoals, setExpandedGoals] = useState<Record<string, boolean>>({})
+  const [showCompleted, setShowCompleted] = useState(true)
 
   // データを取得
   useEffect(() => {
@@ -106,6 +125,64 @@ export default function GoalsList({ status = 'all' }: { status?: 'all' | 'active
     return Math.round(totalProgress / subgoals.length)
   }
 
+  // 目標を完了状態にマークする
+  const markGoalAsCompleted = async (goalId: string) => {
+    try {
+      const response = await fetch(`/api/goals/${goalId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          completed: true,
+          progress: 100,
+          completedAt: new Date().toISOString(),
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to mark goal as completed')
+      }
+
+      // 目標リストを更新
+      setGoals((prevGoals) =>
+        prevGoals.map((goal) =>
+          goal.id === goalId
+            ? { ...goal, completed: true, progress: 100 }
+            : goal
+        )
+      )
+
+      // 成功メッセージ
+      alert('目標を完了としてマークしました！')
+    } catch (error) {
+      console.error('Error marking goal as completed:', error)
+      alert('目標の完了処理に失敗しました')
+    }
+  }
+
+  // 目標を削除する
+  const deleteGoal = async (goalId: string) => {
+    try {
+      const response = await fetch(`/api/goals/${goalId}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to delete goal')
+      }
+
+      // 目標リストから削除
+      setGoals((prevGoals) => prevGoals.filter((goal) => goal.id !== goalId))
+
+      // 成功メッセージ
+      alert('目標を削除しました')
+    } catch (error) {
+      console.error('Error deleting goal:', error)
+      alert('目標の削除に失敗しました')
+    }
+  }
+
   if (loading) {
     return (
       <div className="space-y-4">
@@ -122,6 +199,11 @@ export default function GoalsList({ status = 'all' }: { status?: 'all' | 'active
     )
   }
 
+  // 表示する目標をフィルタリング
+  const displayGoals = showCompleted 
+    ? goals 
+    : goals.filter(goal => !goal.completed)
+
   if (goals.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
@@ -133,27 +215,97 @@ export default function GoalsList({ status = 'all' }: { status?: 'all' | 'active
 
   return (
     <div className="space-y-4">
-      {goals.map((goal) => (
+      {/* 完了した目標の表示/非表示切り替え */}
+      <div className="flex items-center justify-between">
+        <div className="text-sm text-gray-600">
+          目標 {displayGoals.length} 件 {goals.length > displayGoals.length && `(完了済み ${goals.length - displayGoals.length} 件を非表示)`}
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setShowCompleted(!showCompleted)}
+        >
+          {showCompleted ? '完了済みを非表示' : '完了済みを表示'}
+        </Button>
+      </div>
+      {displayGoals.map((goal) => (
         <div key={goal.id} className="border rounded-lg overflow-hidden">
-          <div className="p-4 bg-gray-50">
+          <div className={`p-4 ${goal.completed ? 'bg-green-50' : 'bg-gray-50'}`}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Button variant="ghost" size="sm" className="p-0 h-8 w-8" onClick={() => toggleExpand(goal.id)}>
                   {expandedGoals[goal.id] ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                 </Button>
-                <h3 className="font-medium">{goal.title}</h3>
+                <h3 className={`font-medium ${goal.completed ? 'line-through text-gray-400' : ''}`}>
+                  {goal.title}
+                  {goal.completed && (
+                    <span className="ml-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                      完了
+                    </span>
+                  )}
+                </h3>
               </div>
-              <Button variant="ghost" size="sm" className="p-0 h-8 w-8">
-                <MoreHorizontal size={18} />
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="p-0 h-8 w-8">
+                    <MoreHorizontal size={18} />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {!goal.completed && (
+                    <>
+                      <DropdownMenuItem onClick={() => markGoalAsCompleted(goal.id)}>
+                        <Check className="mr-2 h-4 w-4" />
+                        完了としてマーク
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                    </>
+                  )}
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <DropdownMenuItem 
+                        className="text-red-600 focus:text-red-600"
+                        onSelect={(e) => e.preventDefault()}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        削除
+                      </DropdownMenuItem>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>目標を削除しますか？</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          この操作は取り消せません。目標「{goal.title}」とすべてのサブ目標が削除されます。
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>キャンセル</AlertDialogCancel>
+                        <AlertDialogAction
+                          className="bg-red-600 text-white hover:bg-red-700"
+                          onClick={() => deleteGoal(goal.id)}
+                        >
+                          削除
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
             <p className="text-sm text-gray-600 ml-10">{goal.description}</p>
             <div className="flex justify-between items-center mt-2 ml-10">
               <div className="flex items-center gap-2">
-                <Progress value={goal.progress} className="w-32 h-2" />
-                <span className="text-sm text-gray-600">{goal.progress}%</span>
+                <Progress 
+                  value={goal.progress} 
+                  className={`w-32 h-2 ${goal.completed ? 'bg-green-200' : ''}`}
+                />
+                <span className={`text-sm ${goal.completed ? 'text-green-600 font-medium' : 'text-gray-600'}`}>
+                  {goal.progress}%
+                </span>
               </div>
-              <span className="text-sm text-gray-600">期限: {goal.deadline}</span>
+              <span className={`text-sm ${goal.completed ? 'text-green-600' : 'text-gray-600'}`}>
+                期限: {goal.deadline}
+              </span>
             </div>
           </div>
 

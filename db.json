@@ -64,114 +64,38 @@
       "updatedAt": "2025-06-20T10:00:00Z"
     },
     {
-      "title": ";",
-      "description": ";",
-      "deadline": "2025-06-03T15:00:00.000Z",
-      "priority": "medium",
-      "progress": 0,
-      "completed": false,
-      "groupId": null,
-      "isGroupGoal": false,
-      "isPublic": false,
-      "hasReminder": false,
-      "createdAt": "2025-06-25T11:17:27.621Z",
-      "updatedAt": "2025-06-25T11:17:27.621Z",
-      "id": "8KYxM1q"
-    },
-    {
-      "title": ":::",
+      "id": "goal-1750861442944-rdjl2640z",
+      "title": "::::",
       "description": "::::",
-      "deadline": null,
-      "priority": "medium",
-      "progress": 0,
-      "completed": false,
-      "groupId": null,
-      "isGroupGoal": false,
-      "isPublic": false,
-      "hasReminder": false,
-      "createdAt": "2025-06-25T11:21:45.494Z",
-      "updatedAt": "2025-06-25T11:21:45.494Z",
-      "id": "V3Eu7uN"
-    },
-    {
-      "id": "goal-1750850852270-uen4fbq34",
-      "title": "＠＠＠＠＠",
-      "description": "＠＠",
-      "deadline": "2025-06-10T15:00:00.000Z",
-      "priority": "medium",
-      "progress": 0,
-      "completed": false,
+      "deadline": "2025-06-03",
+      "priority": "low",
+      "progress": 100,
+      "completed": true,
       "userId": "user-1750850798419",
       "groupId": null,
       "isGroupGoal": false,
       "isPublic": false,
       "hasReminder": false,
-      "createdAt": "2025-06-25T11:27:32.288Z",
-      "updatedAt": "2025-06-25T11:27:32.288Z"
+      "createdAt": "2025-06-25T14:24:02.956Z",
+      "updatedAt": "2025-06-25T14:25:58.477Z",
+      "completedAt": "2025-06-25T14:25:56.539Z"
     },
     {
-      "id": "goal-1750852425824-tlqjgbgbg",
-      "title": "：",
-      "description": "：",
-      "deadline": "2025-06-02T15:00:00.000Z",
+      "id": "goal-1750861457069-zdhwz1wdl",
+      "title": "wa-i",
+      "description": "llll",
+      "deadline": "2025-06-26",
       "priority": "medium",
-      "progress": 0,
-      "completed": false,
+      "progress": 100,
+      "completed": true,
       "userId": "user-1750850798419",
       "groupId": null,
       "isGroupGoal": false,
       "isPublic": false,
       "hasReminder": false,
-      "createdAt": "2025-06-25T11:53:45.834Z",
-      "updatedAt": "2025-06-25T11:53:45.834Z"
-    },
-    {
-      "id": "goal-1750857447874-l3rjypdd7",
-      "title": "：",
-      "description": "：：：",
-      "deadline": "2025-06-03T15:00:00.000Z",
-      "priority": "medium",
-      "progress": 0,
-      "completed": false,
-      "userId": "user-1750850798419",
-      "groupId": null,
-      "isGroupGoal": false,
-      "isPublic": false,
-      "hasReminder": true,
-      "createdAt": "2025-06-25T13:17:27.881Z",
-      "updatedAt": "2025-06-25T13:17:27.881Z"
-    },
-    {
-      "id": "goal-1750858914195-vz2n02m3a",
-      "title": "sd",
-      "description": "sds",
-      "deadline": "2025-06-02T15:00:00.000Z",
-      "priority": "medium",
-      "progress": 0,
-      "completed": false,
-      "userId": "user-1750850798419",
-      "groupId": null,
-      "isGroupGoal": false,
-      "isPublic": false,
-      "hasReminder": false,
-      "createdAt": "2025-06-25T13:41:54.205Z",
-      "updatedAt": "2025-06-25T13:41:54.205Z"
-    },
-    {
-      "id": "goal-1750858923460-sbt16k3jz",
-      "title": "ss",
-      "description": "s",
-      "deadline": "2025-06-01T15:00:00.000Z",
-      "priority": "medium",
-      "progress": 0,
-      "completed": false,
-      "userId": "user-1750850798419",
-      "groupId": null,
-      "isGroupGoal": false,
-      "isPublic": false,
-      "hasReminder": true,
-      "createdAt": "2025-06-25T13:42:03.468Z",
-      "updatedAt": "2025-06-25T13:42:03.468Z"
+      "createdAt": "2025-06-25T14:24:17.073Z",
+      "updatedAt": "2025-06-25T14:26:02.634Z",
+      "completedAt": "2025-06-25T14:26:02.505Z"
     }
   ],
   "subgoals": [
@@ -316,34 +240,6 @@
       "ownerId": "user-1750850798419",
       "createdAt": "2025-06-25T13:55:14.157Z",
       "updatedAt": "2025-06-25T13:55:14.157Z"
-    },
-    {
-      "id": "group-1750859879408-aylbk6s1o",
-      "name": "あああ",
-      "description": "ああ",
-      "category": "general",
-      "maxMembers": 10,
-      "tags": [],
-      "isPublic": true,
-      "requireApproval": true,
-      "allowMemberInvites": true,
-      "ownerId": "user-1750850798419",
-      "createdAt": "2025-06-25T13:57:59.420Z",
-      "updatedAt": "2025-06-25T13:57:59.420Z"
-    },
-    {
-      "id": "group-1750859914916-azg1ek9k4",
-      "name": "っd",
-      "description": "d",
-      "category": "general",
-      "maxMembers": 10,
-      "tags": [],
-      "isPublic": true,
-      "requireApproval": false,
-      "allowMemberInvites": true,
-      "ownerId": "user-1750850798419",
-      "createdAt": "2025-06-25T13:58:34.923Z",
-      "updatedAt": "2025-06-25T13:58:34.923Z"
     }
   ],
   "group_members": [
@@ -579,301 +475,6 @@
   ],
   "events": [
     {
-      "id": "event-1",
-      "title": "プログラミング勉強会 第10回",
-      "description": "今回はJavaScriptのDOM操作について学習します",
-      "date": "2025-07-02T20:00:00Z",
-      "endDate": "2025-07-02T21:30:00Z",
-      "location": "オンライン",
-      "isOnline": true,
-      "meetingUrl": "https://meet.google.com/abc-defg-hij",
-      "maxParticipants": 20,
-      "groupId": "group-1",
-      "organizerId": "user-1",
-      "attendees": [
-        "user-1",
-        "user-2"
-      ],
-      "reminders": [
-        {
-          "type": "email",
-          "minutesBefore": 60
-        },
-        {
-          "type": "notification",
-          "minutesBefore": 15
-        }
-      ],
-      "tags": [
-        "JavaScript",
-        "DOM",
-        "勉強会"
-      ],
-      "isRecurring": true,
-      "recurringPattern": "weekly",
-      "createdAt": "2025-06-20T10:00:00Z",
-      "updatedAt": "2025-06-25T15:00:00Z"
-    },
-    {
-      "id": "event-2",
-      "title": "アルゴリズム競技プログラミング練習",
-      "description": "AtCoderの過去問を使って練習しましょう",
-      "date": "2025-07-05T14:00:00Z",
-      "endDate": "2025-07-05T16:00:00Z",
-      "location": "オンライン",
-      "isOnline": true,
-      "meetingUrl": "https://discord.gg/programming",
-      "maxParticipants": 15,
-      "groupId": "group-2",
-      "organizerId": "user-2",
-      "attendees": [
-        "user-2"
-      ],
-      "reminders": [
-        {
-          "type": "notification",
-          "minutesBefore": 30
-        }
-      ],
-      "tags": [
-        "アルゴリズム",
-        "競技プログラミング",
-        "AtCoder"
-      ],
-      "isRecurring": true,
-      "recurringPattern": "weekly",
-      "createdAt": "2025-06-22T12:00:00Z",
-      "updatedAt": "2025-06-24T09:00:00Z"
-    },
-    {
-      "id": "event-1750852255186-14iw8cs8n",
-      "title": "d",
-      "description": "d",
-      "date": "2025-06-02",
-      "startTime": "",
-      "endTime": "",
-      "eventType": "meeting",
-      "isGroupEvent": true,
-      "groupId": null,
-      "userId": "user-1750850798419",
-      "hasReminder": false,
-      "isRecurring": false,
-      "isOnline": false,
-      "meetingUrl": null,
-      "createdAt": "2025-06-25T11:50:55.623Z",
-      "updatedAt": "2025-06-25T11:50:55.623Z"
-    },
-    {
-      "id": "event-1750852446587-itrra9f97",
-      "title": "：",
-      "description": "：",
-      "date": "2025-06-10",
-      "startTime": "",
-      "endTime": "",
-      "eventType": "meeting",
-      "isGroupEvent": true,
-      "groupId": "1",
-      "userId": "user-1750850798419",
-      "hasReminder": true,
-      "isRecurring": false,
-      "isOnline": false,
-      "meetingUrl": null,
-      "createdAt": "2025-06-25T11:54:07.283Z",
-      "updatedAt": "2025-06-25T11:54:07.283Z"
-    },
-    {
-      "id": "test-reminder-event-1",
-      "title": "JavaScript学習セッション",
-      "description": "async/awaitについて学習します",
-      "date": "2025-07-15T19:00:00Z",
-      "endDate": "2025-07-15T21:00:00Z",
-      "location": "オンライン",
-      "isOnline": true,
-      "reminders": [
-        {
-          "type": "notification",
-          "minutesBefore": 30
-        }
-      ],
-      "tags": [
-        "JavaScript",
-        "学習"
-      ],
-      "isRecurring": false,
-      "createdAt": "2025-06-25T10:00:00Z"
-    },
-    {
-      "id": "test-reminder-event-2",
-      "title": "課題提",
-      "description": "Todoアプリの最終提出期限です",
-      "date": "2025-07-20T23:59:00Z",
-      "location": "オンライン提出",
-      "isOnline": false,
-      "reminders": [
-        {
-          "type": "email",
-          "minutesBefore": 1440
-        },
-        {
-          "type": "notification",
-          "minutesBefore": 60
-        }
-      ],
-      "tags": [
-        "課題",
-        "締切"
-      ],
-      "isRecurring": false,
-      "createdAt": "2025-06-25T10:00:00Z"
-    },
-    {
-      "id": "event-1750860283821-sco163gmq",
-      "title": "「「",
-      "description": "「「",
-      "date": "2025-06-01",
-      "startTime": "22:04",
-      "endTime": "23:04",
-      "eventType": "meeting",
-      "isGroupEvent": true,
-      "groupId": "1",
-      "userId": "user-1750850798419",
-      "hasReminder": true,
-      "isRecurring": false,
-      "isOnline": false,
-      "meetingUrl": null,
-      "createdAt": "2025-06-25T14:04:44.219Z",
-      "updatedAt": "2025-06-25T14:04:44.219Z"
-    },
-    {
-      "id": "event-1750860312670-2k39jug3e",
-      "title": "：：",
-      "description": "：：",
-      "date": "2025-06-01",
-      "startTime": "23:06",
-      "endTime": "23:05",
-      "eventType": "meeting",
-      "isGroupEvent": true,
-      "groupId": "1",
-      "userId": "user-1750850798419",
-      "hasReminder": true,
-      "isRecurring": false,
-      "isOnline": false,
-      "meetingUrl": null,
-      "createdAt": "2025-06-25T14:05:12.678Z",
-      "updatedAt": "2025-06-25T14:05:12.678Z"
-    },
-    {
-      "id": "event-1750860412507-tgtxdlt12",
-      "title": ":",
-      "description": ":",
-      "date": "2025-06-08",
-      "startTime": "23:07",
-      "endTime": "23:06",
-      "eventType": "meeting",
-      "isGroupEvent": true,
-      "groupId": "1",
-      "userId": "user-1750850798419",
-      "hasReminder": true,
-      "isRecurring": false,
-      "isOnline": false,
-      "meetingUrl": null,
-      "createdAt": "2025-06-25T14:06:53.287Z",
-      "updatedAt": "2025-06-25T14:06:53.287Z"
-    },
-    {
-      "id": "event-group-lczaj-1",
-      "title": "APIテストグループ キックオフミーティング",
-      "description": "プロジェクトの開始と目標設定について話し合います",
-      "date": "2025-07-05T19:00:00Z",
-      "startTime": "19:00",
-      "endTime": "20:00",
-      "eventType": "meeting",
-      "isOnline": true,
-      "location": "Zoom",
-      "groupId": "LCZ41aH",
-      "organizerId": "user-1750850798419",
-      "attendees": [
-        "user-1750850798419"
-      ],
-      "hasReminder": true,
-      "reminders": [
-        {
-          "type": "email",
-          "minutesBefore": 30
-        }
-      ],
-      "createdAt": "2025-06-25T14:00:00Z"
-    },
-    {
-      "id": "event-group-lczaj-2",
-      "title": "プロジェクト進捗確認会",
-      "description": "第1週の進捗を確認し、次週の計画を立てます",
-      "date": "2025-07-12T14:00:00Z",
-      "startTime": "14:00",
-      "endTime": "15:30",
-      "eventType": "meeting",
-      "isOnline": true,
-      "location": "Google Meet",
-      "groupId": "LCZ41aH",
-      "organizerId": "user-1750850798419",
-      "attendees": [
-        "user-1750850798419"
-      ],
-      "hasReminder": true,
-      "reminders": [
-        {
-          "type": "email",
-          "minutesBefore": 60
-        }
-      ],
-      "createdAt": "2025-06-25T14:05:00Z"
-    },
-    {
-      "id": "event-group-lczaj-3",
-      "title": "プロトタイプ提出締切",
-      "description": "第1回プロトタイプの提出締切日です",
-      "date": "2025-07-18T23:59:00Z",
-      "startTime": "23:59",
-      "eventType": "deadline",
-      "isOnline": false,
-      "location": "提出フォーム",
-      "groupId": "LCZ41aH",
-      "organizerId": "user-1750850798419",
-      "attendees": [
-        "user-1750850798419"
-      ],
-      "hasReminder": true,
-      "reminders": [
-        {
-          "type": "email",
-          "minutesBefore": 1440
-        },
-        {
-          "type": "email",
-          "minutesBefore": 60
-        }
-      ],
-      "createdAt": "2025-06-25T14:10:00Z"
-    },
-    {
-      "id": "event-1750860876944-ojlqajwam",
-      "title": "＠＠＠＠",
-      "description": "＠＠＠＠",
-      "date": "2025-06-03",
-      "startTime": "",
-      "endTime": "",
-      "eventType": "meeting",
-      "isGroupEvent": true,
-      "groupId": "1",
-      "userId": "user-1750850798419",
-      "hasReminder": true,
-      "isRecurring": false,
-      "isOnline": false,
-      "meetingUrl": null,
-      "createdAt": "2025-06-25T14:14:36.967Z",
-      "updatedAt": "2025-06-25T14:14:36.967Z"
-    },
-    {
       "id": "event-1750860911632-1ses8w868",
       "title": "：：",
       "description": "：：",
@@ -944,110 +545,45 @@
       "meetingUrl": null,
       "createdAt": "2025-06-25T14:19:27.705Z",
       "updatedAt": "2025-06-25T14:19:27.705Z"
+    },
+    {
+      "id": "event-1750861291358-zolf05qod",
+      "title": ";;;",
+      "description": ";;;",
+      "date": "2025-06-02",
+      "startTime": "",
+      "endTime": "",
+      "eventType": "meeting",
+      "isGroupEvent": true,
+      "groupId": "1",
+      "userId": "user-1750850798419",
+      "hasReminder": true,
+      "isRecurring": false,
+      "isOnline": false,
+      "meetingUrl": null,
+      "createdAt": "2025-06-25T14:21:31.364Z",
+      "updatedAt": "2025-06-25T14:21:31.364Z"
+    },
+    {
+      "id": "event-1750861690108-cy5dtdsgl",
+      "title": "：：：",
+      "description": "：",
+      "date": "2025-06-26",
+      "startTime": "",
+      "endTime": "",
+      "eventType": "deadline",
+      "isGroupEvent": true,
+      "groupId": "1",
+      "userId": "user-1750850798419",
+      "hasReminder": true,
+      "isRecurring": false,
+      "isOnline": false,
+      "meetingUrl": null,
+      "createdAt": "2025-06-25T14:28:10.121Z",
+      "updatedAt": "2025-06-25T14:28:10.121Z"
     }
   ],
   "questions": [
-    {
-      "id": "question-1",
-      "title": "JavaScriptの非同期処理について",
-      "content": "Promise と async/await の違いが理解できません。どなたか詳しく教えていただけませんか？",
-      "authorId": "user-2",
-      "groupId": "group-1",
-      "tags": [
-        "JavaScript",
-        "非同期処理",
-        "Promise",
-        "async/await"
-      ],
-      "attachments": [],
-      "answers": [
-        {
-          "id": "answer-1",
-          "questionId": "question-1",
-          "authorId": "user-1",
-          "content": "Promiseは非同期処理の結果を表すオブジェクトで、async/awaitはPromiseをより読みやすく書くための構文糖衣です。\n\n例えば：\n```javascript\n// Promise\nfetch('/api/data')\n  .then(response => response.json())\n  .then(data => console.log(data))\n  .catch(error => console.error(error));\n\n// async/await\nasync function fetchData() {\n  try {\n    const response = await fetch('/api/data');\n    const data = await response.json();\n    console.log(data);\n  } catch (error) {\n    console.error(error);\n  }\n}\n```",
-          "isAccepted": true,
-          "likes": 5,
-          "createdAt": "2025-06-21T10:30:00Z",
-          "updatedAt": "2025-06-21T10:30:00Z"
-        }
-      ],
-      "views": 15,
-      "likes": 8,
-      "status": "answered",
-      "createdAt": "2025-06-20T16:00:00Z",
-      "updatedAt": "2025-06-21T10:30:00Z"
-    },
-    {
-      "id": "question-2",
-      "title": "Pythonでのファイル読み込みエラー",
-      "content": "CSVファイルを読み込もうとすると文字化けが発生します。エンコーディングの指定方法を教えてください。",
-      "authorId": "user-1",
-      "groupId": "group-1",
-      "tags": [
-        "Python",
-        "CSV",
-        "エンコーディング",
-        "ファイル操作"
-      ],
-      "attachments": [
-        {
-          "fileName": "error_screenshot.png",
-          "fileSize": 150000,
-          "uploadedAt": "2025-06-22T14:00:00Z"
-        }
-      ],
-      "answers": [],
-      "views": 8,
-      "likes": 2,
-      "status": "open",
-      "createdAt": "2025-06-22T14:00:00Z",
-      "updatedAt": "2025-06-22T14:00:00Z"
-    },
-    {
-      "id": "question-1750857465664-02azh3u2s",
-      "title": "s",
-      "content": "d",
-      "tags": [
-        "：：："
-      ],
-      "groupId": null,
-      "userId": "user-1750850798419",
-      "isAnonymous": false,
-      "hasNotification": true,
-      "attachments": [],
-      "createdAt": "2025-06-25T13:17:45.670Z",
-      "updatedAt": "2025-06-25T13:17:45.670Z"
-    }
-  ],
-  "group_activities": [
-    {
-      "id": "activity-1",
-      "groupId": "group-1",
-      "userId": "user-1",
-      "type": "goal_created",
-      "description": "目標「プログラミング基礎の習得」を作成しました",
-      "relatedId": "goal-1",
-      "createdAt": "2025-05-01T00:00:00Z"
-    },
-    {
-      "id": "activity-2",
-      "groupId": "group-1",
-      "userId": "user-2",
-      "type": "member_joined",
-      "description": "佐藤花子がグループに参加しました",
-      "relatedId": "member-2",
-      "createdAt": "2025-01-20T00:00:00Z"
-    },
-    {
-      "id": "activity-3",
-      "groupId": "group-1",
-      "userId": "user-2",
-      "type": "question_posted",
-      "description": "質問「JavaScriptの非同期処理について」を投稿しました",
-      "relatedId": "question-1",
-      "createdAt": "2025-06-20T16:00:00Z"
-    },
     {
       "id": "activity-4",
       "groupId": "group-1",

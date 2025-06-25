@@ -9,7 +9,7 @@ import PaizaContributionGraph from "@/components/paiza-contribution-graph"
 import PaizaActivityModal from "@/components/paiza-activity-modal"
 import GoalsList from "@/components/goals-list"
 import UpcomingReminders from "@/components/upcoming-reminders"
-import GroupActivity from "@/components/group-activity"
+
 import Header from "@/components/header"
 import CreateGoalModal from "@/components/create-goal-modal"
 import CreateQuestionModal from "@/components/create-question-modal"
@@ -295,17 +295,7 @@ export default function DashboardPage() {
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>グループ活動</CardTitle>
-                  <CardDescription>最近のアクティビティ</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Suspense fallback={<div className="h-[300px] w-full bg-gray-100 animate-pulse rounded-md"></div>}>
-                    <GroupActivity />
-                  </Suspense>
-                </CardContent>
-              </Card>
+
             </div>
           </TabsContent>
 

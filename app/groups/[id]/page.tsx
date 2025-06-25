@@ -11,7 +11,6 @@ import {
   Target,
   Calendar,
   MessageSquare,
-  BarChart3,
   Settings,
   Plus,
   Send,
@@ -20,7 +19,7 @@ import {
 } from "lucide-react"
 import Header from "@/components/header"
 import { Input } from "@/components/ui/input"
-import ContributionGraph from "@/components/contribution-graph"
+
 import GoalsList from "@/components/goals-list"
 import GroupChatMessages from "@/components/group-chat-messages"
 import CreateGoalModal from "@/components/create-goal-modal"
@@ -288,10 +287,6 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
               <Calendar className="h-4 w-4 mr-2" />
               スケジュール
             </TabsTrigger>
-            <TabsTrigger value="activity">
-              <BarChart3 className="h-4 w-4 mr-2" />
-              活動記録
-            </TabsTrigger>
             <TabsTrigger value="settings">
               <Settings className="h-4 w-4 mr-2" />
               設定
@@ -357,60 +352,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
             </Card>
           </TabsContent>
 
-          <TabsContent value="activity">
-            <Card>
-              <CardHeader>
-                <CardTitle>活動記録</CardTitle>
-                <CardDescription>グループメンバーの学習活動</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="mb-6">
-                  <h3 className="font-medium mb-3">グループ全体の活動</h3>
-                  <ContributionGraph />
-                </div>
 
-                <h3 className="font-medium mb-3">メンバー別の活動状況</h3>
-                <div className="space-y-4">
-                  {members.length > 0 ? (
-                    members.map((member) => (
-                      <div key={member.id} className="border rounded-lg p-3">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-2">
-                            <Avatar className="h-8 w-8">
-                              <AvatarImage src={member.avatar || "/placeholder.svg"} alt={member.name} />
-                              <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
-                            </Avatar>
-                            <span className="font-medium">{member.name}</span>
-                          </div>
-                          <span className="text-sm text-gray-500">今週の活動</span>
-                        </div>
-                        <div className="flex items-center gap-3 mb-1">
-                          <span className="text-sm font-medium w-24">学習時間:</span>
-                          <Progress value={0} className="h-2 flex-1" />
-                          <span className="text-sm">0時間</span>
-                        </div>
-                        <div className="flex items-center gap-3 mb-1">
-                          <span className="text-sm font-medium w-24">達成目標:</span>
-                          <Progress value={0} className="h-2 flex-1" />
-                          <span className="text-sm">0個</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <span className="text-sm font-medium w-24">貢献度:</span>
-                          <Progress value={0} className="h-2 flex-1" />
-                          <span className="text-sm">0ポイント</span>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      <BarChart3 className="h-12 w-12 mx-auto mb-2 text-gray-300" />
-                      <p>活動データがありません</p>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
 
           <TabsContent value="settings">
             <Card>
