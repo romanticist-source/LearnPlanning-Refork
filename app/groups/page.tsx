@@ -256,6 +256,46 @@ function GroupCard({ id, name, description, members, goals, activity, joined = t
         ? "text-amber-600 bg-amber-50"
         : "text-gray-600 bg-gray-50"
 
+  const [isJoining, setIsJoining] = useState(false)
+
+  const handleJoinRequest = async () => {
+    setIsJoining(true)
+
+    try {
+      const response = await fetch(`/api/groups/${id}/join`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to join group')
+      }
+
+      const result = await response.json()
+      toast({
+        title: "参加リクエストを送信しました",
+        description: result.message,
+      })
+
+      // ページをリロードして状態を更新
+      setTimeout(() => {
+        window.location.reload()
+      }, 2000)
+    } catch (error) {
+      console.error('Error joining group:', error)
+      toast({
+        title: "エラー",
+        description: "参加リクエストの送信に失敗しました。",
+        variant: "destructive"
+      })
+    } finally {
+      setIsJoining(false)
+    }
+  }
+
   return (
     <Card className="overflow-hidden">
       <div className="h-3 bg-emerald-600"></div>
@@ -281,9 +321,15 @@ function GroupCard({ id, name, description, members, goals, activity, joined = t
             <span className="text-sm">週3回</span>
           </div>
         </div>
-        <Button className="w-full" asChild>
-          <Link href={`/groups/${id}`}>グループページへ</Link>
-        </Button>
+        {joined ? (
+          <Button className="w-full" asChild>
+            <Link href={`/groups/${id}`}>グループページへ</Link>
+          </Button>
+        ) : (
+          <Button className="w-full" onClick={handleJoinRequest} disabled={isJoining}>
+            {isJoining ? "送信中..." : "参加リクエスト"}
+          </Button>
+        )}
       </CardContent>
     </Card>
   )
