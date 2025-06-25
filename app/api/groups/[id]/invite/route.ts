@@ -18,7 +18,7 @@ export async function POST(
       )
     }
 
-    const groupId = params.id
+    const groupId = (await Promise.resolve(params)).id
     const { email, name, message } = await request.json()
 
     // グループを取得
@@ -50,7 +50,7 @@ export async function POST(
     const userMembership = memberships[0]
 
     // 管理者または招待が許可されているメンバーのみ招待可能
-    if (!userMembership ||
+    if (!userMembership || 
         (userMembership.role !== 'admin' && userMembership.role !== 'owner' && !group.allowMemberInvite)) {
       return NextResponse.json(
         { error: 'Forbidden: No permission to invite members' },
@@ -144,7 +144,7 @@ export async function POST(
     
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || request.headers.get('origin') || ''
     const inviteUrl = `${appUrl}/invite/${createdInvitation.id}`
-
+    
     return NextResponse.json({
       message: 'Invitation sent successfully',
       invitation: createdInvitation,

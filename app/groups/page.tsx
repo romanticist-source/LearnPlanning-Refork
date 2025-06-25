@@ -168,11 +168,11 @@ export default function GroupsPage() {
                   {invitations.length === 0 ? (
                     <p className="text-gray-500">招待はありません。</p>
                   ) : (
-                    <div className="space-y-4">
+                  <div className="space-y-4">
                       {invitations.map((inv) => (
                         <div key={inv.id} className="border rounded-lg p-4">
-                          <div className="flex justify-between items-start">
-                            <div>
+                      <div className="flex justify-between items-start">
+                        <div>
                               <h3 className="font-medium">{inv.group?.name ?? 'グループ'}</h3>
                               {inv.message && (
                                 <p className="text-sm text-gray-600">{inv.message}</p>
@@ -180,11 +180,11 @@ export default function GroupsPage() {
                               {inv.inviter && (
                                 <p className="text-xs text-gray-500 mt-1">招待者: {inv.inviter.name}</p>
                               )}
-                            </div>
-                            <div className="flex gap-2">
-                              <Button
-                                size="sm"
-                                variant="outline"
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
                                 onClick={async () => {
                                   try {
                                     const res = await fetch(`/api/invitations/${inv.id}`, {
@@ -199,12 +199,12 @@ export default function GroupsPage() {
                                   } catch (e) {
                                     console.error(e)
                                   }
-                                }}
-                              >
-                                拒否
-                              </Button>
-                              <Button
-                                size="sm"
+                            }}
+                          >
+                            拒否
+                          </Button>
+                          <Button
+                            size="sm"
                                 onClick={async () => {
                                   try {
                                     const res = await fetch(`/api/invitations/${inv.id}`, {
@@ -220,13 +220,13 @@ export default function GroupsPage() {
                                   } catch (e) {
                                     console.error(e)
                                   }
-                                }}
-                              >
-                                参加
-                              </Button>
-                            </div>
-                          </div>
+                            }}
+                          >
+                            参加
+                          </Button>
                         </div>
+                      </div>
+                    </div>
                       ))}
                     </div>
                   )}

@@ -262,7 +262,7 @@
       ],
       "isPublic": false,
       "isInviteOnly": true,
-      "allowMemberInvite": false,
+      "allowMemberInvite": true,
       "autoApprove": false,
       "enableNotifications": true,
       "ownerId": "user-1",
@@ -474,6 +474,17 @@
       "createdAt": "2025-06-25T16:00:00Z",
       "expiresAt": "2025-07-25T16:00:00Z",
       "respondedAt": "2025-06-25T16:42:58.837Z"
+    },
+    {
+      "id": "invite-1750871429523",
+      "groupId": "group-1",
+      "inviterId": "user-1750850798419",
+      "inviteeEmail": "km3t1114@yahoo.co.jp",
+      "inviteeName": "sikigasa",
+      "status": "pending",
+      "message": "",
+      "createdAt": "2025-06-25T17:10:29.523Z",
+      "expiresAt": "2025-07-25T17:10:29.523Z"
     }
   ],
   "paiza_activities": [

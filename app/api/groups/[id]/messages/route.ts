@@ -8,7 +8,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const groupId = params.id
+    const groupId = (await Promise.resolve(params)).id
 
     // 該当するグループのメッセージを取得
     const messagesResponse = await fetch(`${JSON_SERVER_URL}/chat_messages?groupId=${groupId}&_sort=createdAt&_order=asc`)
@@ -65,7 +65,7 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const groupId = params.id
+    const groupId = (await Promise.resolve(params)).id
     const body = await request.json()
     
     const { content, userId, attachments } = body
