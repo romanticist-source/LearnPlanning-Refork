@@ -27,7 +27,7 @@
       "avatar": "https://avatars.githubusercontent.com/u/109452865?v=4",
       "createdAt": "2025-06-25T11:26:38.419Z",
       "updatedAt": "2025-06-25T11:26:38.419Z",
-      "lastLoginAt": "2025-06-25T14:55:26.714Z"
+      "lastLoginAt": "2025-06-25T17:31:17.097Z"
     },
     {
       "id": "user-1750866406049",
@@ -219,6 +219,22 @@
       "hasReminder": true,
       "createdAt": "2025-06-25T15:46:11.186Z",
       "updatedAt": "2025-06-25T15:46:11.186Z"
+    },
+    {
+      "id": "goal-1750872695676-7dnl8r57m",
+      "title": "さ",
+      "description": "さ",
+      "deadline": null,
+      "priority": "medium",
+      "progress": 0,
+      "completed": false,
+      "userId": "user-1750850798419",
+      "groupId": null,
+      "isGroupGoal": false,
+      "isPublic": false,
+      "hasReminder": false,
+      "createdAt": "2025-06-25T17:31:35.686Z",
+      "updatedAt": "2025-06-25T17:31:35.686Z"
     }
   ],
   "subgoals": [
@@ -485,6 +501,28 @@
       "message": "",
       "createdAt": "2025-06-25T17:10:29.523Z",
       "expiresAt": "2025-07-25T17:10:29.523Z"
+    },
+    {
+      "id": "invite-1750872756425",
+      "groupId": "group-1750859714143-1z3zu1fol",
+      "inviterId": "user-1750850798419",
+      "inviteeEmail": "km3t1114@yahoo.co.jp",
+      "inviteeName": "sikigasa",
+      "status": "pending",
+      "message": "",
+      "createdAt": "2025-06-25T17:32:36.425Z",
+      "expiresAt": "2025-07-25T17:32:36.425Z"
+    },
+    {
+      "id": "invite-1750872756426",
+      "groupId": "group-1750859714143-1z3zu1fol",
+      "inviterId": "user-1750850798419",
+      "inviteeEmail": "km3t1114@yahoo.co.jp",
+      "inviteeName": "sikigasa",
+      "status": "pending",
+      "message": "",
+      "createdAt": "2025-06-25T17:32:36.426Z",
+      "expiresAt": "2025-07-25T17:32:36.426Z"
     }
   ],
   "paiza_activities": [
@@ -856,6 +894,42 @@
       "meetingUrl": null,
       "createdAt": "2025-06-25T15:41:45.093Z",
       "updatedAt": "2025-06-25T15:41:45.093Z"
+    },
+    {
+      "id": "event-1750872715009-zmef7s93d",
+      "title": "sd",
+      "description": "あdsf",
+      "date": "2025-06-04",
+      "startTime": "",
+      "endTime": "",
+      "eventType": "meeting",
+      "isGroupEvent": false,
+      "groupId": null,
+      "userId": "user-1750850798419",
+      "hasReminder": true,
+      "isRecurring": false,
+      "isOnline": false,
+      "meetingUrl": null,
+      "createdAt": "2025-06-25T17:31:55.017Z",
+      "updatedAt": "2025-06-25T17:31:55.017Z"
+    },
+    {
+      "id": "event-1750872728101-w9wwkdjoe",
+      "title": "teeee",
+      "description": "",
+      "date": "2025-06-20",
+      "startTime": "",
+      "endTime": "",
+      "eventType": "meeting",
+      "isGroupEvent": false,
+      "groupId": null,
+      "userId": "user-1750850798419",
+      "hasReminder": true,
+      "isRecurring": false,
+      "isOnline": false,
+      "meetingUrl": null,
+      "createdAt": "2025-06-25T17:32:08.111Z",
+      "updatedAt": "2025-06-25T17:32:08.111Z"
     }
   ],
   "questions": [
@@ -1137,6 +1211,26 @@
       "isSent": true,
       "scheduledFor": "2025-06-25T16:01:13.683Z",
       "createdAt": "2025-06-25T16:01:13.683Z"
+    },
+    {
+      "id": "reminder-1750872715022-u56x3d827",
+      "eventId": "event-1750872715009-zmef7s93d",
+      "userId": "user-1750850798419",
+      "reminderType": "day_of",
+      "sentAt": null,
+      "isSent": false,
+      "scheduledFor": "2025-06-04T00:00:00.000Z",
+      "createdAt": "2025-06-25T17:31:55.022Z"
+    },
+    {
+      "id": "reminder-1750872728115-t0bdokn3v",
+      "eventId": "event-1750872728101-w9wwkdjoe",
+      "userId": "user-1750850798419",
+      "reminderType": "day_of",
+      "sentAt": null,
+      "isSent": false,
+      "scheduledFor": "2025-06-20T00:00:00.000Z",
+      "createdAt": "2025-06-25T17:32:08.115Z"
     }
   ]
 }
