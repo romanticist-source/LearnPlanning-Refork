@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useMemo } from "react"
+import { useState, useCallback, useMemo, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -26,58 +26,38 @@ export default function ScheduleView() {
   const [view, setView] = useState<"month" | "list">("month")
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date())
 
-  // ダミーイベントデータ
-  const initialEvents: Event[] = [
-    {
-      id: "1",
-      title: "JavaScriptの非同期処理",
-      description: "Promise、async/await、コールバックについて学びます",
-      date: new Date(2025, 4, 22), // 5月22日
-      time: "20:00-21:30",
-      type: "meeting",
-      groupId: "1",
-      groupName: "プログラミング勉強会",
-    },
-    {
-      id: "2",
-      title: "Todoアプリ制作締切",
-      description: "JavaScriptを使ったTodoアプリの提出期限です",
-      date: new Date(2025, 4, 25), // 5月25日
-      type: "deadline",
-      groupId: "1",
-      groupName: "プログラミング勉強会",
-    },
-    {
-      id: "3",
-      title: "コードレビュー会",
-      description: "作成したTodoアプリのコードレビューを行います",
-      date: new Date(2025, 4, 29), // 5月29日
-      time: "20:00-22:00",
-      type: "event",
-      groupId: "1",
-      groupName: "プログラミング勉強会",
-    },
-    {
-      id: "4",
-      title: "アルゴリズム勉強会",
-      description: "ソートアルゴリズムについて学びます",
-      date: new Date(2025, 4, 18), // 5月18日
-      time: "19:00-20:30",
-      type: "meeting",
-      groupId: "2",
-      groupName: "アルゴリズム特訓",
-    },
-    {
-      id: "5",
-      title: "Reactフックの基本と応用",
-      description: "Reactのフックについて学びます",
-      date: new Date(2025, 4, 15), // 5月15日
-      time: "20:00-21:30",
-      type: "meeting",
-      groupId: "1",
-      groupName: "プログラミング勉強会",
-    },
-  ]
+  // イベントデータの状態管理
+  const [events, setEvents] = useState<Event[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // イベントデータをAPIから取得
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch('/api/events')
+        if (response.ok) {
+          const eventsData = await response.json()
+          const formattedEvents: Event[] = eventsData.map((event: any) => ({
+            id: event.id,
+            title: event.title,
+            description: event.description || '',
+            date: new Date(event.date),
+            time: event.startTime && event.endTime ? `${event.startTime}-${event.endTime}` : event.startTime || '',
+            type: event.eventType || 'event',
+            groupId: event.groupId,
+            groupName: event.groupId ? `グループ ${event.groupId}` : undefined
+          }))
+          setEvents(formattedEvents)
+        }
+      } catch (error) {
+        console.error('Failed to fetch events:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchEvents()
+  }, [])
 
   const nextMonth = () => {
     setCurrentMonth(addMonths(currentMonth, 1))
@@ -103,7 +83,6 @@ export default function ScheduleView() {
   )
 
   // メモ化されたイベント取得関数
-  const [events, setEvents] = useState<Event[]>(initialEvents)
   const getEventsForDay = useCallback(
     (day: Date) => {
       return events.filter((event) => isSameDay(event.date, day))
@@ -229,6 +208,14 @@ export default function ScheduleView() {
         </div>
       </CardHeader>
       <CardContent>
+        {loading ? (
+          <div className="text-center py-8">
+            <div className="animate-pulse space-y-4">
+              <div className="h-4 bg-gray-200 rounded w-1/4 mx-auto"></div>
+              <div className="h-40 bg-gray-200 rounded"></div>
+            </div>
+          </div>
+        ) : (
         <Tabs value={view} className="w-full">
           <TabsContent value="month" className="w-full">
             <div className="flex justify-between items-center mb-4">
@@ -365,6 +352,7 @@ export default function ScheduleView() {
             </div>
           </TabsContent>
         </Tabs>
+        )}
       </CardContent>
     </Card>
   )

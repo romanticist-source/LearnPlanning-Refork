@@ -87,8 +87,25 @@ export default function DashboardPage() {
           setGroups(userGroups)
         }
 
-        // TODO: ディスカッションAPIから取得
-        setDiscussions([])
+        // ディスカッション（質問）データを取得
+        try {
+          const questionsResponse = await fetch('/api/questions')
+          if (questionsResponse.ok) {
+            const questions = await questionsResponse.json()
+            // 質問データをディスカッション形式に変換
+            const formattedDiscussions: Discussion[] = questions.map((q: any) => ({
+              id: q.id,
+              title: q.title,
+              content: q.content,
+              groupName: q.groupId ? `グループ ${q.groupId}` : '全体',
+              createdAt: new Date(q.createdAt).toLocaleDateString('ja-JP'),
+              answerCount: 0 // TODO: 回答数を実装
+            }))
+            setDiscussions(formattedDiscussions)
+          }
+        } catch (error) {
+          console.error('Failed to fetch discussions:', error)
+        }
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error)
       } finally {

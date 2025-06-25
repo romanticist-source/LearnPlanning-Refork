@@ -126,7 +126,7 @@ export default function CreateQuestionModal() {
               <Label htmlFor="title" className="text-right">
                 タイトル
               </Label>
-              <Input id="title" placeholder="例: JavaScriptの非同期処理について" className="col-span-3" required />
+              <Input id="title" name="title" placeholder="例: JavaScriptの非同期処理について" className="col-span-3" required />
             </div>
             <div className="grid grid-cols-4 items-start gap-4">
               <Label htmlFor="question" className="text-right pt-2">
@@ -134,6 +134,7 @@ export default function CreateQuestionModal() {
               </Label>
               <Textarea
                 id="question"
+                name="question"
                 placeholder="質問の詳細を入力してください"
                 className="col-span-3"
                 rows={5}
@@ -146,6 +147,7 @@ export default function CreateQuestionModal() {
               </Label>
               <select
                 id="group"
+                name="group"
                 className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <option value="all">すべてのグループ</option>
@@ -158,7 +160,7 @@ export default function CreateQuestionModal() {
               <Label htmlFor="tags" className="text-right">
                 タグ
               </Label>
-              <Input id="tags" placeholder="例: JavaScript, 非同期処理, Promise" className="col-span-3" />
+              <Input id="tags" name="tags" placeholder="例: JavaScript, 非同期処理, Promise" className="col-span-3" />
             </div>
 
             <div className="grid grid-cols-4 items-start gap-4">
@@ -207,11 +209,11 @@ export default function CreateQuestionModal() {
               <Label className="text-right pt-2">オプション</Label>
               <div className="col-span-3 space-y-2">
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="notify" defaultChecked />
+                  <Checkbox id="notify" name="notify" defaultChecked />
                   <Label htmlFor="notify">回答があった場合に通知を受け取る</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="anonymous" />
+                  <Checkbox id="anonymous" name="anonymous" />
                   <Label htmlFor="anonymous">匿名で質問する</Label>
                 </div>
               </div>

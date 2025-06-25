@@ -107,6 +107,38 @@
       "hasReminder": false,
       "createdAt": "2025-06-25T11:27:32.288Z",
       "updatedAt": "2025-06-25T11:27:32.288Z"
+    },
+    {
+      "id": "goal-1750852425824-tlqjgbgbg",
+      "title": "：",
+      "description": "：",
+      "deadline": "2025-06-02T15:00:00.000Z",
+      "priority": "medium",
+      "progress": 0,
+      "completed": false,
+      "userId": "user-1750850798419",
+      "groupId": null,
+      "isGroupGoal": false,
+      "isPublic": false,
+      "hasReminder": false,
+      "createdAt": "2025-06-25T11:53:45.834Z",
+      "updatedAt": "2025-06-25T11:53:45.834Z"
+    },
+    {
+      "id": "goal-1750852776131-bql1303fc",
+      "title": "sd",
+      "description": "s",
+      "deadline": null,
+      "priority": "medium",
+      "progress": 0,
+      "completed": false,
+      "userId": "user-1750850798419",
+      "groupId": null,
+      "isGroupGoal": false,
+      "isPublic": false,
+      "hasReminder": false,
+      "createdAt": "2025-06-25T11:59:36.141Z",
+      "updatedAt": "2025-06-25T11:59:36.141Z"
     }
   ],
   "subgoals": [
@@ -288,6 +320,72 @@
       "language": "Java",
       "difficulty": "advanced",
       "createdAt": "2025-06-23T14:00:00Z"
+    },
+    {
+      "date": "2025-06-25",
+      "codeExecutions": 2,
+      "studyMinutes": 0,
+      "problemsSolved": 0,
+      "language": "JavaScript",
+      "difficulty": "beginner",
+      "userId": "user-1750850798419",
+      "id": "activity-1750852275913",
+      "createdAt": "2025-06-25T11:51:15.913Z"
+    },
+    {
+      "date": "2025-06-25",
+      "codeExecutions": 0,
+      "studyMinutes": 0,
+      "problemsSolved": 0,
+      "language": "JavaScript",
+      "difficulty": "beginner",
+      "userId": "user-1750850798419",
+      "id": "activity-1750852291998",
+      "createdAt": "2025-06-25T11:51:31.998Z"
+    },
+    {
+      "date": "2025-06-25",
+      "codeExecutions": 4,
+      "studyMinutes": 13,
+      "problemsSolved": 1,
+      "language": "JavaScript",
+      "difficulty": "beginner",
+      "userId": "user-1750850798419",
+      "id": "activity-1750852301867",
+      "createdAt": "2025-06-25T11:51:41.867Z"
+    },
+    {
+      "date": "2025-06-25",
+      "codeExecutions": 0,
+      "studyMinutes": 18,
+      "problemsSolved": 3,
+      "language": "JavaScript",
+      "difficulty": "beginner",
+      "userId": "user-1750850798419",
+      "id": "activity-1750852365586",
+      "createdAt": "2025-06-25T11:52:45.586Z"
+    },
+    {
+      "date": "2025-06-25",
+      "codeExecutions": 32,
+      "studyMinutes": 0,
+      "problemsSolved": 0,
+      "language": "JavaScript",
+      "difficulty": "beginner",
+      "userId": "user-1750850798419",
+      "id": "activity-1750852403741",
+      "createdAt": "2025-06-25T11:53:23.741Z"
+    },
+    {
+      "date": "2025-06-25",
+      "codeExecutions": 4,
+      "studyMinutes": 11,
+      "problemsSolved": 4,
+      "language": "JavaScript",
+      "difficulty": "intermediate",
+      "userId": "user-1750850798419",
+      "id": "activity-1750852415912",
+      "createdAt": "2025-06-25T11:53:35.912Z"
     }
   ],
   "paiza_user_stats": [
@@ -316,6 +414,19 @@
       "favoriteLanguage": "Java",
       "averageDailyExecutions": 12.3,
       "updatedAt": "2025-06-23T14:00:00Z"
+    },
+    {
+      "id": "stats-user-1750850798419",
+      "userId": "user-1750850798419",
+      "totalCodeExecutions": 42,
+      "totalStudyMinutes": 42,
+      "totalProblemsSolved": 8,
+      "currentStreak": 1,
+      "longestStreak": 1,
+      "lastActivityDate": "2025-06-25",
+      "favoriteLanguage": "JavaScript",
+      "averageDailyExecutions": 42,
+      "updatedAt": "2025-06-25T11:53:35.935Z"
     }
   ],
   "events": [
@@ -331,7 +442,10 @@
       "maxParticipants": 20,
       "groupId": "group-1",
       "organizerId": "user-1",
-      "attendees": ["user-1", "user-2"],
+      "attendees": [
+        "user-1",
+        "user-2"
+      ],
       "reminders": [
         {
           "type": "email",
@@ -342,7 +456,11 @@
           "minutesBefore": 15
         }
       ],
-      "tags": ["JavaScript", "DOM", "勉強会"],
+      "tags": [
+        "JavaScript",
+        "DOM",
+        "勉強会"
+      ],
       "isRecurring": true,
       "recurringPattern": "weekly",
       "createdAt": "2025-06-20T10:00:00Z",
@@ -360,18 +478,60 @@
       "maxParticipants": 15,
       "groupId": "group-2",
       "organizerId": "user-2",
-      "attendees": ["user-2"],
+      "attendees": [
+        "user-2"
+      ],
       "reminders": [
         {
           "type": "notification",
           "minutesBefore": 30
         }
       ],
-      "tags": ["アルゴリズム", "競技プログラミング", "AtCoder"],
+      "tags": [
+        "アルゴリズム",
+        "競技プログラミング",
+        "AtCoder"
+      ],
       "isRecurring": true,
       "recurringPattern": "weekly",
       "createdAt": "2025-06-22T12:00:00Z",
       "updatedAt": "2025-06-24T09:00:00Z"
+    },
+    {
+      "id": "event-1750852255186-14iw8cs8n",
+      "title": "d",
+      "description": "d",
+      "date": "2025-06-02",
+      "startTime": "",
+      "endTime": "",
+      "eventType": "meeting",
+      "isGroupEvent": true,
+      "groupId": null,
+      "userId": "user-1750850798419",
+      "hasReminder": false,
+      "isRecurring": false,
+      "isOnline": false,
+      "meetingUrl": null,
+      "createdAt": "2025-06-25T11:50:55.623Z",
+      "updatedAt": "2025-06-25T11:50:55.623Z"
+    },
+    {
+      "id": "event-1750852446587-itrra9f97",
+      "title": "：",
+      "description": "：",
+      "date": "2025-06-10",
+      "startTime": "",
+      "endTime": "",
+      "eventType": "meeting",
+      "isGroupEvent": true,
+      "groupId": "1",
+      "userId": "user-1750850798419",
+      "hasReminder": true,
+      "isRecurring": false,
+      "isOnline": false,
+      "meetingUrl": null,
+      "createdAt": "2025-06-25T11:54:07.283Z",
+      "updatedAt": "2025-06-25T11:54:07.283Z"
     }
   ],
   "questions": [
@@ -381,7 +541,12 @@
       "content": "Promise と async/await の違いが理解できません。どなたか詳しく教えていただけませんか？",
       "authorId": "user-2",
       "groupId": "group-1",
-      "tags": ["JavaScript", "非同期処理", "Promise", "async/await"],
+      "tags": [
+        "JavaScript",
+        "非同期処理",
+        "Promise",
+        "async/await"
+      ],
       "attachments": [],
       "answers": [
         {
@@ -407,7 +572,12 @@
       "content": "CSVファイルを読み込もうとすると文字化けが発生します。エンコーディングの指定方法を教えてください。",
       "authorId": "user-1",
       "groupId": "group-1",
-      "tags": ["Python", "CSV", "エンコーディング", "ファイル操作"],
+      "tags": [
+        "Python",
+        "CSV",
+        "エンコーディング",
+        "ファイル操作"
+      ],
       "attachments": [
         {
           "fileName": "error_screenshot.png",
@@ -421,6 +591,21 @@
       "status": "open",
       "createdAt": "2025-06-22T14:00:00Z",
       "updatedAt": "2025-06-22T14:00:00Z"
+    },
+    {
+      "id": "question-1750852472183-ttgda4nr3",
+      "title": "；；",
+      "content": "；；；",
+      "tags": [
+        "；"
+      ],
+      "groupId": null,
+      "userId": "user-1750850798419",
+      "isAnonymous": false,
+      "hasNotification": true,
+      "attachments": [],
+      "createdAt": "2025-06-25T11:54:32.815Z",
+      "updatedAt": "2025-06-25T11:54:32.815Z"
     }
   ],
   "group_activities": [

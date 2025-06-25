@@ -7,7 +7,8 @@ export async function SignInButton() {
     // User is already signed in
     return null;
   }
-  
+
+  const JSON_SERVER_URL = 'http://localhost:3005'
   return (
     <>
       <form
@@ -22,16 +23,25 @@ export async function SignInButton() {
           if (updatedSession?.user) {
             // Check if user exists in database
             // Replace with your actual user fetching logic
-            const existingUser = await fetchUserFromDatabase(updatedSession.user.id);
-            
-            if (!existingUser) {
+            const existingUser = await fetch(`${JSON_SERVER_URL}/users?email=${updatedSession.user.email}`)
+            const users = await existingUser.json()
+
+            const newUser = {
+              id: updatedSession.user.id,
+              name: updatedSession.user.name,
+              email: updatedSession.user.email,
+              // Add other needed user properties
+            }
+            if (users.length === 0) {
               // Create new user record
-              await createUserInDatabase({
-                id: updatedSession.user.id,
-                name: updatedSession.user.name,
-                email: updatedSession.user.email,
-                // Add other needed user properties
+              await fetch(`${JSON_SERVER_URL}/users`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newUser),
               });
+              console.log('User created successfully');
             }
           }
         }}

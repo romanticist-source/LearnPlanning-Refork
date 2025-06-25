@@ -118,13 +118,13 @@ export default function CreateEventModal() {
               <Label htmlFor="title" className="text-right">
                 タイトル
               </Label>
-              <Input id="title" placeholder="例: JavaScriptの非同期処理" className="col-span-3" required />
+              <Input id="title" name="title" placeholder="例: JavaScriptの非同期処理" className="col-span-3" required />
             </div>
             <div className="grid grid-cols-4 items-start gap-4">
               <Label htmlFor="description" className="text-right pt-2">
                 説明
               </Label>
-              <Textarea id="description" placeholder="予定の詳細を入力してください" className="col-span-3" rows={3} />
+              <Textarea id="description" name="description" placeholder="予定の詳細を入力してください" className="col-span-3" rows={3} />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="date" className="text-right">
@@ -153,11 +153,11 @@ export default function CreateEventModal() {
               </Label>
               <div className="col-span-3 flex gap-2">
                 <div className="flex-1">
-                  <Input id="time-start" type="time" placeholder="開始時間" />
+                  <Input id="time-start" name="time-start" type="time" placeholder="開始時間" />
                 </div>
                 <span className="flex items-center">〜</span>
                 <div className="flex-1">
-                  <Input id="time-end" type="time" placeholder="終了時間" />
+                  <Input id="time-end" name="time-end" type="time" placeholder="終了時間" />
                 </div>
               </div>
             </div>
@@ -197,6 +197,7 @@ export default function CreateEventModal() {
                 </Label>
                 <select
                   id="group"
+                  name="group"
                   className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <option value="1">プログラミング勉強会</option>
@@ -209,16 +210,16 @@ export default function CreateEventModal() {
               <Label className="text-right pt-2">オプション</Label>
               <div className="col-span-3 space-y-2">
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="reminder" defaultChecked />
+                  <Checkbox id="reminder" name="reminder" defaultChecked />
                   <Label htmlFor="reminder">リマインダーを設定する</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="recurring" />
+                  <Checkbox id="recurring" name="recurring" />
                   <Label htmlFor="recurring">繰り返し予定として設定する</Label>
                 </div>
                 {eventType === "meeting" && (
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="online" />
+                    <Checkbox id="online" name="online" />
                     <Label htmlFor="online">オンラインミーティング</Label>
                   </div>
                 )}
@@ -229,7 +230,7 @@ export default function CreateEventModal() {
                 <Label htmlFor="meeting-url" className="text-right">
                   ミーティングURL
                 </Label>
-                <Input id="meeting-url" placeholder="例: https://zoom.us/j/123456789" className="col-span-3" />
+                <Input id="meeting-url" name="meeting-url" placeholder="例: https://zoom.us/j/123456789" className="col-span-3" />
               </div>
             )}
           </div>
