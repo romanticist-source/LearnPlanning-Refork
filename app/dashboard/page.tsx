@@ -14,6 +14,7 @@ import Header from "@/components/header"
 import CreateGoalModal from "@/components/create-goal-modal"
 import CreateQuestionModal from "@/components/create-question-modal"
 import ScheduleView from "@/components/schedule-view"
+import DiscussionDetailModal from "@/components/discussion-detail-modal"
 import { Suspense, useEffect, useState } from "react"
 import Link from "next/link"
 
@@ -48,6 +49,8 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [currentUser, setCurrentUser] = useState<any>(null)
   const [paizaGraphKey, setPaizaGraphKey] = useState(0)
+  const [selectedDiscussionId, setSelectedDiscussionId] = useState<string | null>(null)
+  const [discussionModalOpen, setDiscussionModalOpen] = useState(false)
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -129,11 +132,18 @@ export default function DashboardPage() {
                 <div key={i} className="h-32 bg-gray-200 rounded"></div>
               ))}
             </div>
-          </div>
-        </div>
+                  </div>
+        
+        {/* ディスカッション詳細モーダル */}
+        <DiscussionDetailModal
+          discussionId={selectedDiscussionId}
+          open={discussionModalOpen}
+          onOpenChange={setDiscussionModalOpen}
+        />
       </div>
-    )
-  }
+    </div>
+  )
+}
 
   return (
       <div className="min-h-screen flex flex-col">
@@ -313,14 +323,22 @@ export default function DashboardPage() {
                   <ul className="space-y-4">
                     {discussions.map((discussion, index) => (
                       <li key={discussion.id} className={index < discussions.length - 1 ? "border-b pb-4" : ""}>
-                        <div className="flex justify-between mb-2">
-                          <p className="font-medium">{discussion.title}</p>
-                          <span className="text-sm text-gray-500">{discussion.createdAt}</span>
-                        </div>
-                        <p className="text-sm text-gray-600 mb-2">{discussion.content}</p>
-                        <div className="flex justify-between">
-                          <span className="text-sm text-gray-500">{discussion.groupName}</span>
-                          <span className="text-sm text-gray-500">回答: {discussion.answerCount}件</span>
+                        <div 
+                          className="cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors"
+                          onClick={() => {
+                            setSelectedDiscussionId(discussion.id)
+                            setDiscussionModalOpen(true)
+                          }}
+                        >
+                          <div className="flex justify-between mb-2">
+                            <p className="font-medium hover:text-blue-600">{discussion.title}</p>
+                            <span className="text-sm text-gray-500">{discussion.createdAt}</span>
+                          </div>
+                          <p className="text-sm text-gray-600 mb-2 line-clamp-2">{discussion.content}</p>
+                          <div className="flex justify-between">
+                            <span className="text-sm text-gray-500">{discussion.groupName}</span>
+                            <span className="text-sm text-gray-500">回答: {discussion.answerCount}件</span>
+                          </div>
                         </div>
                       </li>
                     ))}
