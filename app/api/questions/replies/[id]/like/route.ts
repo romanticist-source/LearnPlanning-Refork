@@ -32,7 +32,7 @@ export async function POST(
     // いいね数を増加
     const updatedReply = {
       ...reply,
-      likes: reply.likes + 1,
+      likes: (reply.likes || 0) + 1,
       updatedAt: new Date().toISOString()
     }
 
@@ -50,9 +50,13 @@ export async function POST(
 
     const updatedReplyData = await updateResponse.json()
 
-    return NextResponse.json(updatedReplyData)
+    return NextResponse.json({
+      id: updatedReplyData.id,
+      likes: updatedReplyData.likes,
+      questionId: updatedReplyData.questionId
+    })
   } catch (error) {
-    console.error('いいねエラー:', error)
+    console.error('返信いいねエラー:', error)
     return NextResponse.json(
       { error: 'いいねの送信に失敗しました' },
       { status: 500 }
