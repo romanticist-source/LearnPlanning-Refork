@@ -24,6 +24,7 @@ import CreateEventModal from "@/components/create-event-modal"
 import InviteMemberForm from "@/components/invite-member-form"
 import GroupSchedule from "@/components/group-schedule"
 import { useState, useEffect, use } from "react"
+import { usePersistentState } from "@/hooks/use-persistent-state"
 
 interface GroupMember {
   id: string
@@ -63,6 +64,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
   const [error, setError] = useState<string | null>(null)
 
   const [showInviteForm, setShowInviteForm] = useState(false)
+  const [activeTab, setActiveTab] = usePersistentState<string>(`group-tabs-${resolvedParams.id}`, "chat")
 
   useEffect(() => {
     const fetchGroupData = async () => {
@@ -270,7 +272,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
           </div>
         </div>
 
-        <Tabs defaultValue="chat">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="mb-6">
             <TabsTrigger value="chat">
               <MessageSquare className="h-4 w-4 mr-2" />

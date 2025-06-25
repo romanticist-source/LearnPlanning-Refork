@@ -27,7 +27,7 @@
       "avatar": "https://avatars.githubusercontent.com/u/109452865?v=4",
       "createdAt": "2025-06-25T11:26:38.419Z",
       "updatedAt": "2025-06-25T11:26:38.419Z",
-      "lastLoginAt": "2025-06-25T14:55:26.714Z"
+      "lastLoginAt": "2025-06-25T15:44:04.873Z"
     }
   ],
   "goals": [
@@ -192,6 +192,22 @@
       "hasReminder": false,
       "createdAt": "2025-06-25T15:41:31.467Z",
       "updatedAt": "2025-06-25T15:41:31.467Z"
+    },
+    {
+      "id": "goal-1750866371177-pc6uqu3m6",
+      "title": "をおおおおお",
+      "description": "ももm",
+      "deadline": "2025-06-19",
+      "priority": "medium",
+      "progress": 0,
+      "completed": false,
+      "userId": "user-1750850798419",
+      "groupId": null,
+      "isGroupGoal": false,
+      "isPublic": false,
+      "hasReminder": true,
+      "createdAt": "2025-06-25T15:46:11.186Z",
+      "updatedAt": "2025-06-25T15:46:11.186Z"
     }
   ],
   "subgoals": [
