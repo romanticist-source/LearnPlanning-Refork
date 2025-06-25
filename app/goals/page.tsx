@@ -1,5 +1,3 @@
-"use client"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -7,7 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Plus, Search, Target, Clock, Users } from "lucide-react"
 import Header from "@/components/header"
 import GoalsList from "@/components/goals-list"
-import CreateGoalModal from "@/components/create-goal-modal"
+import AuthGuard from "@/components/auth/auth-guard"
 
 export default function GoalsPage() {
   return (
@@ -25,7 +23,10 @@ export default function GoalsPage() {
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
               <Input type="search" placeholder="目標を検索..." className="pl-9" />
             </div>
-            <CreateGoalModal />
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              新しい目標
+            </Button>
           </div>
         </div>
 
@@ -56,7 +57,7 @@ export default function GoalsPage() {
                 <CardDescription>設定したすべての学習目標と進捗状況</CardDescription>
               </CardHeader>
               <CardContent>
-                <GoalsList status="all" />
+                <GoalsList />
               </CardContent>
             </Card>
           </TabsContent>
@@ -68,7 +69,7 @@ export default function GoalsPage() {
                 <CardDescription>現在取り組んでいる学習目標</CardDescription>
               </CardHeader>
               <CardContent>
-                <GoalsList status="active" />
+                <GoalsList />
               </CardContent>
             </Card>
           </TabsContent>
@@ -80,7 +81,11 @@ export default function GoalsPage() {
                 <CardDescription>達成した学習目標の履歴</CardDescription>
               </CardHeader>
               <CardContent>
-                <GoalsList status="completed" />
+                <div className="text-center py-8 text-gray-500">
+                  <Target className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                  <p>達成済みの目標はまだありません</p>
+                  <p className="text-sm mt-2">目標を達成すると、ここに表示されます</p>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -95,11 +100,11 @@ export default function GoalsPage() {
                 <div className="space-y-6">
                   <div className="border rounded-lg p-4">
                     <h3 className="font-medium mb-2">プログラミング勉強会</h3>
-                    <GoalsList status="all" />
+                    <GoalsList />
                   </div>
                   <div className="border rounded-lg p-4">
                     <h3 className="font-medium mb-2">アルゴリズム特訓</h3>
-                    <GoalsList status="all" />
+                    <GoalsList />
                   </div>
                 </div>
               </CardContent>

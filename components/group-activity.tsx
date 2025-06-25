@@ -9,37 +9,25 @@ interface Activity {
   user: string
   action: string
   target: string
-  time?: string
+  time: string
   group: string
   createdAt: string
 }
 
-interface GroupActivityProps {
-  groupId?: string
-  limit?: number
-}
-
-export default function GroupActivity({ groupId, limit = 10 }: GroupActivityProps = {}) {
+export default function GroupActivity() {
   const [activities, setActivities] = useState<Activity[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        const params = new URLSearchParams()
-        if (groupId) {
-          params.append('groupId', groupId)
-        }
-        params.append('limit', limit.toString())
-
-        const response = await fetch(`/api/activities?${params.toString()}`)
+        // TODO: 実際のアクティビティAPIから取得
+        // const response = await fetch('/api/activities')
+        // const data = await response.json()
+        // setActivities(data)
         
-        if (!response.ok) {
-          throw new Error('Failed to fetch activities')
-        }
-        
-        const data = await response.json()
-        setActivities(data)
+        // 現在は空の配列を設定
+        setActivities([])
       } catch (error) {
         console.error('Failed to fetch activities:', error)
         setActivities([])
@@ -49,7 +37,7 @@ export default function GroupActivity({ groupId, limit = 10 }: GroupActivityProp
     }
 
     fetchActivities()
-  }, [groupId, limit])
+  }, [])
 
   if (loading) {
     return (
@@ -99,7 +87,7 @@ export default function GroupActivity({ groupId, limit = 10 }: GroupActivityProp
                         addSuffix: true,
                         locale: ja,
                       })
-                    : activity.time || '不明'}
+                    : activity.time}
                 </span>
                 <span className="text-xs bg-gray-100 px-2 py-0.5 rounded-full">{activity.group}</span>
               </div>

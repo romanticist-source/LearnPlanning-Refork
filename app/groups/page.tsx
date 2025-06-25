@@ -6,12 +6,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Plus, Search, Users, Target, Calendar, MessageSquare } from "lucide-react"
 import Header from "@/components/header"
-import CreateGroupForm from "@/components/create-group-form"
+import CreateGroupModal from "@/components/create-group-modal"
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import { toast } from "@/components/ui/use-toast"
 import { ToastAction } from "@/components/ui/toast"
-import { useRouter } from "next/navigation"
 
 type Group = {
   id: string
@@ -28,8 +27,6 @@ export default function GroupsPage() {
   const [discoverGroups, setDiscoverGroups] = useState<Group[]>([])
   const [invitations, setInvitations] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-
-  const router = useRouter()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,47 +58,6 @@ export default function GroupsPage() {
     fetchData()
   }, [])
 
-  // 招待への応答を処理
-  const handleInvitationResponse = async (invitationId: string, accept: boolean) => {
-    try {
-      const response = await fetch(`/api/invitations/${invitationId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ action: accept ? 'accept' : 'reject' }),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to update invitation')
-      }
-
-      const result = await response.json()
-
-      toast({
-        title: accept ? 'グループに参加しました' : '招待を拒否しました',
-        description: result.message,
-        action: accept ? (
-          <ToastAction altText="グループページへ" onClick={() => router.push(`/groups/${result.invitation.groupId}`)}>
-            グループページへ
-          </ToastAction>
-        ) : undefined,
-      })
-
-      // 招待一覧をリロード
-      setInvitations((prev) => prev.filter((inv) => inv.id !== invitationId))
-      // 他データも必要なら fetchData 再実行
-    } catch (error) {
-      console.error('Error updating invitation:', error)
-      toast({
-        title: 'エラー',
-        description: '招待の更新に失敗しました。',
-        variant: 'destructive',
-      })
-    }
-  }
-
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -117,7 +73,7 @@ export default function GroupsPage() {
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
               <Input type="search" placeholder="グループを検索..." className="pl-9" />
             </div>
-            <CreateGroupForm />
+            <CreateGroupModal />
           </div>
         </div>
 
@@ -209,46 +165,86 @@ export default function GroupsPage() {
                   <CardDescription>参加招待されているグループ</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {invitations.length === 0 ? (
-                    <p className="text-sm text-gray-500">招待はありません</p>
-                  ) : (
-                    <div className="space-y-4">
-                      {invitations.map((invitation) => (
-                        <div key={invitation.id} className="border rounded-lg p-4">
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <h3 className="font-medium">{invitation.group?.name ?? 'Unnamed Group'}</h3>
-                              {invitation.group?.description && (
-                                <p className="text-sm text-gray-600">{invitation.group.description}</p>
-                              )}
-                              {invitation.inviter && (
-                                <p className="text-xs text-gray-500 mt-1">招待者: {invitation.inviter.name}</p>
-                              )}
-                            </div>
-                            <div className="flex gap-2">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={async () => {
-                                  await handleInvitationResponse(invitation.id, false)
-                                }}
-                              >
-                                拒否
-                              </Button>
-                              <Button
-                                size="sm"
-                                onClick={async () => {
-                                  await handleInvitationResponse(invitation.id, true)
-                                }}
-                              >
-                                参加
-                              </Button>
-                            </div>
-                          </div>
+                  <div className="space-y-4">
+                    <div className="border rounded-lg p-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="font-medium">クラウドインフラ勉強会</h3>
+                          <p className="text-sm text-gray-600">AWSやGCPなどのクラウドインフラを学ぶグループ</p>
+                          <p className="text-xs text-gray-500 mt-1">招待者: 山田さん</p>
                         </div>
-                      ))}
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              toast({
+                                title: "招待を拒否しました",
+                                description: "クラウドインフラ勉強会への招待を拒否しました。",
+                              })
+                            }}
+                          >
+                            拒否
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              toast({
+                                title: "グループに参加しました",
+                                description: "クラウドインフラ勉強会に参加しました。",
+                                action: (
+                                  <ToastAction altText="グループページへ">
+                                    <Link href="/groups/7">グループページへ</Link>
+                                  </ToastAction>
+                                ),
+                              })
+                            }}
+                          >
+                            参加
+                          </Button>
+                        </div>
+                      </div>
                     </div>
-                  )}
+                    <div className="border rounded-lg p-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="font-medium">セキュリティ勉強会</h3>
+                          <p className="text-sm text-gray-600">Webアプリケーションのセキュリティを学ぶグループ</p>
+                          <p className="text-xs text-gray-500 mt-1">招待者: 佐藤さん</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              toast({
+                                title: "招待を拒否しました",
+                                description: "セキュリティ勉強会への招待を拒否しました。",
+                              })
+                            }}
+                          >
+                            拒否
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              toast({
+                                title: "グループに参加しました",
+                                description: "セキュリティ勉強会に参加しました。",
+                                action: (
+                                  <ToastAction altText="グループページへ">
+                                    <Link href="/groups/8">グループページへ</Link>
+                                  </ToastAction>
+                                ),
+                              })
+                            }}
+                          >
+                            参加
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -362,7 +358,7 @@ function CreateGroupCard() {
       </div>
       <h3 className="font-medium text-center mb-2">新しいグループを作成</h3>
       <p className="text-sm text-gray-500 text-center mb-4">自分だけのグループを作成して、仲間と一緒に学習しましょう</p>
-      <CreateGroupForm />
+      <CreateGroupModal />
     </Card>
   )
 }
