@@ -21,7 +21,10 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { getCurrentUser } from "@/lib/auth-utils"
+import { useRouter } from "next/navigation"
+import { toast } from "@/components/ui/use-toast"
 export default function CreateGroupModal() {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
   const [tags, setTags] = useState<string[]>([])
   const [tagInput, setTagInput] = useState("")
@@ -76,6 +79,12 @@ export default function CreateGroupModal() {
       const createdGroup = await response.json()
       console.log('グループを作成しました:', createdGroup)
       
+      // 成功通知を表示
+      toast({
+        title: "グループを作成しました",
+        description: `「${createdGroup.name}」が正常に作成され、あなたがオーナーとして登録されました。`,
+      })
+      
       setOpen(false)
       // フォームをリセット
       setTags([])
@@ -83,12 +92,16 @@ export default function CreateGroupModal() {
       setInvitedMembers([])
       setMemberEmail("")
       
-      // ページをリロードして新しいグループを表示
-      window.location.reload()
+      // 作成されたグループのページに遷移
+      router.push(`/groups/${createdGroup.id}`)
     } catch (error) {
       console.error('Error creating group:', error)
       const errorMessage = error instanceof Error ? error.message : 'グループの作成に失敗しました'
-      alert(`エラー: ${errorMessage}`)
+      toast({
+        title: "エラーが発生しました",
+        description: errorMessage,
+        variant: "destructive",
+      })
     }
   }
 

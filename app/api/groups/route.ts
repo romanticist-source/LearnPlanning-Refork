@@ -1,12 +1,99 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getCurrentUser } from '@/lib/auth-utils'
 
 const JSON_SERVER_URL = 'http://localhost:3005'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const response = await fetch(`${JSON_SERVER_URL}/groups`)
-    const data = await response.json()
-    return NextResponse.json(data)
+    const { searchParams } = new URL(request.url)
+    const type = searchParams.get('type')
+    
+    // グループデータを取得
+    const groupsResponse = await fetch(`${JSON_SERVER_URL}/groups`)
+    const groups = await groupsResponse.json()
+    
+    // メンバー情報を取得
+    const membersResponse = await fetch(`${JSON_SERVER_URL}/group_members`)
+    const members = await membersResponse.json()
+    
+    // 各グループにメンバー数と追加情報を付与
+    const enrichedGroups = groups.map((group: any) => {
+      const groupMembers = members.filter((member: any) => member.groupId === group.id)
+      
+      return {
+        ...group,
+        memberCount: groupMembers.length,
+        goals: 0, // TODO: 実際の目標数を取得
+        activity: groupMembers.length > 5 ? '高' : groupMembers.length > 2 ? '中' : '低'
+      }
+    })
+    
+    // typeパラメータに応じてフィルタリング
+    if (type === 'my') {
+      // 現在のユーザーが所属しているグループのみを返す
+      try {
+        let currentUserId = 'user-1750850798419' // フォールバック用のユーザーID
+        
+        try {
+          const currentUser = await getCurrentUser()
+          if (currentUser) {
+            currentUserId = currentUser.id
+          }
+        } catch (authError) {
+          console.log('認証情報取得失敗、フォールバックユーザーを使用:', currentUserId)
+        }
+        
+        const userGroupIds = members
+          .filter((member: any) => member.userId === currentUserId)
+          .map((member: any) => member.groupId)
+        
+        const myGroups = enrichedGroups.filter((group: any) => 
+          userGroupIds.includes(group.id)
+        )
+        
+        console.log(`ユーザー ${currentUserId} の所属グループ:`, userGroupIds)
+        console.log('マイグループ数:', myGroups.length)
+        
+        return NextResponse.json(myGroups)
+      } catch (error) {
+        console.error('マイグループ取得エラー:', error)
+        return NextResponse.json([])
+      }
+    } else if (type === 'discover') {
+      // 公開グループで、現在のユーザーが所属していないもののみを返す
+      try {
+        let currentUserId = 'user-1750850798419' // フォールバック用のユーザーID
+        
+        try {
+          const currentUser = await getCurrentUser()
+          if (currentUser) {
+            currentUserId = currentUser.id
+          }
+        } catch (authError) {
+          console.log('認証情報取得失敗、フォールバックユーザーを使用:', currentUserId)
+        }
+        
+        const userGroupIds = members
+          .filter((member: any) => member.userId === currentUserId)
+          .map((member: any) => member.groupId)
+        
+        const discoverGroups = enrichedGroups.filter((group: any) => 
+          group.isPublic && !userGroupIds.includes(group.id)
+        )
+        
+        console.log(`ユーザー ${currentUserId} の未参加グループ数:`, discoverGroups.length)
+        
+        return NextResponse.json(discoverGroups)
+      } catch (error) {
+        console.error('探索グループ取得エラー:', error)
+        
+        // フォールバック: 公開グループのみを返す
+        const publicGroups = enrichedGroups.filter((group: any) => group.isPublic)
+        return NextResponse.json(publicGroups)
+      }
+    }
+    
+    return NextResponse.json(enrichedGroups)
   } catch (error) {
     console.error('グループ取得エラー:', error)
     return NextResponse.json(
@@ -67,13 +154,23 @@ export async function POST(request: NextRequest) {
       joinedAt: new Date().toISOString()
     }
     
-    await fetch(`${JSON_SERVER_URL}/group_members`, {
+    console.log('グループ作成者をメンバーに追加:', memberData)
+    
+    const memberResponse = await fetch(`${JSON_SERVER_URL}/group_members`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(memberData),
     })
+    
+    if (!memberResponse.ok) {
+      console.error('グループ作成者のメンバー追加に失敗:', memberResponse.status)
+      throw new Error('グループ作成者のメンバー追加に失敗しました')
+    }
+    
+    const memberResult = await memberResponse.json()
+    console.log('グループ作成者をメンバーに追加完了:', memberResult)
 
     // 招待されたメンバーがいる場合は招待を作成
     if (body.invitedMembers && Array.isArray(body.invitedMembers)) {

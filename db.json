@@ -27,7 +27,7 @@
       "avatar": "https://avatars.githubusercontent.com/u/109452865?v=4",
       "createdAt": "2025-06-25T11:26:38.419Z",
       "updatedAt": "2025-06-25T11:26:38.419Z",
-      "lastLoginAt": "2025-06-25T13:34:25.674Z"
+      "lastLoginAt": "2025-06-25T13:52:24.214Z"
     }
   ],
   "goals": [
@@ -268,6 +268,82 @@
       "ownerId": "user-1750850798419",
       "createdAt": "2025-06-25T11:36:32.875Z",
       "updatedAt": "2025-06-25T11:36:32.875Z"
+    },
+    {
+      "id": "test-group-autojoin",
+      "name": "自動参加テストグループ",
+      "description": "グループ作成者の自動参加をテストするためのグループです",
+      "category": "test",
+      "maxMembers": 5,
+      "tags": [
+        "テスト",
+        "自動参加"
+      ],
+      "isPublic": true,
+      "requireApproval": false,
+      "allowMemberInvites": true,
+      "ownerId": "user-1750850798419",
+      "createdAt": "2025-06-25T12:00:00Z",
+      "updatedAt": "2025-06-25T12:00:00Z"
+    },
+    {
+      "name": "APIテストグループ",
+      "description": "API経由でのグループ作成と自動参加をテストします",
+      "category": "general",
+      "maxMembers": 10,
+      "tags": [
+        "API",
+        "テスト"
+      ],
+      "isPublic": true,
+      "requireApproval": false,
+      "allowMemberInvites": true,
+      "ownerId": "user-1750850798419",
+      "createdAt": "2025-06-25T13:55:12.414Z",
+      "updatedAt": "2025-06-25T13:55:12.415Z",
+      "id": "LCZ41aH"
+    },
+    {
+      "id": "group-1750859714143-1z3zu1fol",
+      "name": "＠＠",
+      "description": "＠＠",
+      "category": "general",
+      "maxMembers": 10,
+      "tags": [],
+      "isPublic": true,
+      "requireApproval": true,
+      "allowMemberInvites": true,
+      "ownerId": "user-1750850798419",
+      "createdAt": "2025-06-25T13:55:14.157Z",
+      "updatedAt": "2025-06-25T13:55:14.157Z"
+    },
+    {
+      "id": "group-1750859879408-aylbk6s1o",
+      "name": "あああ",
+      "description": "ああ",
+      "category": "general",
+      "maxMembers": 10,
+      "tags": [],
+      "isPublic": true,
+      "requireApproval": true,
+      "allowMemberInvites": true,
+      "ownerId": "user-1750850798419",
+      "createdAt": "2025-06-25T13:57:59.420Z",
+      "updatedAt": "2025-06-25T13:57:59.420Z"
+    },
+    {
+      "id": "group-1750859914916-azg1ek9k4",
+      "name": "っd",
+      "description": "d",
+      "category": "general",
+      "maxMembers": 10,
+      "tags": [],
+      "isPublic": true,
+      "requireApproval": false,
+      "allowMemberInvites": true,
+      "ownerId": "user-1750850798419",
+      "createdAt": "2025-06-25T13:58:34.923Z",
+      "updatedAt": "2025-06-25T13:58:34.923Z"
     }
   ],
   "group_members": [
@@ -305,6 +381,34 @@
       "userId": "user-1750850798419",
       "role": "owner",
       "joinedAt": "2025-06-25T11:36:32.891Z"
+    },
+    {
+      "id": "member-1750859712430-agzjtzheg",
+      "groupId": "LCZ41aH",
+      "userId": "user-1750850798419",
+      "role": "owner",
+      "joinedAt": "2025-06-25T13:55:12.430Z"
+    },
+    {
+      "id": "member-1750859714163-5r2das8vw",
+      "groupId": "group-1750859714143-1z3zu1fol",
+      "userId": "user-1750850798419",
+      "role": "owner",
+      "joinedAt": "2025-06-25T13:55:14.163Z"
+    },
+    {
+      "id": "member-1750859879426-r25vsdd0p",
+      "groupId": "group-1750859879408-aylbk6s1o",
+      "userId": "user-1750850798419",
+      "role": "owner",
+      "joinedAt": "2025-06-25T13:57:59.426Z"
+    },
+    {
+      "id": "member-1750859914927-yz9p9hkpu",
+      "groupId": "group-1750859914916-azg1ek9k4",
+      "userId": "user-1750850798419",
+      "role": "owner",
+      "joinedAt": "2025-06-25T13:58:34.927Z"
     }
   ],
   "invitations": [
