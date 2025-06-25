@@ -3,11 +3,52 @@ import { auth } from '@/app/api/auth/auth'
 
 const JSON_SERVER_URL = 'http://localhost:3005'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const response = await fetch(`${JSON_SERVER_URL}/goals`)
-    const data = await response.json()
-    return NextResponse.json(data)
+    const { searchParams } = new URL(request.url)
+    const groupId = searchParams.get('groupId')
+    const status = searchParams.get('status')
+    
+    let url = `${JSON_SERVER_URL}/goals`
+    const params = new URLSearchParams()
+    
+    if (groupId) {
+      params.append('groupId', groupId)
+    }
+    
+    if (status) {
+      if (status === 'completed') {
+        params.append('completed', 'true')
+      } else if (status === 'active') {
+        params.append('completed', 'false')
+      }
+    }
+    
+    if (params.toString()) {
+      url += `?${params.toString()}`
+    }
+    
+    const response = await fetch(url)
+    let data = await response.json()
+    
+    // サブ目標データも取得
+    const goalsWithSubgoals = await Promise.all(
+      data.map(async (goal: any) => {
+        try {
+          const subgoalsResponse = await fetch(`${JSON_SERVER_URL}/subgoals?goalId=${goal.id}`)
+          const subgoals = subgoalsResponse.ok ? await subgoalsResponse.json() : []
+          return {
+            ...goal,
+            subgoals: subgoals.sort((a: any, b: any) => a.order - b.order)
+          }
+        } catch (error) {
+          console.error(`Error fetching subgoals for goal ${goal.id}:`, error)
+          return { ...goal, subgoals: [] }
+        }
+      })
+    )
+    
+    return NextResponse.json(goalsWithSubgoals)
   } catch (error) {
     console.error('目標取得エラー:', error)
     return NextResponse.json(

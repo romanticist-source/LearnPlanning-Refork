@@ -332,7 +332,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
                 <CreateGoalModal />
               </CardHeader>
               <CardContent>
-                <GoalsList />
+                <GoalsList groupId={resolvedParams.id} />
               </CardContent>
             </Card>
           </TabsContent>

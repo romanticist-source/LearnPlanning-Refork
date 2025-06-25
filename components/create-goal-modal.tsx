@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -26,12 +26,20 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Switch } from "@/components/ui/switch"
 import { getCurrentUser } from "@/lib/auth-utils"
 
+interface Group {
+  id: string
+  name: string
+  description: string
+}
+
 export default function CreateGoalModal() {
   const [open, setOpen] = useState(false)
   const [date, setDate] = useState<Date>()
   const [isGroupGoal, setIsGroupGoal] = useState(false)
   const [hasSubgoals, setHasSubgoals] = useState(false)
   const [subgoals, setSubgoals] = useState([{ title: "", description: "", deadline: null as Date | null }])
+  const [groups, setGroups] = useState<Group[]>([])
+  const [loadingGroups, setLoadingGroups] = useState(false)
 
   // ID生成用のヘルパー関数
   const generateId = (prefix: string): string => {
@@ -42,6 +50,28 @@ export default function CreateGoalModal() {
   const getCurrentUserId = (): string => {
     return "user-1"
   }
+
+  // グループデータを取得
+  useEffect(() => {
+    const fetchGroups = async () => {
+      if (!isGroupGoal) return
+      
+      setLoadingGroups(true)
+      try {
+        const response = await fetch('/api/groups')
+        if (response.ok) {
+          const groupsData = await response.json()
+          setGroups(groupsData)
+        }
+      } catch (error) {
+        console.error('グループデータの取得に失敗:', error)
+      } finally {
+        setLoadingGroups(false)
+      }
+    }
+
+    fetchGroups()
+  }, [isGroupGoal])
 
 
   const addSubgoal = () => {
@@ -207,10 +237,18 @@ export default function CreateGoalModal() {
                   id="group"
                   name="group"
                   className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  required
                 >
-                  <option value="1">プログラミング勉強会</option>
-                  <option value="2">アルゴリズム特訓</option>
-                  <option value="3">Web開発チーム</option>
+                  <option value="">グループを選択してください</option>
+                  {loadingGroups ? (
+                    <option disabled>グループを読み込み中...</option>
+                  ) : (
+                    groups.map((group) => (
+                      <option key={group.id} value={group.id}>
+                        {group.name}
+                      </option>
+                    ))
+                  )}
                 </select>
               </div>
             )}

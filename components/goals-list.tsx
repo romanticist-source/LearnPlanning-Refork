@@ -36,7 +36,7 @@ type Goal = {
   completed?: boolean
 }
 
-export default function GoalsList({ status = 'all' }: { status?: 'all' | 'active' | 'completed' }) {
+export default function GoalsList({ status = 'all', groupId }: { status?: 'all' | 'active' | 'completed', groupId?: string }) {
   const [goals, setGoals] = useState<Goal[]>([])
   const [loading, setLoading] = useState(true)
   const [expandedGoals, setExpandedGoals] = useState<Record<string, boolean>>({})
@@ -46,8 +46,12 @@ export default function GoalsList({ status = 'all' }: { status?: 'all' | 'active
   useEffect(() => {
     const fetchGoals = async () => {
       try {
-        const statusParam = status !== 'all' ? `?status=${status}` : ''
-        const response = await fetch(`/api/goals${statusParam}`)
+        const params = new URLSearchParams()
+        if (status !== 'all') params.append('status', status)
+        if (groupId) params.append('groupId', groupId)
+        
+        const queryString = params.toString()
+        const response = await fetch(`/api/goals${queryString ? `?${queryString}` : ''}`)
         
         if (!response.ok) {
           throw new Error('Failed to fetch goals')
@@ -79,7 +83,7 @@ export default function GoalsList({ status = 'all' }: { status?: 'all' | 'active
     }
 
     fetchGoals()
-  }, [status])
+  }, [status, groupId])
 
   const toggleExpand = (goalId: string) => {
     setExpandedGoals((prev) => ({
