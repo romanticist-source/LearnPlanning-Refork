@@ -21,13 +21,43 @@ export default function UpcomingReminders() {
   useEffect(() => {
     const fetchReminders = async () => {
       try {
-        // TODO: 実際のリマインダーAPIから取得
-        // const response = await fetch('/api/reminders')
-        // const data = await response.json()
-        // setReminders(data)
-        
-        // 現在は空の配列を設定
-        setReminders([])
+        // イベントAPIからリマインダー設定されているイベントを取得
+        const response = await fetch('/api/events')
+        if (response.ok) {
+          const events = await response.json()
+          
+          // リマインダー設定されているイベントのみフィルタリングし、今後の日付のみ表示
+          const now = new Date()
+          const upcomingEvents = events.filter((event: any) => {
+            const eventDate = new Date(event.date)
+            return event.hasReminder && eventDate >= now
+          })
+          
+          // 日付順でソート
+          upcomingEvents.sort((a: any, b: any) => {
+            const dateA = new Date(a.date)
+            const dateB = new Date(b.date)
+            return dateA.getTime() - dateB.getTime()
+          })
+          
+          // リマインダー形式に変換
+          const reminderData: Reminder[] = upcomingEvents.map((event: any) => ({
+            id: event.id,
+            title: event.title,
+            description: event.description || '予定の詳細はありません',
+            date: new Date(event.date).toLocaleDateString('ja-JP', {
+              month: 'long',
+              day: 'numeric',
+              weekday: 'short'
+            }),
+            time: event.startTime ? `${event.startTime}${event.endTime ? ` - ${event.endTime}` : ''}` : '時間未設定',
+            completed: false
+          }))
+          
+          setReminders(reminderData)
+        } else {
+          setReminders([])
+        }
       } catch (error) {
         console.error('Failed to fetch reminders:', error)
         setReminders([])

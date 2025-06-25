@@ -226,28 +226,6 @@ export default function DashboardPage() {
                   )}
                 </CardContent>
               </Card>
-
-              {/* Paizaアクティビティ記録フォーム */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>全体の学習活動記録</CardTitle>
-                    <CardDescription>全体的な学習状況のコントリビューショングラフ</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Suspense fallback={<div className="h-[150px] w-full bg-gray-100 animate-pulse rounded-md"></div>}>
-                      <ContributionGraph />
-                    </Suspense>
-                  </CardContent>
-                </Card>
-
-                {currentUser && (
-                  <PaizaActivityForm 
-                    userId={currentUser.id}
-                    onActivityAdded={() => setPaizaGraphKey(prev => prev + 1)}
-                  />
-                )}
-              </div>
             </div>
           </TabsContent>
 

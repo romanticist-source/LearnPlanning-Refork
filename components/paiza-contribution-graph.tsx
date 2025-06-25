@@ -267,62 +267,7 @@ export default function PaizaContributionGraph({ userId, activities = [] }: Paiz
         </div>
       </div>
 
-      {/* コントリビューショングラフ */}
-      <div className="overflow-x-auto">
-        <div className="min-w-[800px] p-4" ref={canvasContainerRef}>
-          <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">
-            Paizaアクティビティ
-          </h3>
-          <div className="relative">
-            <canvas ref={canvasRef} className="w-full h-[150px]" style={{ display: "block" }} />
-            {tooltipData && (
-              <TooltipProvider>
-                <Tooltip open={true}>
-                  <TooltipTrigger asChild>
-                    <div
-                      className="absolute w-1 h-1"
-                      style={{
-                        left: `${tooltipData.x}px`,
-                        top: `${tooltipData.y}px`,
-                      }}
-                    />
-                  </TooltipTrigger>
-                  <TooltipContent side="top" className="bg-gray-800 text-white p-3 rounded-lg">
-                    <div className="text-xs space-y-1">
-                      <p className="font-medium">{tooltipData.date}</p>
-                      {tooltipData.codeExecutions > 0 && (
-                        <p>🚀 {tooltipData.codeExecutions}回のコード実行</p>
-                      )}
-                      {tooltipData.studyMinutes > 0 && (
-                        <p>📚 {tooltipData.studyMinutes}分の学習</p>
-                      )}
-                      {tooltipData.problemsSolved > 0 && (
-                        <p>🎯 {tooltipData.problemsSolved}問解決</p>
-                      )}
-                      {tooltipData.language && (
-                        <p>💻 {tooltipData.language}</p>
-                      )}
-                      {tooltipData.level === 0 && <p>📴 アクティビティなし</p>}
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )}
-          </div>
-          <div className="flex justify-between items-center mt-4">
-            <div className="text-sm text-gray-600 dark:text-gray-400">
-              過去1年間のPaizaでの学習活動
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <span className="text-gray-600 dark:text-gray-400">少ない</span>
-              {["#ebedf0", "#c6e48b", "#7bc96f", "#239a3b", "#196127"].map((color, i) => (
-                <div key={i} className="w-3 h-3 border border-gray-300 dark:border-gray-600" style={{ backgroundColor: color }} />
-              ))}
-              <span className="text-gray-600 dark:text-gray-400">多い</span>
-            </div>
-          </div>
-        </div>
-      </div>
+
     </div>
   )
 }

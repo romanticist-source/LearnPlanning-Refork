@@ -125,10 +125,10 @@
       "updatedAt": "2025-06-25T11:53:45.834Z"
     },
     {
-      "id": "goal-1750852776131-bql1303fc",
-      "title": "sd",
-      "description": "s",
-      "deadline": null,
+      "id": "goal-1750857447874-l3rjypdd7",
+      "title": "：",
+      "description": "：：：",
+      "deadline": "2025-06-03T15:00:00.000Z",
       "priority": "medium",
       "progress": 0,
       "completed": false,
@@ -136,9 +136,9 @@
       "groupId": null,
       "isGroupGoal": false,
       "isPublic": false,
-      "hasReminder": false,
-      "createdAt": "2025-06-25T11:59:36.141Z",
-      "updatedAt": "2025-06-25T11:59:36.141Z"
+      "hasReminder": true,
+      "createdAt": "2025-06-25T13:17:27.881Z",
+      "updatedAt": "2025-06-25T13:17:27.881Z"
     }
   ],
   "subgoals": [
@@ -593,19 +593,19 @@
       "updatedAt": "2025-06-22T14:00:00Z"
     },
     {
-      "id": "question-1750852472183-ttgda4nr3",
-      "title": "；；",
-      "content": "；；；",
+      "id": "question-1750857465664-02azh3u2s",
+      "title": "s",
+      "content": "d",
       "tags": [
-        "；"
+        "：：："
       ],
       "groupId": null,
       "userId": "user-1750850798419",
       "isAnonymous": false,
       "hasNotification": true,
       "attachments": [],
-      "createdAt": "2025-06-25T11:54:32.815Z",
-      "updatedAt": "2025-06-25T11:54:32.815Z"
+      "createdAt": "2025-06-25T13:17:45.670Z",
+      "updatedAt": "2025-06-25T13:17:45.670Z"
     }
   ],
   "group_activities": [
