@@ -37,6 +37,9 @@ export default function Header() {
                 <Link href="/goals" className="text-sm font-medium hover:text-emerald-600">
                   学習目標
                 </Link>
+                <Link href="/questions" className="text-sm font-medium hover:text-emerald-600"> 
+                  質問
+                </Link>
               </nav>
             )}
             
