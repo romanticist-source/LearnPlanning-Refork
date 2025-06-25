@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { ThumbsUp, Reply, MoreHorizontal, MessageSquare, Send, Image, Paperclip } from "lucide-react"
+import { ThumbsUp, Reply, MoreHorizontal, MessageSquare, Send, Image, Paperclip, X } from "lucide-react"
 import { getCurrentUser } from "@/lib/auth-utils"
 
 type Message = {
@@ -31,6 +31,9 @@ export default function GroupChatMessages({ groupId }: { groupId: string }) {
   const [newMessage, setNewMessage] = useState("")
   const [sending, setSending] = useState(false)
   const [currentUser, setCurrentUser] = useState<any>(null)
+  const [replyingTo, setReplyingTo] = useState<string | null>(null)
+  const [replyContent, setReplyContent] = useState("")
+  const [sendingReply, setSendingReply] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -122,6 +125,56 @@ export default function GroupChatMessages({ groupId }: { groupId: string }) {
     }
   }
 
+  const handleSendReply = async (e: React.FormEvent, messageId: string) => {
+    e.preventDefault()
+    
+    if (!replyContent.trim() || !currentUser || sendingReply) {
+      return
+    }
+
+    setSendingReply(true)
+    
+    try {
+      const response = await fetch(`/api/messages/${messageId}/replies`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: replyContent.trim(),
+          userId: currentUser.id,
+        }),
+      })
+
+      if (response.ok) {
+        const newReplyData = await response.json()
+        
+        // メッセージリストを更新
+        setMessages(prevMessages =>
+          prevMessages.map(message =>
+            message.id === messageId
+              ? { ...message, replies: [...message.replies, newReplyData] }
+              : message
+          )
+        )
+        
+        setReplyContent("")
+        setReplyingTo(null)
+        
+        // すぐに最下部にスクロール
+        setTimeout(scrollToBottom, 100)
+      } else {
+        const errorData = await response.json()
+        alert(`エラー: ${errorData.error || '返信の送信に失敗しました'}`)
+      }
+    } catch (error) {
+      console.error('返信送信エラー:', error)
+      alert('返信の送信に失敗しました')
+    } finally {
+      setSendingReply(false)
+    }
+  }
+
   const handleLike = async (messageId: string) => {
     if (!currentUser) return
 
@@ -153,10 +206,57 @@ export default function GroupChatMessages({ groupId }: { groupId: string }) {
     }
   }
 
+  const handleReplyLike = async (replyId: string, messageId: string) => {
+    if (!currentUser) return
+
+    try {
+      const response = await fetch(`/api/replies/${replyId}/like`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: currentUser.id,
+        }),
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        
+        // メッセージリストを更新
+        setMessages(prevMessages =>
+          prevMessages.map(message =>
+            message.id === messageId
+              ? {
+                  ...message,
+                  replies: message.replies.map(reply =>
+                    reply.id === replyId
+                      ? { ...reply, likes: result.likes }
+                      : reply
+                  )
+                }
+              : message
+          )
+        )
+      } else {
+        console.error('返信いいねの送信に失敗しました')
+      }
+    } catch (error) {
+      console.error('返信いいねエラー:', error)
+    }
+  }
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSendMessage(e as any)
+    }
+  }
+
+  const handleReplyKeyPress = (e: React.KeyboardEvent, messageId: string) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSendReply(e as any, messageId)
     }
   }
 
@@ -246,12 +346,70 @@ export default function GroupChatMessages({ groupId }: { groupId: string }) {
                         <ThumbsUp className="h-4 w-4 mr-1" />
                         {message.likes}
                       </Button>
-                      <Button variant="ghost" size="sm" className="text-gray-500 hover:text-blue-600">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="text-gray-500 hover:text-blue-600"
+                        onClick={() => setReplyingTo(replyingTo === message.id ? null : message.id)}
+                      >
                         <Reply className="h-4 w-4 mr-1" />
                         返信
                       </Button>
                     </div>
 
+                    {/* 返信入力フォーム */}
+                    {replyingTo === message.id && currentUser && (
+                      <div className="mt-4 ml-4 border-l-2 border-gray-100 pl-4">
+                        <form onSubmit={(e) => handleSendReply(e, message.id)} className="space-y-2">
+                          <div className="flex gap-2 items-start">
+                            <Avatar className="h-6 w-6">
+                              <AvatarImage src={currentUser.avatar || "/placeholder.svg"} alt={currentUser.name} />
+                              <AvatarFallback>{currentUser.name?.charAt(0) || 'U'}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1">
+                              <Textarea
+                                value={replyContent}
+                                onChange={(e) => setReplyContent(e.target.value)}
+                                onKeyPress={(e) => handleReplyKeyPress(e, message.id)}
+                                placeholder="返信を入力... (Shift+Enterで改行)"
+                                className="min-h-[60px] resize-none text-sm"
+                                disabled={sendingReply}
+                              />
+                            </div>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => {
+                                setReplyingTo(null)
+                                setReplyContent("")
+                              }}
+                              className="h-6 w-6"
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                          <div className="flex justify-end">
+                            <Button 
+                              type="submit" 
+                              size="sm"
+                              disabled={sendingReply || !replyContent.trim()}
+                            >
+                              {sendingReply ? (
+                                "送信中..."
+                              ) : (
+                                <>
+                                  <Send className="h-3 w-3 mr-1" />
+                                  返信
+                                </>
+                              )}
+                            </Button>
+                          </div>
+                        </form>
+                      </div>
+                    )}
+
+                    {/* 返信表示 */}
                     {message.replies && message.replies.length > 0 && (
                       <div className="ml-4 mt-4 border-l-2 border-gray-100 pl-4 space-y-3">
                         {message.replies.map((reply) => (
@@ -270,7 +428,7 @@ export default function GroupChatMessages({ groupId }: { groupId: string }) {
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  onClick={() => handleLike(reply.id)}
+                                  onClick={() => handleReplyLike(reply.id, message.id)}
                                   className="text-gray-500 hover:text-blue-600 text-xs"
                                 >
                                   <ThumbsUp className="h-3 w-3 mr-1" />
