@@ -8,6 +8,7 @@ import { CalendarIcon, List, ChevronLeft, ChevronRight, Download } from "lucide-
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay } from "date-fns"
 import { ja } from "date-fns/locale"
 import { cn } from "@/lib/utils"
+import { downloadICalFile, generateFilename, type CalendarEvent } from "@/lib/ical-utils"
 import CreateEventModal from "@/components/create-event-modal"
 
 type Event = {
@@ -114,72 +115,31 @@ export default function ScheduleView() {
 
   // iCalファイルを生成して出力する関数
   const exportToICalendar = () => {
-    // iCalファイルのヘッダー
-    let iCalContent =
-      [
-        "BEGIN:VCALENDAR",
-        "VERSION:2.0",
-        "PRODID:-//Learn Planning//Schedule//JP",
-        "CALSCALE:GREGORIAN",
-        "METHOD:PUBLISH",
-      ].join("\r\n") + "\r\n"
-
-    // イベントをiCalフォーマットに変換
-    monthEvents.forEach((event) => {
-      const eventDate = format(event.date, "yyyyMMdd")
+    // イベントデータをCalendarEvent形式に変換
+    const calendarEvents: CalendarEvent[] = monthEvents.map((event) => {
+      // time形式（"HH:MM-HH:MM"）から開始・終了時間を分離
       let startTime = ""
       let endTime = ""
-
       if (event.time) {
         const [start, end] = event.time.split("-")
-        let startHour = ""
-        let startMinute = ""
-        if (start) {
-          ;[startHour, startMinute] = start.split(":")
-          startTime = `T${startHour.padStart(2, "0")}${(startMinute || "00").padStart(2, "0")}00`
-        }
-        if (end) {
-          const [endHour, endMinute] = end.split(":")
-          endTime = `T${endHour.padStart(2, "0")}${(endMinute || "00").padStart(2, "0")}00`
-        } else {
-          // 終了時間が指定されていない場合は開始時間の1時間後
-          endTime = startTime
-            ? `T${(Number.parseInt(startHour) + 1).toString().padStart(2, "0")}${(startMinute || "00").padStart(2, "0")}00`
-            : ""
-        }
+        startTime = start?.trim() || ""
+        endTime = end?.trim() || ""
       }
 
-      // イベントの種類に応じた説明を追加
-      let description = event.description || ""
-      if (event.groupName) {
-        description += `\nグループ: ${event.groupName}`
+      return {
+        id: event.id,
+        title: event.title,
+        description: event.description,
+        date: event.date,
+        startTime,
+        endTime,
+        eventType: event.type,
+        groupName: event.groupName,
       }
-
-      iCalContent +=
-        [
-          "BEGIN:VEVENT",
-          `UID:${event.id}@learnplanning.example.com`,
-          `DTSTAMP:${format(new Date(), "yyyyMMdd")}T000000Z`,
-          `DTSTART:${eventDate}${startTime || ""}`,
-          `DTEND:${eventDate}${endTime || ""}`,
-          `SUMMARY:${event.title}`,
-          `DESCRIPTION:${description.replace(/\n/g, "\\n")}`,
-          `CATEGORIES:${event.type.toUpperCase()}`,
-          "END:VEVENT",
-        ].join("\r\n") + "\r\n"
     })
 
-    // iCalファイルのフッター
-    iCalContent += "END:VCALENDAR"
-
-    // ファイルをダウンロード
-    const blob = new Blob([iCalContent], { type: "text/calendar;charset=utf-8" })
-    const link = document.createElement("a")
-    link.href = URL.createObjectURL(blob)
-    link.download = `learn-planning-schedule-${format(currentMonth, "yyyy-MM")}.ics`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+    const filename = generateFilename("learn-planning-schedule", currentMonth)
+    downloadICalFile(calendarEvents, filename)
   }
 
   return (
@@ -223,9 +183,15 @@ export default function ScheduleView() {
                 <ChevronLeft className="h-4 w-4" />
               </Button>
               <h3 className="text-lg font-medium">{format(currentMonth, "yyyy年 MMMM", { locale: ja })}</h3>
-              <Button variant="outline" size="sm" onClick={nextMonth}>
-                <ChevronRight className="h-4 w-4" />
-              </Button>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={exportToICalendar}>
+                  <Download className="h-4 w-4 mr-1" />
+                  iCal出力
+                </Button>
+                <Button variant="outline" size="sm" onClick={nextMonth}>
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
 
             <div className="grid grid-cols-7 gap-1 mb-2">

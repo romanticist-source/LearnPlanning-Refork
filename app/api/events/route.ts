@@ -2,9 +2,19 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const JSON_SERVER_URL = 'http://localhost:3005'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const response = await fetch(`${JSON_SERVER_URL}/events`)
+    const { searchParams } = new URL(request.url)
+    const groupId = searchParams.get('groupId')
+    
+    let url = `${JSON_SERVER_URL}/events`
+    
+    // groupIdが指定されている場合はフィルタリング
+    if (groupId) {
+      url += `?groupId=${encodeURIComponent(groupId)}`
+    }
+    
+    const response = await fetch(url)
     const data = await response.json()
     return NextResponse.json(data)
   } catch (error) {

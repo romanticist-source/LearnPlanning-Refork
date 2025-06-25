@@ -725,6 +725,207 @@
       ],
       "isRecurring": false,
       "createdAt": "2025-06-25T10:00:00Z"
+    },
+    {
+      "id": "event-1750860283821-sco163gmq",
+      "title": "「「",
+      "description": "「「",
+      "date": "2025-06-01",
+      "startTime": "22:04",
+      "endTime": "23:04",
+      "eventType": "meeting",
+      "isGroupEvent": true,
+      "groupId": "1",
+      "userId": "user-1750850798419",
+      "hasReminder": true,
+      "isRecurring": false,
+      "isOnline": false,
+      "meetingUrl": null,
+      "createdAt": "2025-06-25T14:04:44.219Z",
+      "updatedAt": "2025-06-25T14:04:44.219Z"
+    },
+    {
+      "id": "event-1750860312670-2k39jug3e",
+      "title": "：：",
+      "description": "：：",
+      "date": "2025-06-01",
+      "startTime": "23:06",
+      "endTime": "23:05",
+      "eventType": "meeting",
+      "isGroupEvent": true,
+      "groupId": "1",
+      "userId": "user-1750850798419",
+      "hasReminder": true,
+      "isRecurring": false,
+      "isOnline": false,
+      "meetingUrl": null,
+      "createdAt": "2025-06-25T14:05:12.678Z",
+      "updatedAt": "2025-06-25T14:05:12.678Z"
+    },
+    {
+      "id": "event-1750860412507-tgtxdlt12",
+      "title": ":",
+      "description": ":",
+      "date": "2025-06-08",
+      "startTime": "23:07",
+      "endTime": "23:06",
+      "eventType": "meeting",
+      "isGroupEvent": true,
+      "groupId": "1",
+      "userId": "user-1750850798419",
+      "hasReminder": true,
+      "isRecurring": false,
+      "isOnline": false,
+      "meetingUrl": null,
+      "createdAt": "2025-06-25T14:06:53.287Z",
+      "updatedAt": "2025-06-25T14:06:53.287Z"
+    },
+    {
+      "id": "event-group-lczaj-1",
+      "title": "APIテストグループ キックオフミーティング",
+      "description": "プロジェクトの開始と目標設定について話し合います",
+      "date": "2025-07-05T19:00:00Z",
+      "startTime": "19:00",
+      "endTime": "20:00",
+      "eventType": "meeting",
+      "isOnline": true,
+      "location": "Zoom",
+      "groupId": "LCZ41aH",
+      "organizerId": "user-1750850798419",
+      "attendees": [
+        "user-1750850798419"
+      ],
+      "hasReminder": true,
+      "reminders": [
+        {
+          "type": "email",
+          "minutesBefore": 30
+        }
+      ],
+      "createdAt": "2025-06-25T14:00:00Z"
+    },
+    {
+      "id": "event-group-lczaj-2",
+      "title": "プロジェクト進捗確認会",
+      "description": "第1週の進捗を確認し、次週の計画を立てます",
+      "date": "2025-07-12T14:00:00Z",
+      "startTime": "14:00",
+      "endTime": "15:30",
+      "eventType": "meeting",
+      "isOnline": true,
+      "location": "Google Meet",
+      "groupId": "LCZ41aH",
+      "organizerId": "user-1750850798419",
+      "attendees": [
+        "user-1750850798419"
+      ],
+      "hasReminder": true,
+      "reminders": [
+        {
+          "type": "email",
+          "minutesBefore": 60
+        }
+      ],
+      "createdAt": "2025-06-25T14:05:00Z"
+    },
+    {
+      "id": "event-group-lczaj-3",
+      "title": "プロトタイプ提出締切",
+      "description": "第1回プロトタイプの提出締切日です",
+      "date": "2025-07-18T23:59:00Z",
+      "startTime": "23:59",
+      "eventType": "deadline",
+      "isOnline": false,
+      "location": "提出フォーム",
+      "groupId": "LCZ41aH",
+      "organizerId": "user-1750850798419",
+      "attendees": [
+        "user-1750850798419"
+      ],
+      "hasReminder": true,
+      "reminders": [
+        {
+          "type": "email",
+          "minutesBefore": 1440
+        },
+        {
+          "type": "email",
+          "minutesBefore": 60
+        }
+      ],
+      "createdAt": "2025-06-25T14:10:00Z"
+    },
+    {
+      "id": "event-1750860876944-ojlqajwam",
+      "title": "＠＠＠＠",
+      "description": "＠＠＠＠",
+      "date": "2025-06-03",
+      "startTime": "",
+      "endTime": "",
+      "eventType": "meeting",
+      "isGroupEvent": true,
+      "groupId": "1",
+      "userId": "user-1750850798419",
+      "hasReminder": true,
+      "isRecurring": false,
+      "isOnline": false,
+      "meetingUrl": null,
+      "createdAt": "2025-06-25T14:14:36.967Z",
+      "updatedAt": "2025-06-25T14:14:36.967Z"
+    },
+    {
+      "id": "event-1750860911632-1ses8w868",
+      "title": "：：",
+      "description": "：：",
+      "date": "2025-06-01",
+      "startTime": "23:15",
+      "endTime": "23:15",
+      "eventType": "meeting",
+      "isGroupEvent": true,
+      "groupId": "1",
+      "userId": "user-1750850798419",
+      "hasReminder": true,
+      "isRecurring": false,
+      "isOnline": false,
+      "meetingUrl": null,
+      "createdAt": "2025-06-25T14:15:11.644Z",
+      "updatedAt": "2025-06-25T14:15:11.644Z"
+    },
+    {
+      "id": "event-1750860955711-06n0kmygz",
+      "title": "wふぇqfgw",
+      "description": "s",
+      "date": "2025-06-24",
+      "startTime": "",
+      "endTime": "",
+      "eventType": "meeting",
+      "isGroupEvent": true,
+      "groupId": "1",
+      "userId": "user-1750850798419",
+      "hasReminder": true,
+      "isRecurring": false,
+      "isOnline": false,
+      "meetingUrl": null,
+      "createdAt": "2025-06-25T14:15:55.720Z",
+      "updatedAt": "2025-06-25T14:15:55.720Z"
+    },
+    {
+      "id": "event-1750861052434-i736886ek",
+      "title": "d",
+      "description": "w",
+      "date": "2025-06-24",
+      "startTime": "23:17",
+      "endTime": "23:17",
+      "eventType": "meeting",
+      "isGroupEvent": false,
+      "groupId": null,
+      "userId": "user-1750850798419",
+      "hasReminder": true,
+      "isRecurring": false,
+      "isOnline": false,
+      "meetingUrl": null,
+      "createdAt": "2025-06-25T14:17:32.631Z",
+      "updatedAt": "2025-06-25T14:17:32.631Z"
     }
   ],
   "questions": [

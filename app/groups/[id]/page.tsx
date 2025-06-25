@@ -26,7 +26,8 @@ import GroupChatMessages from "@/components/group-chat-messages"
 import CreateGoalModal from "@/components/create-goal-modal"
 import CreateEventModal from "@/components/create-event-modal"
 import InviteMemberForm from "@/components/invite-member-form"
-import { useState, useEffect } from "react"
+import GroupSchedule from "@/components/group-schedule"
+import { useState, useEffect, use } from "react"
 
 interface GroupMember {
   id: string
@@ -44,6 +45,10 @@ interface GroupData {
   isPublic: boolean
   memberCount: number
   tags?: string[]
+  goalCompletionRate?: number
+  meetingInfo?: string
+  activity?: string
+  members?: GroupMember[]
 }
 
 interface GroupMembership {
@@ -53,7 +58,8 @@ interface GroupMembership {
   joinedAt: string
 }
 
-export default function GroupPage({ params }: { params: { id: string } }) {
+export default function GroupPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = use(params)
   const [groupData, setGroupData] = useState<GroupData | null>(null)
   const [members, setMembers] = useState<GroupMember[]>([])
   const [goals, setGoals] = useState<any[]>([])
@@ -66,15 +72,15 @@ export default function GroupPage({ params }: { params: { id: string } }) {
     const fetchGroupData = async () => {
       try {
         setLoading(true)
-        const [groupResponse, membersResponse, goalsResponse] = await Promise.all([
-          fetch(`/api/groups/${params.id}`),
-          fetch(`/api/groups/${params.id}/members`),
-          fetch(`/api/goals?groupId=${params.id}`)
-        ])
-
+        
+        // グループ詳細情報を取得（メンバー情報も含まれる）
+        const groupResponse = await fetch(`/api/groups/${resolvedParams.id}`)
+        
         if (!groupResponse.ok) {
           if (groupResponse.status === 404) {
             setError('グループが見つかりません')
+          } else if (groupResponse.status === 403) {
+            setError('このグループにアクセスする権限がありません')
           } else {
             setError('グループ情報の取得に失敗しました')
           }
@@ -83,16 +89,34 @@ export default function GroupPage({ params }: { params: { id: string } }) {
 
         const group = await groupResponse.json()
         setGroupData(group)
-
-        if (membersResponse.ok) {
-          const membersData = await membersResponse.json()
-          setMembers(membersData)
+        
+        // メンバー情報がレスポンスに含まれている場合は使用
+        if (group.members) {
+          setMembers(group.members)
+        } else {
+                     // フォールバック: 個別にメンバー情報を取得
+           try {
+             const membersResponse = await fetch(`/api/groups/${resolvedParams.id}/members`)
+             if (membersResponse.ok) {
+               const membersData = await membersResponse.json()
+               setMembers(membersData)
+             }
+           } catch (error) {
+             console.error('メンバー情報の取得に失敗:', error)
+           }
         }
 
-        if (goalsResponse.ok) {
-          const goalsData = await goalsResponse.json()
-          setGoals(goalsData)
-        }
+                 // 目標情報を取得
+         try {
+           const goalsResponse = await fetch(`/api/goals?groupId=${resolvedParams.id}`)
+           if (goalsResponse.ok) {
+             const goalsData = await goalsResponse.json()
+             setGoals(goalsData)
+           }
+         } catch (error) {
+           console.error('目標情報の取得に失敗:', error)
+         }
+        
       } catch (error) {
         console.error('Failed to fetch group data:', error)
         setError('データの読み込みに失敗しました')
@@ -102,7 +126,7 @@ export default function GroupPage({ params }: { params: { id: string } }) {
     }
 
     fetchGroupData()
-  }, [params.id])
+  }, [resolvedParams.id])
 
   if (loading) {
     return (
@@ -147,7 +171,9 @@ export default function GroupPage({ params }: { params: { id: string } }) {
   }
 
   const completedGoals = goals.filter(goal => goal.completed).length
-  const goalCompletionRate = goals.length > 0 ? Math.round((completedGoals / goals.length) * 100) : 0
+  const goalCompletionRate = groupData.goalCompletionRate !== undefined 
+    ? groupData.goalCompletionRate 
+    : (goals.length > 0 ? Math.round((completedGoals / goals.length) * 100) : 0)
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -183,7 +209,7 @@ export default function GroupPage({ params }: { params: { id: string } }) {
                   <Users className="h-5 w-5 text-gray-500" />
                   <span className="font-medium">メンバー</span>
                 </div>
-                <p className="text-2xl font-bold">{members.length}人</p>
+                <p className="text-2xl font-bold">{groupData.memberCount || members.length}人</p>
               </div>
               <div className="bg-white p-4 rounded-lg border">
                 <div className="flex items-center gap-2 mb-2">
@@ -197,7 +223,7 @@ export default function GroupPage({ params }: { params: { id: string } }) {
                   <Calendar className="h-5 w-5 text-gray-500" />
                   <span className="font-medium">ミーティング</span>
                 </div>
-                <p className="text-sm font-medium">設定されていません</p>
+                <p className="text-sm font-medium">{groupData.meetingInfo || '設定されていません'}</p>
               </div>
             </div>
           </div>
@@ -281,7 +307,7 @@ export default function GroupPage({ params }: { params: { id: string } }) {
               <CardContent>
                 <div className="flex flex-col h-[500px]">
                   <div className="flex-1 overflow-y-auto mb-4">
-                    <GroupChatMessages groupId={params.id} />
+                    <GroupChatMessages groupId={resolvedParams.id} />
                   </div>
                   <Separator className="my-2" />
                   <div className="flex items-center gap-2">
@@ -326,10 +352,7 @@ export default function GroupPage({ params }: { params: { id: string } }) {
                 <CreateEventModal />
               </CardHeader>
               <CardContent>
-                <div className="text-center py-8 text-gray-500">
-                  <Calendar className="h-12 w-12 mx-auto mb-2 text-gray-300" />
-                  <p>スケジュールはまだ設定されていません</p>
-                </div>
+                <GroupSchedule groupId={resolvedParams.id} />
               </CardContent>
             </Card>
           </TabsContent>

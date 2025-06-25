@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Calendar, Clock, Check } from "lucide-react"
+import { Calendar, Clock, Check, Download } from "lucide-react"
+import { downloadICalFile, generateFilename, type CalendarEvent } from "@/lib/ical-utils"
 
 type Reminder = {
   id: string
@@ -17,6 +18,7 @@ type Reminder = {
 export default function UpcomingReminders() {
   const [reminders, setReminders] = useState<Reminder[]>([])
   const [loading, setLoading] = useState(true)
+  const [eventData, setEventData] = useState<any[]>([])
 
   useEffect(() => {
     const fetchReminders = async () => {
@@ -64,12 +66,15 @@ export default function UpcomingReminders() {
           })
           
           setReminders(reminderData)
+          setEventData(upcomingEvents)
         } else {
           setReminders([])
+          setEventData([])
         }
       } catch (error) {
         console.error('Failed to fetch reminders:', error)
         setReminders([])
+        setEventData([])
       } finally {
         setLoading(false)
       }
@@ -84,6 +89,24 @@ export default function UpcomingReminders() {
         reminder.id === id ? { ...reminder, completed: !reminder.completed } : reminder,
       ),
     )
+  }
+
+  // iCalファイルを生成して出力する関数
+  const exportToICalendar = () => {
+    // イベントデータをCalendarEvent形式に変換
+    const calendarEvents: CalendarEvent[] = eventData.map((event) => ({
+      id: event.id,
+      title: event.title,
+      description: event.description || "",
+      date: new Date(event.date),
+      startTime: event.startTime,
+      endTime: event.endTime,
+      eventType: event.eventType || "event",
+      groupName: event.groupId ? `グループ ${event.groupId}` : undefined,
+    }))
+
+    const filename = generateFilename("upcoming-reminders", new Date())
+    downloadICalFile(calendarEvents, filename)
   }
 
   if (loading) {
@@ -114,45 +137,55 @@ export default function UpcomingReminders() {
   }
 
   return (
-    <ul className="space-y-3">
-      {reminders.map((reminder) => (
-        <li
-          key={reminder.id}
-          className={`flex items-start gap-3 p-3 rounded-lg border ${
-            reminder.completed ? "bg-gray-50 border-gray-200" : "bg-white border-gray-200"
-          }`}
-        >
-          <Button
-            variant="outline"
-            size="sm"
-            className={`h-8 w-8 p-0 rounded-full ${
-              reminder.completed
-                ? "bg-emerald-100 text-emerald-600 border-emerald-200"
-                : "bg-gray-100 text-gray-500 border-gray-200"
-            }`}
-            onClick={() => toggleComplete(reminder.id)}
-          >
-            {reminder.completed ? <Check size={14} /> : <Clock size={14} />}
+    <div className="space-y-4">
+      {reminders.length > 0 && (
+        <div className="flex justify-end">
+          <Button variant="outline" size="sm" onClick={exportToICalendar}>
+            <Download className="h-4 w-4 mr-1" />
+            iCal出力
           </Button>
+        </div>
+      )}
+      <ul className="space-y-3">
+        {reminders.map((reminder) => (
+          <li
+            key={reminder.id}
+            className={`flex items-start gap-3 p-3 rounded-lg border ${
+              reminder.completed ? "bg-gray-50 border-gray-200" : "bg-white border-gray-200"
+            }`}
+          >
+            <Button
+              variant="outline"
+              size="sm"
+              className={`h-8 w-8 p-0 rounded-full ${
+                reminder.completed
+                  ? "bg-emerald-100 text-emerald-600 border-emerald-200"
+                  : "bg-gray-100 text-gray-500 border-gray-200"
+              }`}
+              onClick={() => toggleComplete(reminder.id)}
+            >
+              {reminder.completed ? <Check size={14} /> : <Clock size={14} />}
+            </Button>
 
-          <div className="flex-1">
-            <h4 className={`font-medium ${reminder.completed ? "line-through text-gray-400" : ""}`}>
-              {reminder.title}
-            </h4>
-            <p className="text-sm text-gray-600">{reminder.description}</p>
-            <div className="flex items-center gap-4 mt-1">
-              <div className="flex items-center text-sm text-gray-500">
-                <Calendar className="h-3.5 w-3.5 mr-1" />
-                {reminder.date}
-              </div>
-              <div className="flex items-center text-sm text-gray-500">
-                <Clock className="h-3.5 w-3.5 mr-1" />
-                {reminder.time}
+            <div className="flex-1">
+              <h4 className={`font-medium ${reminder.completed ? "line-through text-gray-400" : ""}`}>
+                {reminder.title}
+              </h4>
+              <p className="text-sm text-gray-600">{reminder.description}</p>
+              <div className="flex items-center gap-4 mt-1">
+                <div className="flex items-center text-sm text-gray-500">
+                  <Calendar className="h-3.5 w-3.5 mr-1" />
+                  {reminder.date}
+                </div>
+                <div className="flex items-center text-sm text-gray-500">
+                  <Clock className="h-3.5 w-3.5 mr-1" />
+                  {reminder.time}
+                </div>
               </div>
             </div>
-          </div>
-        </li>
-      ))}
-    </ul>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
