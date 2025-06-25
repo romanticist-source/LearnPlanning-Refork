@@ -171,6 +171,54 @@
       "hasReminder": false,
       "createdAt": "2025-06-25T15:25:55.492Z",
       "updatedAt": "2025-06-25T15:25:55.492Z"
+    },
+    {
+      "id": "goal-1750866070824-lfy3zauyp",
+      "title": "asdv",
+      "description": "sa",
+      "deadline": "2025-06-27",
+      "priority": "medium",
+      "progress": 0,
+      "completed": false,
+      "userId": "user-1750850798419",
+      "groupId": "LCZ41aH",
+      "isGroupGoal": true,
+      "isPublic": false,
+      "hasReminder": false,
+      "createdAt": "2025-06-25T15:41:10.835Z",
+      "updatedAt": "2025-06-25T15:41:10.835Z"
+    },
+    {
+      "id": "goal-1750866091461-qsemzse3x",
+      "title": "as",
+      "description": "as",
+      "deadline": "2025-06-27",
+      "priority": "medium",
+      "progress": 0,
+      "completed": false,
+      "userId": "user-1750850798419",
+      "groupId": "group-1750850431636-chvxqkwk0",
+      "isGroupGoal": true,
+      "isPublic": false,
+      "hasReminder": false,
+      "createdAt": "2025-06-25T15:41:31.467Z",
+      "updatedAt": "2025-06-25T15:41:31.467Z"
+    },
+    {
+      "id": "goal-1750866371177-pc6uqu3m6",
+      "title": "をおおおおお",
+      "description": "ももm",
+      "deadline": "2025-06-19",
+      "priority": "medium",
+      "progress": 0,
+      "completed": false,
+      "userId": "user-1750850798419",
+      "groupId": null,
+      "isGroupGoal": false,
+      "isPublic": false,
+      "hasReminder": true,
+      "createdAt": "2025-06-25T15:46:11.186Z",
+      "updatedAt": "2025-06-25T15:46:11.186Z"
     }
   ],
   "subgoals": [
@@ -380,6 +428,20 @@
       "userId": "user-1750850798419",
       "role": "owner",
       "joinedAt": "2025-06-25T13:58:34.927Z"
+    },
+    {
+      "id": "member-1750865763932-huru32yxk",
+      "groupId": "group-1750850431636-chvxqkwk0",
+      "userId": "user-1750850798419",
+      "role": "member",
+      "joinedAt": "2025-06-25T15:36:03.932Z"
+    },
+    {
+      "id": "member-1750865774017-zkrj413je",
+      "groupId": "group-2",
+      "userId": "user-1750850798419",
+      "role": "member",
+      "joinedAt": "2025-06-25T15:36:14.017Z"
     }
   ],
   "invitations": [
@@ -762,13 +824,8 @@
       "isRecurring": false,
       "isOnline": false,
       "meetingUrl": null,
-<<<<<<< HEAD
-      "createdAt": "2025-06-26T00:00:00Z",
-      "updatedAt": "2025-06-26T00:00:00Z"
-=======
       "createdAt": "2025-06-25T15:41:45.093Z",
       "updatedAt": "2025-06-25T15:41:45.093Z"
->>>>>>> 50ee421033dcb36b82391084e6de76a74657e1bd
     }
   ],
   "questions": [
