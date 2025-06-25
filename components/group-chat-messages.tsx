@@ -63,7 +63,7 @@ export default function GroupChatMessages({ groupId }: { groupId: string }) {
   useEffect(() => {
     // 定期的にメッセージを更新（簡易的なリアルタイム実装）
     const interval = setInterval(() => {
-      fetchMessages()
+    fetchMessages()
     }, 5000) // 5秒ごとに更新
 
     return () => clearInterval(interval)
@@ -277,85 +277,85 @@ export default function GroupChatMessages({ groupId }: { groupId: string }) {
     )
   }
 
-  return (
+    return (
     <div className="flex flex-col h-full">
       {/* メッセージ一覧 */}
       <div className="flex-1 overflow-y-auto p-4 space-y-6">
         {messages.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
-            <MessageSquare className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-            <p className="text-lg font-medium mb-2">まだメッセージがありません</p>
-            <p className="text-sm">最初のメッセージを送信してグループチャットを始めましょう</p>
-          </div>
+      <div className="text-center py-12 text-gray-500">
+        <MessageSquare className="h-16 w-16 mx-auto mb-4 text-gray-300" />
+        <p className="text-lg font-medium mb-2">まだメッセージがありません</p>
+        <p className="text-sm">最初のメッセージを送信してグループチャットを始めましょう</p>
+      </div>
         ) : (
           <>
-            {messages.map((message) => (
-              <div key={message.id} className="space-y-2">
-                <div className="flex gap-3">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src={message.userAvatar || "/placeholder.svg"} alt={message.userName} />
-                    <AvatarFallback>{message.userName.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p className="font-medium">{message.userName}</p>
-                        <p className="text-xs text-gray-500">{message.timestamp}</p>
-                      </div>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </div>
+      {messages.map((message) => (
+        <div key={message.id} className="space-y-2">
+          <div className="flex gap-3">
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={message.userAvatar || "/placeholder.svg"} alt={message.userName} />
+              <AvatarFallback>{message.userName.charAt(0)}</AvatarFallback>
+            </Avatar>
+            <div className="flex-1">
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="font-medium">{message.userName}</p>
+                  <p className="text-xs text-gray-500">{message.timestamp}</p>
+                </div>
+                <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </div>
                     <p className="mt-1 text-gray-700 whitespace-pre-wrap">{message.content}</p>
 
-                    {message.attachments && message.attachments.length > 0 && (
-                      <div className="mt-2">
-                        {message.attachments.map((attachment, index) => (
-                          <div key={index} className="mt-2">
-                            {attachment.type === "image" ? (
-                              <div className="relative h-48 w-full max-w-md rounded-lg overflow-hidden">
-                                <img
-                                  src={attachment.url || "/placeholder.svg"}
-                                  alt={attachment.name}
-                                  className="object-cover w-full h-full"
-                                />
-                              </div>
-                            ) : (
-                              <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg border max-w-md">
-                                <div className="bg-blue-100 p-2 rounded-full">
+              {message.attachments && message.attachments.length > 0 && (
+                <div className="mt-2">
+                  {message.attachments.map((attachment, index) => (
+                    <div key={index} className="mt-2">
+                      {attachment.type === "image" ? (
+                        <div className="relative h-48 w-full max-w-md rounded-lg overflow-hidden">
+                          <img
+                            src={attachment.url || "/placeholder.svg"}
+                            alt={attachment.name}
+                            className="object-cover w-full h-full"
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg border max-w-md">
+                          <div className="bg-blue-100 p-2 rounded-full">
                                   <Paperclip className="h-4 w-4 text-blue-600" />
-                                </div>
-                                <span className="text-sm font-medium">{attachment.name}</span>
-                                <Button variant="ghost" size="sm" className="ml-auto">
-                                  ダウンロード
-                                </Button>
-                              </div>
-                            )}
                           </div>
-                        ))}
-                      </div>
-                    )}
+                          <span className="text-sm font-medium">{attachment.name}</span>
+                          <Button variant="ghost" size="sm" className="ml-auto">
+                            ダウンロード
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
 
-                    <div className="flex items-center gap-4 mt-3">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleLike(message.id)}
-                        className="text-gray-500 hover:text-blue-600"
-                      >
-                        <ThumbsUp className="h-4 w-4 mr-1" />
-                        {message.likes}
-                      </Button>
+              <div className="flex items-center gap-4 mt-3">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleLike(message.id)}
+                  className="text-gray-500 hover:text-blue-600"
+                >
+                  <ThumbsUp className="h-4 w-4 mr-1" />
+                  {message.likes}
+                </Button>
                       <Button 
                         variant="ghost" 
                         size="sm" 
                         className="text-gray-500 hover:text-blue-600"
                         onClick={() => setReplyingTo(replyingTo === message.id ? null : message.id)}
                       >
-                        <Reply className="h-4 w-4 mr-1" />
-                        返信
-                      </Button>
-                    </div>
+                  <Reply className="h-4 w-4 mr-1" />
+                  返信
+                </Button>
+              </div>
 
                     {/* 返信入力フォーム */}
                     {replyingTo === message.id && currentUser && (
@@ -410,40 +410,40 @@ export default function GroupChatMessages({ groupId }: { groupId: string }) {
                     )}
 
                     {/* 返信表示 */}
-                    {message.replies && message.replies.length > 0 && (
-                      <div className="ml-4 mt-4 border-l-2 border-gray-100 pl-4 space-y-3">
-                        {message.replies.map((reply) => (
-                          <div key={reply.id} className="flex gap-2">
-                            <Avatar className="h-8 w-8">
-                              <AvatarImage src={reply.userAvatar || "/placeholder.svg"} alt={reply.userName} />
-                              <AvatarFallback>{reply.userName.charAt(0)}</AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2">
-                                <p className="text-sm font-medium">{reply.userName}</p>
-                                <p className="text-xs text-gray-500">{reply.timestamp}</p>
-                              </div>
+              {message.replies && message.replies.length > 0 && (
+                <div className="ml-4 mt-4 border-l-2 border-gray-100 pl-4 space-y-3">
+                  {message.replies.map((reply) => (
+                    <div key={reply.id} className="flex gap-2">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={reply.userAvatar || "/placeholder.svg"} alt={reply.userName} />
+                        <AvatarFallback>{reply.userName.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-medium">{reply.userName}</p>
+                          <p className="text-xs text-gray-500">{reply.timestamp}</p>
+                        </div>
                               <p className="text-sm text-gray-700 mt-1 whitespace-pre-wrap">{reply.content}</p>
-                              <div className="flex items-center gap-4 mt-2">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
+                        <div className="flex items-center gap-4 mt-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
                                   onClick={() => handleReplyLike(reply.id, message.id)}
-                                  className="text-gray-500 hover:text-blue-600 text-xs"
-                                >
-                                  <ThumbsUp className="h-3 w-3 mr-1" />
-                                  {reply.likes}
-                                </Button>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
+                            className="text-gray-500 hover:text-blue-600 text-xs"
+                          >
+                            <ThumbsUp className="h-3 w-3 mr-1" />
+                            {reply.likes}
+                          </Button>
+                        </div>
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
-            ))}
+              )}
+            </div>
+          </div>
+        </div>
+      ))}
             <div ref={messagesEndRef} />
           </>
         )}

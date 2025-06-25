@@ -251,9 +251,9 @@ export default function GoalsList({ status = 'all', groupId }: { status?: 'all' 
               </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="p-0 h-8 w-8">
-                    <MoreHorizontal size={18} />
-                  </Button>
+              <Button variant="ghost" size="sm" className="p-0 h-8 w-8">
+                <MoreHorizontal size={18} />
+              </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   {!goal.completed && (

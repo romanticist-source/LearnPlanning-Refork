@@ -32,10 +32,11 @@ interface Group {
   description: string
 }
 
-export default function CreateGoalModal() {
+export default function CreateGoalModal({ defaultGroupId }: { defaultGroupId?: string } = {}) {
   const [open, setOpen] = useState(false)
   const [date, setDate] = useState<Date>()
-  const [isGroupGoal, setIsGroupGoal] = useState(false)
+  const [isGroupGoal, setIsGroupGoal] = useState(!!defaultGroupId)
+  const [selectedGroupId, setSelectedGroupId] = useState<string | "">(defaultGroupId || "")
   const [hasSubgoals, setHasSubgoals] = useState(false)
   const [subgoals, setSubgoals] = useState([{ title: "", description: "", deadline: null as Date | null }])
   const [groups, setGroups] = useState<Group[]>([])
@@ -117,7 +118,7 @@ export default function CreateGoalModal() {
         priority: formData.get('priority') as string,
         userId: currentUser.id,
         isGroupGoal,
-        groupId: isGroupGoal ? formData.get('group') as string : null,
+        groupId: isGroupGoal ? (defaultGroupId || (formData.get('group') as string)) : null,
         isPublic: formData.get('public') === 'on',
         hasReminder: formData.get('reminder') === 'on',
         subgoals: hasSubgoals ? subgoals.filter(sg => sg.title.trim() !== '') : []
@@ -224,7 +225,7 @@ export default function CreateGoalModal() {
             <div className="grid grid-cols-4 items-center gap-4">
               <Label className="text-right">目標タイプ</Label>
               <div className="flex items-center space-x-2 col-span-3">
-                <Switch id="group-goal" checked={isGroupGoal} onCheckedChange={setIsGroupGoal} />
+                <Switch id="group-goal" checked={isGroupGoal} onCheckedChange={setIsGroupGoal} disabled={!!defaultGroupId} />
                 <Label htmlFor="group-goal">グループ目標として設定</Label>
               </div>
             </div>
@@ -238,6 +239,9 @@ export default function CreateGoalModal() {
                   name="group"
                   className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   required
+                  value={selectedGroupId}
+                  onChange={(e) => setSelectedGroupId(e.target.value)}
+                  disabled={!!defaultGroupId}
                 >
                   <option value="">グループを選択してください</option>
                   {loadingGroups ? (

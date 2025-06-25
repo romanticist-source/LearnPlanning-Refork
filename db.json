@@ -160,6 +160,38 @@
       "hasReminder": false,
       "createdAt": "2025-06-25T15:25:55.492Z",
       "updatedAt": "2025-06-25T15:25:55.492Z"
+    },
+    {
+      "id": "goal-1750866070824-lfy3zauyp",
+      "title": "asdv",
+      "description": "sa",
+      "deadline": "2025-06-27",
+      "priority": "medium",
+      "progress": 0,
+      "completed": false,
+      "userId": "user-1750850798419",
+      "groupId": "LCZ41aH",
+      "isGroupGoal": true,
+      "isPublic": false,
+      "hasReminder": false,
+      "createdAt": "2025-06-25T15:41:10.835Z",
+      "updatedAt": "2025-06-25T15:41:10.835Z"
+    },
+    {
+      "id": "goal-1750866091461-qsemzse3x",
+      "title": "as",
+      "description": "as",
+      "deadline": "2025-06-27",
+      "priority": "medium",
+      "progress": 0,
+      "completed": false,
+      "userId": "user-1750850798419",
+      "groupId": "group-1750850431636-chvxqkwk0",
+      "isGroupGoal": true,
+      "isPublic": false,
+      "hasReminder": false,
+      "createdAt": "2025-06-25T15:41:31.467Z",
+      "updatedAt": "2025-06-25T15:41:31.467Z"
     }
   ],
   "subgoals": [
@@ -369,6 +401,20 @@
       "userId": "user-1750850798419",
       "role": "owner",
       "joinedAt": "2025-06-25T13:58:34.927Z"
+    },
+    {
+      "id": "member-1750865763932-huru32yxk",
+      "groupId": "group-1750850431636-chvxqkwk0",
+      "userId": "user-1750850798419",
+      "role": "member",
+      "joinedAt": "2025-06-25T15:36:03.932Z"
+    },
+    {
+      "id": "member-1750865774017-zkrj413je",
+      "groupId": "group-2",
+      "userId": "user-1750850798419",
+      "role": "member",
+      "joinedAt": "2025-06-25T15:36:14.017Z"
     }
   ],
   "invitations": [
@@ -735,6 +781,24 @@
       "meetingUrl": null,
       "createdAt": "2025-06-25T15:21:26.207Z",
       "updatedAt": "2025-06-25T15:21:26.207Z"
+    },
+    {
+      "id": "event-1750866105087-026gkssxk",
+      "title": "efdgfbff bvbsbdv ",
+      "description": "e",
+      "date": "2025-06-28",
+      "startTime": "",
+      "endTime": "",
+      "eventType": "meeting",
+      "isGroupEvent": true,
+      "groupId": "group-1750850431636-chvxqkwk0",
+      "userId": "user-1750850798419",
+      "hasReminder": true,
+      "isRecurring": false,
+      "isOnline": false,
+      "meetingUrl": null,
+      "createdAt": "2025-06-25T15:41:45.093Z",
+      "updatedAt": "2025-06-25T15:41:45.093Z"
     }
   ],
   "questions": [
