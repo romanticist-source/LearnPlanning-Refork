@@ -30,18 +30,18 @@ export default function ThreadListModal({ open, onOpenChange, threads, onSelect 
               {threads.map((t) => {
                 const snippet = t.content.length > 60 ? t.content.slice(0, 57) + "…" : t.content
                 return (
-                  <Card key={t.id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => onSelect(t)}>
-                    <CardContent className="p-4 flex gap-3 items-start">
+                  <Card key={t.id} className="w-full hover:shadow-md transition-shadow cursor-pointer" onClick={() => onSelect(t)}>
+                    <CardContent className="p-5 flex gap-4 items-start">
                       <Avatar className="h-10 w-10 flex-shrink-0">
                         <AvatarImage src={t.userAvatar || "/placeholder.svg"} alt={t.userName} />
                         <AvatarFallback>{t.userName.charAt(0)}</AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <div className="flex justify-between items-center">
+                        <div className="flex justify-between items-center gap-2">
                           <p className="font-medium truncate">{t.userName}</p>
                           <span className="text-xs text-gray-500 whitespace-nowrap">{t.timestamp}</span>
                         </div>
-                        <p className="text-sm text-gray-700 mt-1 truncate">{snippet}</p>
+                        <p className="text-sm text-gray-700 mt-1 line-clamp-1">{snippet}</p>
                         {t.replies.length > 0 && (
                           <div className="flex items-center text-xs text-gray-500 mt-2 gap-1">
                             <MessageSquareText className="h-3 w-3" /> {t.replies.length} 件の返信
