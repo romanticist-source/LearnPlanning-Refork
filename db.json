@@ -1016,9 +1016,9 @@
       "content": "lll",
       "userId": "user-1750850798419",
       "isAccepted": false,
-      "likes": 5,
+      "likes": 6,
       "createdAt": "2025-06-25T15:26:31.907Z",
-      "updatedAt": "2025-06-25T15:31:47.435Z"
+      "updatedAt": "2025-06-26T07:54:12.002Z"
     },
     {
       "id": "reply-1750865510971-yuj9crmzs",
@@ -1026,9 +1026,9 @@
       "content": "sdfdvcdsvc",
       "userId": "user-1750850798419",
       "isAccepted": false,
-      "likes": 3,
+      "likes": 4,
       "createdAt": "2025-06-25T15:31:50.971Z",
-      "updatedAt": "2025-06-25T15:31:54.066Z"
+      "updatedAt": "2025-06-26T07:54:15.831Z"
     }
   ],
   "chat_messages": [
@@ -1060,10 +1060,19 @@
       "userId": "user-1",
       "content": "良い質問ですね！\nPromiseとasync/awaitについて説明しますね。\n\nまず、Promiseは非同期処理を扱うためのオブジェクトです。",
       "likes": 5,
-      "replies": [],
+      "replies": [
+        {
+          "id": "reply-1750924492647-7qq3f0ys4",
+          "userId": "user-1750850798419",
+          "content": "っs",
+          "likes": 1,
+          "createdAt": "2025-06-26T07:54:52.647Z",
+          "updatedAt": "2025-06-26T07:54:55.123Z"
+        }
+      ],
       "attachments": [],
       "createdAt": "2025-06-24T10:30:00Z",
-      "updatedAt": "2025-06-24T10:30:00Z"
+      "updatedAt": "2025-06-26T07:54:55.123Z"
     },
     {
       "id": "message-4",
@@ -1097,6 +1106,17 @@
       "attachments": [],
       "createdAt": "2025-06-25T15:11:35.095Z",
       "updatedAt": "2025-06-25T17:39:50.590Z"
+    },
+    {
+      "id": "message-1750924488433-6tt5dr9pn",
+      "groupId": "group-1",
+      "userId": "user-1750850798419",
+      "content": "s",
+      "likes": 0,
+      "replies": [],
+      "attachments": [],
+      "createdAt": "2025-06-26T07:54:48.433Z",
+      "updatedAt": "2025-06-26T07:54:48.433Z"
     }
   ],
   "user_achievements": [

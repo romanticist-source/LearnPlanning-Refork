@@ -29,6 +29,39 @@ export async function GET(
           }
         }
 
+        // 各返信にもユーザー情報を付加
+        const repliesWithUsers = await Promise.all(
+          (message.replies || []).map(async (reply: any) => {
+            let replyUser = null
+            if (reply.userId) {
+              try {
+                const replyUserResponse = await fetch(`${JSON_SERVER_URL}/users/${reply.userId}`)
+                if (replyUserResponse.ok) {
+                  replyUser = await replyUserResponse.json()
+                }
+              } catch (error) {
+                console.warn('返信ユーザー情報の取得に失敗しました:', error)
+              }
+            }
+
+            return {
+              id: reply.id,
+              userId: reply.userId,
+              userName: replyUser?.name || '不明なユーザー',
+              userAvatar: replyUser?.avatar || '',
+              content: reply.content,
+              timestamp: new Date(reply.createdAt || reply.updatedAt || Date.now()).toLocaleString('ja-JP', {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              }),
+              likes: reply.likes || 0,
+              createdAt: reply.createdAt
+            }
+          })
+        )
+
         return {
           id: message.id,
           userId: message.userId,
@@ -42,7 +75,7 @@ export async function GET(
             minute: '2-digit'
           }),
           likes: message.likes || 0,
-          replies: message.replies || [],
+          replies: repliesWithUsers,
           attachments: message.attachments || [],
           createdAt: message.createdAt
         }
