@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ThumbsUp, Reply, MoreHorizontal, MessageSquare, Send, Image, Paperclip, X } from "lucide-react"
 import { getCurrentUser } from "@/lib/auth-utils"
+import ThreadModal, { Thread } from "@/components/thread-modal"
+import ThreadListModal from "@/components/thread-list-modal"
 
 type Message = {
   id: string
@@ -35,6 +37,11 @@ export default function GroupChatMessages({ groupId }: { groupId: string }) {
   const [replyContent, setReplyContent] = useState("")
   const [sendingReply, setSendingReply] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  // スレッド関連
+  const [threadModalOpen, setThreadModalOpen] = useState(false)
+  const [threadListOpen, setThreadListOpen] = useState(false)
+  const [selectedThread, setSelectedThread] = useState<Thread | null>(null)
 
   useEffect(() => {
     const initializeData = async () => {
@@ -260,6 +267,51 @@ export default function GroupChatMessages({ groupId }: { groupId: string }) {
     }
   }
 
+  // スレッド変換ユーティリティ
+  const convertMessageToThread = (msg: any): Thread => ({
+    id: msg.id,
+    userName: msg.userName,
+    userAvatar: msg.userAvatar,
+    content: msg.content,
+    timestamp: msg.timestamp,
+    replies: msg.replies || [],
+  })
+
+  // スレッドモーダルから返信を送信
+  const sendReplyFromModal = async (content: string) => {
+    if (!selectedThread || !currentUser) return
+
+    const messageId = selectedThread.id
+    try {
+      const response = await fetch(`/api/messages/${messageId}/replies`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content,
+          userId: currentUser.id,
+        }),
+      })
+
+      if (response.ok) {
+        const newReplyData = await response.json()
+
+        // messages 状態更新
+        setMessages(prev => prev.map(m => m.id === messageId ? { ...m, replies: [...m.replies, newReplyData] } : m))
+
+        // selectedThread 更新
+        setSelectedThread(prev => prev ? { ...prev, replies: [...prev.replies, newReplyData] } : prev)
+      } else {
+        const err = await response.json()
+        alert(err.error || '返信の送信に失敗しました')
+      }
+    } catch (error) {
+      console.error('modal reply error', error)
+      alert('返信の送信に失敗しました')
+    }
+  }
+
   if (loading) {
     return (
       <div className="space-y-6 p-4">
@@ -279,6 +331,12 @@ export default function GroupChatMessages({ groupId }: { groupId: string }) {
 
     return (
     <div className="flex flex-col h-full">
+      {/* ヘッダーにスレッド一覧ボタン */}
+      <div className="border-b p-2 text-right">
+        <Button size="sm" variant="outline" onClick={() => setThreadListOpen(true)}>
+          スレッド一覧
+        </Button>
+      </div>
       {/* メッセージ一覧 */}
       <div className="flex-1 overflow-y-auto p-4 space-y-6">
         {messages.length === 0 ? (
@@ -354,6 +412,18 @@ export default function GroupChatMessages({ groupId }: { groupId: string }) {
                       >
                   <Reply className="h-4 w-4 mr-1" />
                   返信
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-gray-500 hover:text-blue-600"
+                  onClick={() => {
+                    setSelectedThread(convertMessageToThread(message))
+                    setThreadModalOpen(true)
+                  }}
+                >
+                  <MessageSquare className="h-4 w-4 mr-1" />
+                  スレッド
                 </Button>
               </div>
 
@@ -496,6 +566,29 @@ export default function GroupChatMessages({ groupId }: { groupId: string }) {
           </form>
         </div>
       )}
+
+      {/* スレッドモーダル */}
+      <ThreadModal
+        open={threadModalOpen}
+        onOpenChange={(v) => {
+          setThreadModalOpen(v)
+          if (!v) setSelectedThread(null)
+        }}
+        thread={selectedThread}
+        onSendReply={sendReplyFromModal}
+      />
+
+      {/* スレッド一覧モーダル */}
+      <ThreadListModal
+        open={threadListOpen}
+        onOpenChange={setThreadListOpen}
+        threads={messages.filter((m) => m.replies && m.replies.length > 0).map(convertMessageToThread)}
+        onSelect={(t) => {
+          setSelectedThread(t)
+          setThreadModalOpen(true)
+          setThreadListOpen(false)
+        }}
+      />
     </div>
   )
 }

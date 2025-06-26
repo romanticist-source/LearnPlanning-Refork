@@ -1068,11 +1068,19 @@
           "likes": 1,
           "createdAt": "2025-06-26T07:54:52.647Z",
           "updatedAt": "2025-06-26T07:54:55.123Z"
+        },
+        {
+          "id": "reply-1750925286421-fas84nh7c",
+          "userId": "user-1750850798419",
+          "content": "d",
+          "likes": 0,
+          "createdAt": "2025-06-26T08:08:06.421Z",
+          "updatedAt": "2025-06-26T08:08:06.421Z"
         }
       ],
       "attachments": [],
       "createdAt": "2025-06-24T10:30:00Z",
-      "updatedAt": "2025-06-26T07:54:55.123Z"
+      "updatedAt": "2025-06-26T08:08:06.421Z"
     },
     {
       "id": "message-4",
@@ -1080,10 +1088,19 @@
       "userId": "user-2",
       "content": "アルゴリズム特訓グループのチャットです。\n今日は何のアルゴリズムに挑戦しましょうか？",
       "likes": 2,
-      "replies": [],
+      "replies": [
+        {
+          "id": "reply-1750925111978-lqg4bpf1d",
+          "userId": "user-1750850798419",
+          "content": ":::",
+          "likes": 0,
+          "createdAt": "2025-06-26T08:05:11.978Z",
+          "updatedAt": "2025-06-26T08:05:11.978Z"
+        }
+      ],
       "attachments": [],
       "createdAt": "2025-06-24T14:00:00Z",
-      "updatedAt": "2025-06-25T16:38:04.542Z"
+      "updatedAt": "2025-06-26T08:05:11.979Z"
     },
     {
       "id": "message-1750864269434-uelblbht4",
