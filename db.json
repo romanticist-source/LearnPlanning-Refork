@@ -27,7 +27,7 @@
       "avatar": "https://avatars.githubusercontent.com/u/109452865?v=4",
       "createdAt": "2025-06-25T11:26:38.419Z",
       "updatedAt": "2025-06-25T11:26:38.419Z",
-      "lastLoginAt": "2025-06-25T17:31:17.097Z"
+      "lastLoginAt": "2025-06-26T07:51:28.514Z"
     },
     {
       "id": "user-1750866406049",
@@ -1231,6 +1231,86 @@
       "isSent": false,
       "scheduledFor": "2025-06-20T00:00:00.000Z",
       "createdAt": "2025-06-25T17:32:08.115Z"
+    },
+    {
+      "id": "reminder-1750924289826-xyofsb8v6",
+      "eventId": "event-1750861690108-cy5dtdsgl",
+      "userId": "user-1750850798419",
+      "reminderType": "day_of",
+      "sentAt": "2025-06-26T07:51:29.826Z",
+      "isSent": true,
+      "scheduledFor": "2025-06-26T07:51:29.826Z",
+      "createdAt": "2025-06-26T07:51:29.826Z"
+    },
+    {
+      "id": "reminder-1750924289828-3g50per7t",
+      "eventId": "event-1750861690108-cy5dtdsgl",
+      "userId": "user-1750850798419",
+      "reminderType": "day_of",
+      "sentAt": "2025-06-26T07:51:29.828Z",
+      "isSent": true,
+      "scheduledFor": "2025-06-26T07:51:29.828Z",
+      "createdAt": "2025-06-26T07:51:29.828Z"
+    },
+    {
+      "id": "reminder-1750924289862-tabssa3gp",
+      "eventId": "event-1750861871734-zutksz9wv",
+      "userId": "user-1750850798419",
+      "reminderType": "day_of",
+      "sentAt": "2025-06-26T07:51:29.862Z",
+      "isSent": true,
+      "scheduledFor": "2025-06-26T07:51:29.862Z",
+      "createdAt": "2025-06-26T07:51:29.862Z"
+    },
+    {
+      "id": "reminder-1750924289863-onmyysvf0",
+      "eventId": "event-1750861871734-zutksz9wv",
+      "userId": "user-1750850798419",
+      "reminderType": "day_of",
+      "sentAt": "2025-06-26T07:51:29.863Z",
+      "isSent": true,
+      "scheduledFor": "2025-06-26T07:51:29.863Z",
+      "createdAt": "2025-06-26T07:51:29.863Z"
+    },
+    {
+      "id": "reminder-1750924289896-hp0pcnumy",
+      "eventId": "event-1750861940840-h0tbovchv",
+      "userId": "user-1750850798419",
+      "reminderType": "day_of",
+      "sentAt": "2025-06-26T07:51:29.896Z",
+      "isSent": true,
+      "scheduledFor": "2025-06-26T07:51:29.896Z",
+      "createdAt": "2025-06-26T07:51:29.896Z"
+    },
+    {
+      "id": "reminder-1750924289900-enx77vyul",
+      "eventId": "event-1750861940840-h0tbovchv",
+      "userId": "user-1750850798419",
+      "reminderType": "day_of",
+      "sentAt": "2025-06-26T07:51:29.900Z",
+      "isSent": true,
+      "scheduledFor": "2025-06-26T07:51:29.900Z",
+      "createdAt": "2025-06-26T07:51:29.900Z"
+    },
+    {
+      "id": "reminder-1750924289916-7i1tdrlxz",
+      "eventId": "event-test-today-1",
+      "userId": "user-1750850798419",
+      "reminderType": "day_of",
+      "sentAt": "2025-06-26T07:51:29.916Z",
+      "isSent": true,
+      "scheduledFor": "2025-06-26T07:51:29.916Z",
+      "createdAt": "2025-06-26T07:51:29.916Z"
+    },
+    {
+      "id": "reminder-1750924289919-cfa60cd0v",
+      "eventId": "event-test-today-1",
+      "userId": "user-1750850798419",
+      "reminderType": "day_of",
+      "sentAt": "2025-06-26T07:51:29.919Z",
+      "isSent": true,
+      "scheduledFor": "2025-06-26T07:51:29.919Z",
+      "createdAt": "2025-06-26T07:51:29.919Z"
     }
   ]
 }

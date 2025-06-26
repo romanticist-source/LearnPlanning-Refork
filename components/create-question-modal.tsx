@@ -19,10 +19,33 @@ import { Textarea } from "@/components/ui/textarea"
 import { MessageSquare, FileText, ImageIcon, X } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { getCurrentUser } from "@/lib/auth-utils"
+import { Badge } from "@/components/ui/badge"
+
+// タグのプリセット候補（グループ作成と共有）
+const presetTags = [
+  "JavaScript",
+  "TypeScript",
+  "React",
+  "Next.js",
+  "Node.js",
+  "Python",
+  "アルゴリズム",
+  "データ構造",
+  "プログラミング",
+  "データベース",
+]
 
 export default function CreateQuestionModal() {
   const [open, setOpen] = useState(false)
   const [files, setFiles] = useState<{ name: string; type: string; size: string }[]>([])
+
+  // タグ関連のステート
+  const [tags, setTags] = useState<string[]>([])
+  const [tagInput, setTagInput] = useState("")
+
+  const filteredSuggestions = presetTags.filter(
+    (tag) => tag.toLowerCase().includes(tagInput.toLowerCase()) && !tags.includes(tag)
+  )
 
   // ID生成用のヘルパー関数
   const generateId = (prefix: string): string => {
@@ -43,12 +66,11 @@ export default function CreateQuestionModal() {
       // 現在のユーザー情報を取得
       const currentUser = await getCurrentUser()
       
-      const tagsString = formData.get('tags') as string
       const questionData = {
         id: generateId('question'),
         title: formData.get('title') as string,
         content: formData.get('question') as string,
-        tags: tagsString ? tagsString.split(',').map(tag => tag.trim()).filter(tag => tag !== '') : [],
+        tags: tags,
         groupId: formData.get('group') === 'all' ? null : formData.get('group') as string,
         userId: currentUser.id,
         isAnonymous: formData.get('anonymous') === 'on',
@@ -78,6 +100,8 @@ export default function CreateQuestionModal() {
       setOpen(false)
       // フォームをリセット
       setFiles([])
+      setTags([])
+      setTagInput("")
       
       // ページをリロードして新しい質問を表示
       window.location.reload()
@@ -103,6 +127,21 @@ export default function CreateQuestionModal() {
     const newFiles = [...files]
     newFiles.splice(index, 1)
     setFiles(newFiles)
+  }
+
+  // タグ追加・削除
+  const addTag = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && tagInput.trim() !== "") {
+      e.preventDefault()
+      if (!tags.includes(tagInput.trim())) {
+        setTags([...tags, tagInput.trim()])
+      }
+      setTagInput("")
+    }
+  }
+
+  const removeTag = (tagToRemove: string) => {
+    setTags(tags.filter((tag) => tag !== tagToRemove))
   }
 
   return (
@@ -142,11 +181,56 @@ export default function CreateQuestionModal() {
               />
             </div>
             
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="tags" className="text-right">
+            {/* タグ入力 */}
+            <div className="grid grid-cols-4 items-start gap-4">
+              <Label htmlFor="tags-input" className="text-right pt-2">
                 タグ
               </Label>
-              <Input id="tags" name="tags" placeholder="例: JavaScript, 非同期処理, Promise" className="col-span-3" />
+              <div className="col-span-3">
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {tags.map((tag, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center gap-1 bg-gray-100 text-gray-800 px-2 py-1 rounded-md text-sm"
+                    >
+                      {tag}
+                      <button
+                        type="button"
+                        onClick={() => removeTag(tag)}
+                        className="text-gray-500 hover:text-gray-700"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+                <Input
+                  id="tags-input"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={addTag}
+                  placeholder="タグを入力してEnterキーを押してください"
+                />
+                {filteredSuggestions.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {filteredSuggestions.map((suggestion) => (
+                      <Badge
+                        key={suggestion}
+                        variant="outline"
+                        className="cursor-pointer hover:bg-gray-100"
+                        onClick={() => {
+                          setTags([...tags, suggestion])
+                          setTagInput("")
+                        }}
+                      >
+                        {suggestion}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+                <input type="hidden" name="tags" value={tags.join(',')} />
+                <p className="text-xs text-gray-500 mt-1">例: プログラミング, JavaScript, アルゴリズム</p>
+              </div>
             </div>
 
             <div className="grid grid-cols-4 items-start gap-4">

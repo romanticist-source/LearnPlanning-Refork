@@ -23,6 +23,7 @@ import { Badge } from "@/components/ui/badge"
 import { getCurrentUser } from "@/lib/auth-utils"
 import { useRouter } from "next/navigation"
 import { toast } from "@/components/ui/use-toast"
+
 export default function CreateGroupModal() {
   const router = useRouter()
   const [open, setOpen] = useState(false)
@@ -30,6 +31,25 @@ export default function CreateGroupModal() {
   const [tagInput, setTagInput] = useState("")
   const [invitedMembers, setInvitedMembers] = useState<{ id: string; name: string; email: string }[]>([])
   const [memberEmail, setMemberEmail] = useState("")
+
+  // タグのプリセット候補
+  const presetTags = [
+    "JavaScript",
+    "TypeScript",
+    "React",
+    "Next.js",
+    "Node.js",
+    "Python",
+    "アルゴリズム",
+    "データ構造",
+    "プログラミング",
+    "データベース",
+  ]
+
+  // 入力値に基づいてフィルタリングされたサジェスト一覧
+  const filteredSuggestions = presetTags.filter(
+    (tag) => tag.toLowerCase().includes(tagInput.toLowerCase()) && !tags.includes(tag)
+  )
 
   // ID生成用のヘルパー関数
   const generateId = (prefix: string): string => {
@@ -203,6 +223,24 @@ export default function CreateGroupModal() {
                   onKeyDown={addTag}
                   placeholder="タグを入力してEnterキーを押してください"
                 />
+                {/* サジェストエリア */}
+                {filteredSuggestions.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {filteredSuggestions.map((suggestion) => (
+                      <Badge
+                        key={suggestion}
+                        variant="outline"
+                        className="cursor-pointer hover:bg-gray-100"
+                        onClick={() => {
+                          setTags([...tags, suggestion])
+                          setTagInput("")
+                        }}
+                      >
+                        {suggestion}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
                 <p className="text-xs text-gray-500 mt-1">例: プログラミング, JavaScript, アルゴリズム</p>
               </div>
             </div>
